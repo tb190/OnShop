@@ -7,9 +7,12 @@ namespace OnShop.Controllers
     public class VendorController : Controller
     {
         private readonly ILogger<VendorController> _logger;
+        private readonly VendorDbFunctions _vendorDbFunctions;
+
 
         public VendorController(ILogger<VendorController> logger)
         {
+            _vendorDbFunctions = new VendorDbFunctions();
             _logger = logger;
         }
 
@@ -166,33 +169,36 @@ namespace OnShop.Controllers
         [HttpPost]
         public IActionResult AddNewProduct(ProductModel model)
         {
-           //Console.WriteLine(model.Photos.ElementAt(0));
-
-
-            var productName = model.ProductName;
-            var description = model.Description;
-            var category = model.Category;
-            var price = model.Price;
-            var status = model.Status;
-            if (model.Photos != null && model.Photos.Count > 0)
+            try
             {
-                foreach (var image in model.Photos)
+                int productId = _vendorDbFunctions.VendorAddProduct(model);
+
+                if (productId > 0)
                 {
-                    if (image.Length > 0)
-                    {
-                        var imageFileName = Path.GetFileName(image);
-                        Console.WriteLine("Name: "+productName+ "  description: "+description+"  category: "+category+"  price: "+price+"  status: "+status+"  photo name: "+imageFileName);
-                        // Yüklenen dosyayı işlemek için gereken adımlar burada yapılabilir
-                        // Örneğin, dosyayı bir konuma kaydetmek veya başka bir işlem yapmak
-                        // image.FileName ile dosya adını alabiliriz
-                        // image.CopyToAsync() veya başka yöntemlerle işlem yapılabilir
-                    }
+                    TempData["Message"] = "Product added successfully!";
+                    return RedirectToAction("VendorProducts");
                 }
-                TempData["Message"] = "Product added successfully!";
-                return RedirectToAction("VendorProducts");
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to add product.";
+                    return View("VendorAddNewProduct", model);
+                }
             }
-            
-            return View("VendorAddNewProduct", model);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to add product: " + ex.Message;
+                return View("VendorAddNewProduct", model);
+            }
+        }
+
+        public void VendorAddCategory()
+        {
+            Console.WriteLine("add category");
+        }
+
+        public void VendorDeleteCategories()
+        {
+            Console.WriteLine("DeleteCategories");
         }
     }
 }

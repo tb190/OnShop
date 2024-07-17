@@ -12,6 +12,7 @@
     <title>@ViewData["Title"] - OnShop</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/OnShop.styles.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -35,12 +36,19 @@
             <!-- Select or Enter Category -->
             <div class="form-group">
                 <label>Select or Enter Category</label>
-                <select asp-for="Category" name="CategoryDropDown" class="form-control" onchange="toggleCategoryInput(this)">
-                    <option value="">Select Category</option>
-                    <!-- Render existing categories here -->
-                    <option value="AddCategory">Add New Category</option>
-                </select>
-                <input type="text" asp-for="Category" name="CategoryNew" class="form-control mt-2" placeholder="Enter New Category" style="display:none;" />
+                <div class="input-group">
+                    <select asp-for="Category" name="Category" class="form-control" required>
+                        <option value="">Select Category</option>
+                        <!-- Render existing categories here -->
+                        <option value="Category1">Category 1</option>
+                        <option value="Category2">Category 2</option>
+                        <option value="Category3">Category 3</option>
+                    </select>
+                    <div class="input-group-append" style="padding-left:7px;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="openAddCategoryModal()"><span class="fa-solid fa-plus"></span></button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="openDeleteCategoryModal()"><span class="fa-solid fa-minus"></span></button>
+                    </div>
+                </div>
                 <span asp-validation-for="Category" class="text-danger"></span>
             </div>
 
@@ -77,6 +85,73 @@
         </form>
     </div>
 
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>New Category Name</label>
+                        <input type="text" class="form-control" id="newCategoryName" placeholder="Enter New Category Name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    <form asp-area="" asp-controller="Vendor" asp-action="VendorAddCategory" method="post">
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Category Modal -->
+        <div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-area="" asp-controller="Vendor" asp-action="VendorDeleteCategories" method="post">
+                            <p>Select categories to delete:</p>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedCategories" value="1" id="category1">
+                                    <label class="form-check-label" for="category1">Category 1</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedCategories" value="2" id="category2">
+                                    <label class="form-check-label" for="category2">Category 2</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedCategories" value="3" id="category3">
+                                    <label class="form-check-label" for="category3">Category 3</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     <style>
         .form-group {
             margin-bottom: 1.5rem;
@@ -111,7 +186,37 @@
         function toggleCategoryInput(selectElement) {
             var inputField = document.getElementsByName('CategoryNew')[0];
             inputField.style.display = selectElement.value === 'AddCategory' ? 'block' : 'none';
+            inputField.required = selectElement.value === 'AddCategory'; // Yeni kategori eklenirken zorunlu hale getirilmesi
         }
+
+        function openAddCategoryModal() {
+            $('#addCategoryModal').modal('show');
+        }
+
+        function addNewCategory() {
+            var newCategoryName = $('#newCategoryName').val();
+            // Eğer yeni kategori adı geçerliyse, işlemleri burada yapabilirsiniz
+            console.log('New Category Name:', newCategoryName);
+            $('#addCategoryModal').modal('hide');
+        }
+
+        function openDeleteCategoryModal() {
+            $('#deleteCategoryModal').modal('show');
+        }
+
+        function deleteCategory() {
+            // Kategori silme işlemlerini burada yapabilirsiniz
+            console.log('Category deleted.');
+            $('#deleteCategoryModal').modal('hide');
+        }
+
+        $(document).ready(function () {
+            $(document).on('click', '[data-dismiss="modal"]', function () {
+                var targetModal = $(this).closest('.modal');
+                $(targetModal).modal('hide');
+            });
+        });
     </script>
+
 </body>
 </html>
