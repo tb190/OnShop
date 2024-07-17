@@ -1,0 +1,107 @@
+@model ProductModel
+@{
+    ViewData["Title"] = "Add New Product";
+    Layout = "~/Views/Shared/_LayoutVendor.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/OnShop.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5" style="overflow-y:auto; ">
+        <h2>Add New Product</h2>
+        <form  asp-controller="Vendor" asp-action="AddNewProduct" method="post">
+            <div class="form-group">
+                <label asp-for="ProductName"></label>
+                <input asp-for="ProductName" name="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea name="Description" asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- burda t�m kategorileri �ekip dropdown da ekle sa��na-->
+            <div class="form-group">
+                <label>Select or Enter Category</label>
+                <select asp-for="Category" name="Description" class="form-control">
+                    <option value="">Select Category</option>
+                    <!-- Render existing categories here -->
+                </select>
+                <input type="text" asp-for="Category"  name="Category" class="form-control mt-2" placeholder="Enter New Category" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price">Price <span id="priceValue"></span></label>
+                <input asp-for="Price" name="Price" type="number" class="form-control" min="1" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Stock">Stock</label>
+                <input asp-for="Stock" name="Stock" type="number" class="form-control" min="1" />
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status"></label>
+                <select asp-for="Status" name="Status" class="form-control">
+                    <option value="Online">Online</option>
+                    <option value="Offline">Offline</option>
+                </select>
+            </div>
+
+            <!-- Product Images Upload -->
+            <div class="form-group">
+                <label asp-for="Photos">Product Images</label>
+                <input type="file" name="Photos" class="form-control-file" multiple />
+                <small class="form-text text-muted">Upload one or more images of the product.</small>
+                <span asp-validation-for="Photos" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+            }
+
+        .form-control-file {
+            margin-top: 0.5rem;
+        }
+
+        .form-text {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 80%;
+        }
+    </style>
+</body>
+</html>
