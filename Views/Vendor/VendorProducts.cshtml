@@ -181,58 +181,57 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     @if (ViewBag.CurrentPage > 1)
-        {
+                    {
                     <li class="page-item">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-page="1" asp-route-searchString="" aria-label="Go to First Page">
+                        <a class="page-link" asp-action="VendorProducts" asp-route-page="1" asp-route-statusFilter="all" asp-route-searchString="" aria-label="Go to First Page">
                             <span aria-hidden="true">&laquo;&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-searchString="" aria-label="Previous">
+                        <a class="page-link" asp-action="VendorProducts" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-statusFilter="all" asp-route-searchString="" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-        }
+                    }
                     @if (ViewBag.TotalPages > 5 && ViewBag.CurrentPage > 3)
-        {
+                    {
                     <li class="page-item">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-page="1">1</a>
+                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-statusFilter="all" asp-route-page="1">1</a>
                     </li>
                     <li class="page-item disabled">
                         <a class="page-link">...</a>
                     </li>
-        }
+                    }
                     @for (var i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
-        {
+                    {
                     <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-page="@i">@i</a>
+                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString=""asp-route-statusFilter="all" asp-route-page="@i">@i</a>
                     </li>
-        }
+                    }
                     @if (ViewBag.TotalPages > 5 && ViewBag.CurrentPage < ViewBag.TotalPages - 2)
-        {
+                    {
                     <li class="page-item disabled">
                         <a class="page-link">...</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-page="@ViewBag.TotalPages">@ViewBag.TotalPages</a>
+                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString=""asp-route-statusFilter="all" asp-route-page="@ViewBag.TotalPages">@ViewBag.TotalPages</a>
                     </li>
-        }
+                    }
                     @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-        {
+                    {
                     <li class="page-item">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-page="@(ViewBag.CurrentPage + 1)" aria-label="Next">
+                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-statusFilter="all"asp-route-page="@(ViewBag.CurrentPage + 1)" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-page="@ViewBag.TotalPages" aria-label="Go to Last Page">
+                        <a class="page-link" asp-action="VendorProducts" asp-route-searchString="" asp-route-statusFilter="all"asp-route-page="@ViewBag.TotalPages" aria-label="Go to Last Page">
                             <span aria-hidden="true">&raquo;&raquo;</span>
                         </a>
                     </li>
-        }
+                 }
                 </ul>
             </nav>
-
 
         </div>
 
@@ -306,24 +305,14 @@
 
             // --------------------------------- All or Online ---------------------------------
             $(document).ready(function () {
-                // Initial table setup
-                $('.product-row').show(); // Show all rows initially
-
                 // Handle showing only online products
                 $('.btn-outline-secondary[data-status="online"]').on('click', function () {
-                    $('.product-row').each(function () {
-                        var rowStatus = $(this).data('status');
-                        if (rowStatus === 'Online') {
-                            $(this).show(); // Show online rows
-                        } else {
-                            $(this).hide(); // Hide offline rows
-                        }
-                    });
+                    window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
                 });
 
                 // Handle showing all products
                 $('.btn-outline-secondary[data-status="all"]').on('click', function () {
-                    $('.product-row').show(); // Show all rows
+                    window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
                 });
             });
 

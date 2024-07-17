@@ -19,7 +19,7 @@ namespace OnShop.Controllers
         }
 
         // -------------------------------------- Products Page --------------------------------------
-        public IActionResult VendorProducts(int page = 1, string searchString = "")
+        public IActionResult VendorProducts(int page = 1, string searchString = "", string statusFilter = "")
         {
             List<ProductModel> products = new List<ProductModel>();
             ProductModel product;
@@ -36,7 +36,7 @@ namespace OnShop.Controllers
                     ProductName = "Men's Jungle Short Sleeve Shirt",
                     Description = "Short sleeve shirt for men, ideal for casual wear.",
                     Category = "Clothing",
-                    Status = "Online",
+                    Status = "Offline",
                     CreatedAt = DateTime.Now, // Example date/time, replace with actual creation date
                     Photos = new List<string>
                     {
@@ -64,7 +64,7 @@ namespace OnShop.Controllers
                 ProductName = "Computer",
                 Description = "Computer on the desk.",
                 Category = "Electronic",
-                Status = "Offline",
+                Status = "Online",
                 CreatedAt = DateTime.Now, // Example date/time, replace with actual creation date
                 Photos = new List<string>
                 {
@@ -101,7 +101,7 @@ namespace OnShop.Controllers
                 ProductName = "Computer1",
                 Description = "Computer on the desk.",
                 Category = "Electronic",
-                Status = "Offline",
+                Status = "Online",
                 CreatedAt = DateTime.Now, // Example date/time, replace with actual creation date
                 Photos = new List<string>
                 {
@@ -137,6 +137,11 @@ namespace OnShop.Controllers
                     p.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                     p.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                     p.Category.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(statusFilter) && statusFilter.Equals("Online", StringComparison.OrdinalIgnoreCase))
+            {
+                productsQuery = productsQuery.Where(p => p.Status.Equals("Online", StringComparison.OrdinalIgnoreCase));
             }
 
             const int pageSize = 5;
