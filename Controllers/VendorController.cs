@@ -1,6 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnShop.Models;
 using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace OnShop.Controllers
 {
@@ -24,114 +31,8 @@ namespace OnShop.Controllers
         // -------------------------------------- Products Page --------------------------------------
         public IActionResult VendorProducts(int page = 1, string searchString = "", string statusFilter = "")
         {
-            List<ProductModel> products = new List<ProductModel>();
-            ProductModel product;
-
-            for(int i = 0; i < 20; i++)
-            {
-                product = new ProductModel
-                {
-                    ProductId = i,
-                    Rating = 4,
-                    Favorites = i*2,
-                    CompanyID = 123,
-                    Price = i*3,
-                    ProductName = "Men's Jungle Short Sleeve Shirt",
-                    Description = "Short sleeve shirt for men, ideal for casual wear.",
-                    Category = "Clothing",
-                    Status = "Offline",
-                    CreatedAt = DateTime.Now, // Example date/time, replace with actual creation date
-                    Photos = new List<string>
-                    {
-                         "https://picsum.photos/id/0/200/300",
-                          "https://picsum.photos/id/1/200/300",
-                          "https://picsum.photos/id/2/200/300"
-                    },
-                        ProductReviews = new List<string>
-                    {
-                         "ürün harika",
-                          "çok kullanışlı"
-                    }
-                };
-                products.Add(product);
-            }
+            List<ProductModel> products = _vendorDbFunctions.VendorGetProducts();
             
-
-            ProductModel product1 = new ProductModel
-            {
-                ProductId = 2,
-                Rating = 5,
-                Favorites = 10,
-                CompanyID = 123,
-                Price = 58m,
-                ProductName = "Computer",
-                Description = "Computer on the desk.",
-                Category = "Electronic",
-                Status = "Online",
-                CreatedAt = DateTime.Now, // Example date/time, replace with actual creation date
-                Photos = new List<string>
-                {
-                     "https://picsum.photos/id/1/200/300",
-                      "https://picsum.photos/id/2/200/300",
-                      "https://picsum.photos/id/2/200/300"
-                },
-                ProductReviews = new List<string>
-                {
-                     "berabet",
-                      "kötü",
-                      "hayatımıkurtardı",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü"
-                }
-            };
-            products.Add(product1);
-            ProductModel product2 = new ProductModel
-            {
-                ProductId = 2,
-                Rating = 5,
-                Favorites = 10,
-                CompanyID = 123,
-                Price = 58m,
-                ProductName = "Computer1",
-                Description = "Computer on the desk.",
-                Category = "Electronic",
-                Status = "Online",
-                CreatedAt = DateTime.Now, // Example date/time, replace with actual creation date
-                Photos = new List<string>
-                {
-                     "https://picsum.photos/id/1/200/300",
-                      "https://picsum.photos/id/2/200/300",
-                      "https://picsum.photos/id/2/200/300"
-                },
-                ProductReviews = new List<string>
-                {
-                     "berabet",
-                      "kötü",
-                      "hayatımıkurtardı",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü",
-                      "kötü"
-                }
-            };
-            products.Add(product2);
-
             var productsQuery = products.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -166,23 +67,28 @@ namespace OnShop.Controllers
             return View();
         }
 
+
         [HttpPost]
-        public IActionResult AddNewProduct(ProductModel model)
+        public async Task<IActionResult> AddNewProduct(List<IFormFile> Photos,ProductModel model)
         {
             try
             {
-                int productId = _vendorDbFunctions.VendorAddProduct(model);
+                if (Photos.Count > 0)
+                {              
+                    int productId = await _vendorDbFunctions.VendorAddProduct(model,Photos);
 
-                if (productId > 0)
-                {
-                    TempData["Message"] = "Product added successfully!";
-                    return RedirectToAction("VendorProducts");
+                    if (productId > 0)
+                    {
+                        TempData["Message"] = "Product added successfully!";
+                        return RedirectToAction("VendorProducts");
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Failed to add product.";
+                        return View("VendorAddNewProduct", model);
+                    }
                 }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to add product.";
-                    return View("VendorAddNewProduct", model);
-                }
+                return View("VendorAddNewProduct", model);
             }
             catch (Exception ex)
             {

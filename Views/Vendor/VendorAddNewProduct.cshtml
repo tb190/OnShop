@@ -19,54 +19,68 @@
 </head>
 <body>
     <div class="container mt-5" style="overflow-y:auto; ">
-        <h2>Add New Product</h2>
-        <form asp-controller="Vendor" asp-action="AddNewProduct" method="post">
-            <div class="form-group">
-                <label asp-for="ProductName"></label>
-                <input asp-for="ProductName" name="ProductName" class="form-control" required />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
+        <h3 style="font-size:15px;">Add New Product</h3>
+        <form asp-controller="Vendor" asp-action="AddNewProduct" method="post" enctype="multipart/form-data">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="ProductName" style="font-size:12px;"></label>
+                        <input asp-for="ProductName" name="ProductName" class="form-control" required />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label style="font-size:12px;">Select or Enter Category</label>
+                        <div class="input-group">
+                            <select asp-for="Category" name="Category" class="form-control" required>
+                                <option value="">Select Category</option>
+                                <!-- Render existing categories here -->
+                                <option value="Category1">Category 1</option>
+                                <option value="Category2">Category 2</option>
+                                <option value="Category3">Category 3</option>
+                            </select>
+                            <div class="input-group-append" style="padding-left:7px;">
+                                <button class="btn btn-outline-secondary" type="button" onclick="openAddCategoryModal()"><span class="fa-solid fa-plus"></span></button>
+                                <button class="btn btn-outline-secondary" type="button" onclick="openDeleteCategoryModal()"><span class="fa-solid fa-minus"></span></button>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="Description"></label>
+                <label asp-for="Description" style="font-size:12px;"></label>
                 <textarea name="Description" asp-for="Description" class="form-control" required></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <!-- Select or Enter Category -->
-            <div class="form-group">
-                <label>Select or Enter Category</label>
-                <div class="input-group">
-                    <select asp-for="Category" name="Category" class="form-control" required>
-                        <option value="">Select Category</option>
-                        <!-- Render existing categories here -->
-                        <option value="Category1">Category 1</option>
-                        <option value="Category2">Category 2</option>
-                        <option value="Category3">Category 3</option>
-                    </select>
-                    <div class="input-group-append" style="padding-left:7px;">
-                        <button class="btn btn-outline-secondary" type="button" onclick="openAddCategoryModal()"><span class="fa-solid fa-plus"></span></button>
-                        <button class="btn btn-outline-secondary" type="button" onclick="openDeleteCategoryModal()"><span class="fa-solid fa-minus"></span></button>
+
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label style="font-size:12px;" asp-for="Price">Price <span id="priceValue"></span></label>
+                        <input asp-for="Price" name="Price" type="number" class="form-control" min="1" required />
+                        <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
 
-
-            <div class="form-group">
-                <label asp-for="Price">Price <span id="priceValue"></span></label>
-                <input asp-for="Price" name="Price" type="number" class="form-control" min="1" required />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Stock">Stock</label>
-                <input asp-for="Stock" name="Stock" type="number" class="form-control" min="1" required />
-                <span asp-validation-for="Stock" class="text-danger"></span>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label style="font-size:12px;" asp-for="Stock">Stock</label>
+                        <input asp-for="Stock" name="Stock" type="number" class="form-control" min="1" required />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="Status"></label>
+                <label style="font-size:12px;" asp-for="Status"></label>
                 <select asp-for="Status" name="Status" class="form-control" required>
                     <option value="Online">Online</option>
                     <option value="Offline">Offline</option>
@@ -75,13 +89,12 @@
 
             <!-- Product Images Upload -->
             <div class="form-group">
-                <label asp-for="Photos">Product Images</label>
-                <input type="file" name="Photos" class="form-control-file" multiple required />
+                <input type="file" name="Photos" id="Photos" class="form-control-file" accept="image/*" multiple required />
                 <small class="form-text text-muted">Upload one or more images of the product.</small>
                 <span asp-validation-for="Photos" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary" >Save</button>
         </form>
     </div>
 
