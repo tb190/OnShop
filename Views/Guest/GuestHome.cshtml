@@ -43,9 +43,9 @@
                         </div>
 
                         <div class="styles-module_slider__o0fqa" id="product-slider">
-                            @for (int index = 0; index < Model.Products.Count; index++)
+                            @for (int index = 0; index < Model.MostClickedProducts.Count; index++)
                                     {
-                                        var product = Model.Products[index];
+                                        var product = Model.MostClickedProducts[index];
                             <div class="widget-product" title="@product.ProductName">
                                 <a href="/products/details/@product.ProductId">
                                     <div class="image-container">
@@ -82,7 +82,7 @@
                                                 <span class="name">@firstSentence</span>
                                             </div>
                                             <div class="ratings-container">
-                                                <div class="ratings-score" style="font-size:15px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
                                                 <div class="ratings">
                                                     <span class="rating">
                                                         @for (int i = 0; i < 5; i++)

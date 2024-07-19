@@ -92,37 +92,50 @@ namespace OnShop
                 connection.Open();
 
                 string query = @"
-                    SELECT *
-                    FROM Products
-                    WHERE ProductId = @ProductId";
+            SELECT 
+                ProductId,
+                Rating,
+                Favorites,
+                CompanyID,
+                Stock,
+                Clicked,
+                Price,
+                ProductName,
+                Description,
+                Category,
+                Status,
+                CreatedAt
+            FROM Products
+            WHERE ProductId = @ProductId";
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@ProductId", productId);
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    product = new ProductModel
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        ProductId = reader.GetInt32(reader.GetOrdinal("ProductId")),
-                        Rating = reader.GetInt32(reader.GetOrdinal("Rating")),
-                        Favorites = reader.GetInt32(reader.GetOrdinal("Favorites")),
-                        CompanyID = reader.GetInt32(reader.GetOrdinal("CompanyID")),
-                        Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
-                        Clicked = reader.GetInt32(reader.GetOrdinal("Clicked")),
-                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                        ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
-                        Description = reader.GetString(reader.GetOrdinal("Description")),
-                        Category = reader.GetString(reader.GetOrdinal("Category")),
-                        Status = reader.GetString(reader.GetOrdinal("Status")),
-                        CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
-                        ProductReviewsID = new List<int>(), // Assuming these are stored elsewhere and need separate querying
-                        ProductReviews = new List<string>(), // Assuming these are stored elsewhere and need separate querying
-                        Photos = new List<string>() // Assuming these are stored elsewhere and need separate querying
-                    };
+                        if (reader.Read())
+                        {
+                            product = new ProductModel
+                            {
+                                ProductId = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                Rating = reader.GetInt32(reader.GetOrdinal("Rating")),
+                                Favorites = reader.GetInt32(reader.GetOrdinal("Favorites")),
+                                CompanyID = reader.GetInt32(reader.GetOrdinal("CompanyID")),
+                                Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
+                                Clicked = reader.GetInt32(reader.GetOrdinal("Clicked")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Category = reader.GetString(reader.GetOrdinal("Category")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                ProductReviewsID = new List<int>(), // Separate query needed
+                                ProductReviews = new List<string>(), // Separate query needed
+                                Photos = new List<string>() // Separate query needed
+                            };
+                        }
+                    }
                 }
-
-                reader.Close();
             }
             catch (Exception ex)
             {
@@ -146,47 +159,46 @@ namespace OnShop
                 connection.Open();
 
                 string sql = @"
-                            SELECT 
-                                p.ProductId, 
-                                p.Rating, 
-                                p.Favorites, 
-                                p.CompanyID, 
-                                p.Stock, 
-                                p.Price, 
-                                p.ProductName, 
-                                p.Description, 
-                                p.Category, 
-                                p.Status, 
-                                p.CreatedAt,
-                                (SELECT STRING_AGG(PhotoURL, ',') 
-                                 FROM Photos ph 
-                                 WHERE ph.ProductId = p.ProductId) AS PhotoURLs
-                                 FROM 
-                                 Products p";
-
+            SELECT 
+                p.ProductId, 
+                p.Rating, 
+                p.Favorites, 
+                p.CompanyID, 
+                p.Stock, 
+                p.Clicked, 
+                p.Price, 
+                p.ProductName, 
+                p.Description, 
+                p.Category, 
+                p.Status, 
+                p.CreatedAt,
+                (SELECT STRING_AGG(PhotoURL, ',') 
+                 FROM Photos ph 
+                 WHERE ph.ProductId = p.ProductId) AS PhotoURLs
+            FROM Products p";
 
                 using (SqlCommand cmd = new SqlCommand(sql, connection))
                 {
-
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             ProductModel product = new ProductModel
                             {
-                                ProductId = reader.GetInt32(0),
-                                Rating = reader.GetInt32(1),
-                                Favorites = reader.GetInt32(2),
-                                CompanyID = reader.GetInt32(3),
-                                Stock = reader.GetInt32(4),
-                                Price = reader.GetDecimal(5),
-                                ProductName = reader.GetString(6),
-                                Description = reader.GetString(7),
-                                Category = reader.GetString(8),
-                                Status = reader.GetString(9),
-                                CreatedAt = reader.GetDateTime(10),
-                                Photos = reader.IsDBNull(11) ? new List<string>() : reader.GetString(11).Split(',').ToList(),
-                                ProductReviews = new string[] { "Ben", "sen" }
+                                ProductId = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                Rating = reader.GetInt32(reader.GetOrdinal("Rating")),
+                                Favorites = reader.GetInt32(reader.GetOrdinal("Favorites")),
+                                CompanyID = reader.GetInt32(reader.GetOrdinal("CompanyID")),
+                                Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
+                                Clicked = reader.GetInt32(reader.GetOrdinal("Clicked")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Category = reader.GetString(reader.GetOrdinal("Category")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                Photos = reader.IsDBNull(reader.GetOrdinal("PhotoURLs")) ? new List<string>() : reader.GetString(reader.GetOrdinal("PhotoURLs")).Split(',').ToList(),
+                                ProductReviews = new List<string>(), // Assuming separate query needed
                             };
 
                             products.Add(product);

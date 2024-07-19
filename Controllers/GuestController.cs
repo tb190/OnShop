@@ -28,7 +28,8 @@ namespace OnShop.Controllers
             // Veritabanýndan kategorileri çek
             var categories = _guestDbFunctions.GuestGetCategoriesWithTypes();
 
-            var products = _guestDbFunctions.GuestGetProducts();
+            List<ProductModel> products = _guestDbFunctions.GuestGetProducts();
+
             var sortedProducts = products.OrderByDescending(p => p.Clicked).ToList();
 
             var viewModel = new GuestHomeViewModel

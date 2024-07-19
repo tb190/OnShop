@@ -45,7 +45,7 @@
                         {
                     @foreach (var category in Model.Categories)
                         {
-                    <li class="nav-item">
+                    <li class="nav-item" id="category-@category.CategoryId"data-categoryid="@category.CategoryId" >
                         <a class="nav-link category-navlink" href="#" id="category-@category.CategoryId" data-categoryid="@category.CategoryId">
                             @category.CategoryName
                         </a>
@@ -116,25 +116,54 @@
 
     <script>
         $(document).ready(function () {
-            // T�m t�r listelerini gizle
+            // Hide all type lists initially
             $('.types-list').hide();
 
-            // Kategoriye hover edildi�inde t�r listesini g�ster
-            $('.nav-link').mouseenter(function () {
-                var categoryId = $(this).data('categoryid');
-                $('#types-list-' + categoryId).slideDown();
+            var hoverTimeout;
+            var categoryId;
+
+            // Show the type list when hovering over a category
+            $('.nav-link.category-navlink').mouseenter(function () {
+                categoryId = $(this).data('categoryid');
+
+                // Clear any existing timeout to prevent premature hiding
+                clearTimeout(hoverTimeout);
+
+                // Hide all type lists first
+                $('.types-list').stop(true, true).slideUp();
+
+                // Show the current type list
+                $('#types-list-' + categoryId).stop(true, true).slideDown();
             });
 
-            // T�r listesine hover edildi�inde listeyi a��k tut
+            // Keep the type list open when hovering over it
             $('.types-list').mouseenter(function () {
+
+                
+
+                clearTimeout(hoverTimeout);
                 $(this).stop(true, true).slideDown();
+           
             });
 
-            // T�r listesinden hover ��k�ld���nda listeyi gizle
+            // Hide the type list when the mouse leaves it
             $('.types-list').mouseleave(function () {
-                $(this).stop(true, true).slideUp();
+                var $this = $(this);
+                hoverTimeout = setTimeout(function () {
+                    $this.stop(true, true).slideUp();
+                }, 200);
+            });
+
+            // Hide the type list when the mouse leaves the nav link, unless entering the type list
+            $('.nav-link.category-navlink').mouseleave(function () {
+                var categoryId = $(this).data('categoryid');
+                hoverTimeout = setTimeout(function () {
+                    $('#types-list-' + categoryId).stop(true, true).slideUp();
+                }, 200);
             });
         });
+
+
     </script>
 
 
