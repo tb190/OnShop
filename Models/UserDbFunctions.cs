@@ -68,12 +68,13 @@ namespace OnShop
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to register user: {ex.Message}");
+                return false;
                 throw;
             }
         }
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task RegisterCompany(IFormFile companyLogo, IFormFile companyBanner, CompanyModel company, UserModel user)
+        public async Task<bool> RegisterCompany(IFormFile LogoUrl, IFormFile BannerUrl, CompanyModel company, UserModel user)
         {
             try
             {
@@ -103,45 +104,55 @@ namespace OnShop
                         command.Parameters.AddWithValue("IsValidatedByAdmin", 0);
 
 
-                        string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyLogos");
-                        if (!Directory.Exists(logoPath)){Directory.CreateDirectory(logoPath);}
-                        string uniqueFileNameLogo = $"{Guid.NewGuid().ToString()}.jpg";
-                        string filePathLogo = Path.Combine(logoPath, uniqueFileNameLogo);
-                        using (var fileStream = new FileStream(filePathLogo, FileMode.Create))
+                        // Logo kaydetme
+                        if (LogoUrl != null && LogoUrl.Length > 0)
                         {
-                            await companyLogo.CopyToAsync(fileStream);
+                            string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyLogos");
+                            if (!Directory.Exists(logoPath)) Directory.CreateDirectory(logoPath);
+
+                            string uniqueFileNameLogo = $"{Guid.NewGuid().ToString()}.jpg";
+                            string filePathLogo = Path.Combine(logoPath, uniqueFileNameLogo);
+                            using (var fileStream = new FileStream(filePathLogo, FileMode.Create))
+                            {
+                                await LogoUrl.CopyToAsync(fileStream);
+                            }
+
+                            string filePathtoDBLogo = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameLogo);
+                            command.Parameters.AddWithValue("@LogoUrl", filePathtoDBLogo);
                         }
-                        string filePathtoDBLogo = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameLogo);
-                        command.Parameters.AddWithValue("LogoUrl", filePathtoDBLogo);
-
-
-                        string bannerPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyBanners");
-                        if (!Directory.Exists(bannerPath)) { Directory.CreateDirectory(bannerPath); }
-                        string uniqueFileNameBanner = $"{Guid.NewGuid().ToString()}.jpg";
-                        string filePathBanner = Path.Combine(logoPath, uniqueFileNameBanner);
-                        using (var fileStream = new FileStream(filePathBanner, FileMode.Create))
+                        // Banner kaydetme
+                        if (BannerUrl != null && BannerUrl.Length > 0)
                         {
-                            await companyBanner.CopyToAsync(fileStream);
-                        }
-                        string filePathtoDBBanner = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameBanner);
-                        command.Parameters.AddWithValue("BannerUrl", filePathtoDBBanner);
+                            string bannerPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyBanners");
+                            if (!Directory.Exists(bannerPath)) Directory.CreateDirectory(bannerPath);
 
+                            string uniqueFileNameBanner = $"{Guid.NewGuid().ToString()}.jpg";
+                            string filePathBanner = Path.Combine(bannerPath, uniqueFileNameBanner);
+                            using (var fileStream = new FileStream(filePathBanner, FileMode.Create))
+                            {
+                                await BannerUrl.CopyToAsync(fileStream);
+                            }
+
+                            string filePathtoDBBanner = Path.Combine("/Pictures", "CompanyBanners", uniqueFileNameBanner);
+                            command.Parameters.AddWithValue("@BannerUrl", filePathtoDBBanner);
+                        }
 
                         await connection.OpenAsync();
                         await command.ExecuteNonQueryAsync();
                         connection.Close();
+                        return true;
                     }
 
                 }
-
-
-
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to register user: {ex.Message}");
+                Console.WriteLine($"Failed to register company: {ex.Message}");
+                return false;
                 throw;
             }
+            
         }
 
 

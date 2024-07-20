@@ -35,10 +35,12 @@ namespace OnShop.Controllers
         {
             try
             {
-                _userDbFunctions.RegisterIndividual(viewModel.User,"User");
-
-
+                if( await _userDbFunctions.RegisterIndividual(viewModel.User, "User")){
+                    return RedirectToAction("GuestHome", "Guest");
+                }
                 return RedirectToAction("Login");
+
+
             }
             catch (Exception ex)
             {
@@ -49,13 +51,13 @@ namespace OnShop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterCompany(IFormFile companyLogo, IFormFile companyBanner, LoginViewModel viewModel)
+        public async Task<IActionResult> RegisterCompany(IFormFile LogoUrl, IFormFile BannerUrl, LoginViewModel viewModel)
         {
             try
-            {
-                _userDbFunctions.RegisterCompany(companyLogo, companyBanner, viewModel.Company, viewModel.User);
-
-
+            {       
+                if (await _userDbFunctions.RegisterCompany(LogoUrl, BannerUrl, viewModel.Company, viewModel.User)){
+                    return RedirectToAction("GuestHome", "Guest");
+                }
                 return RedirectToAction("Login");
             }
             catch (Exception ex)

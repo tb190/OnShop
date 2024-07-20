@@ -149,7 +149,7 @@
 
 
                                                 <label for="companyDescription">Description</label>
-                                                <textarea id="companyDescription" name="Company.Description"></textarea>
+                                                <textarea id="companyDescription" name="Company.CompanyDescription"></textarea>
 
                                                 <label for="companyAddress">Address</label>
                                                 <input type="text" id="companyAddress" name="User.Address">
@@ -164,11 +164,11 @@
                                                 <input type="text" id="IBAN" name="Company.IBAN" placeholder="TR00000000000000000000000000" maxlength="26">
 
                                                 <label for="companyLogo">Company Logo</label>
-                                                <input type="file" id="companyLogo" name="Company.LogoUrl" accept="image/*" onchange="previewImage('companyLogo', 'logoPreview')">
+                                                <input type="file" id="companyLogo" name="LogoUrl" accept="image/*" onchange="previewImage('companyLogo', 'logoPreview')">
                                                 <img id="logoPreview" class="preview-image" src="" alt="Logo Preview" style="display: none;">
 
                                                 <label for="companyBanner">Company Banner</label>
-                                                <input type="file" id="companyBanner" name="Company.BannerUrl" accept="image/*" onchange="previewImage('companyBanner', 'bannerPreview')">
+                                                <input type="file" id="companyBanner" name="BannerUrl" accept="image/*" onchange="previewImage('companyBanner', 'bannerPreview')">
                                                 <img id="bannerPreview" class="preview-image" src="" alt="Banner Preview" style="display: none;">
                                             </div>
                                         </div>
@@ -208,10 +208,10 @@
                     const registercontainerCompany = document.getElementById('registercontainerCompany');
                     
                     if (dataTab === 'login') {
-                        loginpart.style.height = `${currentHeight + 20}px`;
+                        loginpart.style.height = `auto`;
                         logincontainer.style.width = '400px';
                     } else {
-                        loginpart.style.height = `${currentHeight + 20}px`;
+                        loginpart.style.height = `auto`; 
                         logincontainer.style.width = '400px';
                     }
 
@@ -265,8 +265,8 @@
                     if (this.value === 'individual') {
                         registercontainerIndividual.style.display = 'block';
                         registercontainerCompany.style.display = 'none';
-                        loginpart.style.height = '111vh';
-                        loginpart.style.height = `${currentHeight + 20}px`;
+                        loginpart.style.height = `auto`;
+                        logincontainer.style.width = '800px';
                         individualFields.style.display = 'flex';
                         individualFields.style.flexDirection = 'column';
                         registerfields.style.display = 'flex';
@@ -274,7 +274,7 @@
                     } else if (this.value === 'company') {
                         registercontainerIndividual.style.display = 'none';
                         registercontainerCompany.style.display = 'block';
-                        loginpart.style.height = `${currentHeight + 20}px`;
+                        loginpart.style.height = `auto`; 
                         logincontainer.style.width = '800px';
                         companyFields.style.display = 'flex';
                         companyFields.style.flexDirection = 'column';
@@ -333,7 +333,7 @@
             /*justify-content: center;*/
             align-items: center;
             height: auto;
-            padding-bottom: 20px;
+            padding-bottom: 50px;
             border-radius: 10px;
             flex-direction: column;
             position: relative;
