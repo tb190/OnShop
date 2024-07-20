@@ -37,3 +37,4 @@ C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\runtimes\unix\lib\netcoreapp2.1\
 C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\Casper\Desktop\OnShop\obj\Debug\net8.0\OnShop.csproj.AssemblyReference.cache
 C:\Users\Casper\Desktop\OnShop\obj\Debug\net8.0\OnShop.csproj.Up2Date
+C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\System.Security.Permissions.dll
