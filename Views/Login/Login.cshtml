@@ -48,17 +48,22 @@
                             <label for="email">Email</label>
                             <input type="email" id="email" name="email" required>
 
-                            <label for="password-login">Password</label>
-                            <input type="password" id="password-login" name="password" required>
+                            <label>Password</label>
+                            <div class="input-group" id="show_hide_password">
+                                <input class="form-control" type="password" id="passwordInput">
+                                <div class="input-group-addon">
+                                    <a href="" style="color: #333"><i class="fa fa-eye-slash" id="eye" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
 
                             <a href="#" class="forgot-password">I forgot my password</a>
 
                             @if (TempData["ErrorMessage"] != null)
 {
-                                <div class="alert alert-danger">
-                                    @TempData["ErrorMessage"]
-                                    Invalid email or password!
-                                </div>
+                            <div class="alert alert-danger">
+                                @TempData["ErrorMessage"]
+                                Invalid email or password!
+                            </div>
 }
 
                             <button type="submit" class="btn-login">LOGIN</button>
@@ -94,8 +99,14 @@
                                                 <label for="email-register">Email</label>
                                                 <input type="email" id="email-registerIndividual" name="User.Email" required>
 
-                                                <label for="password-register">Password</label>
-                                                <input type="password" id="password-registerIndividual" name="User.PasswordHash" required>
+                                                <label>Password</label>
+                                                <div class="input-group" id="show_hide_password">
+                                                    <input class="form-control" type="password" id="passwordInput">
+                                                    <div class="input-group-addon">
+                                                        <a href="" style="color: #333"><i class="fa fa-eye-slash" id="eye" aria-hidden="true"></i></a>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <div id="individualFields" style="flex: 1; ">
@@ -133,8 +144,13 @@
                                                 <label for="email-register">Email</label>
                                                 <input type="email" id="email-registerCompany" name="User.Email" required>
 
-                                                <label for="password-register">Password</label>
-                                                <input type="password" id="password-registerCompany" name="User.PasswordHash" required>
+                                                <label>Password</label>
+                                                <div class="input-group" id="show_hide_password">
+                                                    <input class="form-control" type="password" id="passwordInput">
+                                                    <div class="input-group-addon">
+                                                        <a href="" style="color: #333"><i class="fa fa-eye-slash" id="eye" aria-hidden="true"></i></a>
+                                                    </div>
+                                                </div>
 
                                                 <label for="companyPhone">Phone Number</label>
                                                 <input type="text" id="companyPhone" name="User.PhoneNumber">
@@ -154,9 +170,7 @@
                                                 <label for="companyAddress">Address</label>
                                                 <input type="text" id="companyAddress" name="User.Address">
 
-                                                
-
-
+                                         
                                                 <label for="taxIDNumber">Tax ID Number</label>
                                                 <input type="text" id="taxIDNumber" name="Company.TaxIDNumber">
 
@@ -222,30 +236,22 @@
             });
         });
 
-        /* ----------------- Password Open or Closed -----------------
-        document.addEventListener('DOMContentLoaded', function () {
-            const togglePassword = document.getElementById('togglePassword');
-            const password = document.getElementById('password');
-            const loginpart = document.getElementById('login-part');
+        /* ----------------- Password Open or Closed ----------------- */
+        $(document).ready(function() {
+            $("#show_hide_password a").on('click', function(event) {
+                event.preventDefault();
+                if($('#show_hide_password input').attr("type") == "text"){
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass( "fa-eye-slash" );
+                    $('#show_hide_password i').removeClass("fa-eye");
 
-
-            const togglePasswordRegister = document.getElementById('togglePasswordRegister');
-            const passwordRegister = document.getElementById('password-register');
-
-            togglePassword.addEventListener('click', function () {
-                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                password.setAttribute('type', type);
-                this.querySelector('i').classList.toggle('fa-eye');
-                this.querySelector('i').classList.toggle('fa-eye-slash');
+                }else if($('#show_hide_password input').attr("type") == "password"){
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass( "fa-eye-slash" );
+                    $('#show_hide_password i').addClass("fa-eye");
+                }
             });
-
-            togglePasswordRegister.addEventListener('click', function () {
-                const type = passwordRegister.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordRegister.setAttribute('type', type);
-                this.querySelector('i').classList.toggle('fa-eye');
-                this.querySelector('i').classList.toggle('fa-eye-slash');
-            });
-        });*/
+        });
 
         /* ----------------- Registration Type Switch ----------------- */
         // Handle Registration Type Change
@@ -322,6 +328,41 @@
 
 
     <style>
+
+        .input-group {
+            position: relative;
+            height: 8vh;
+            border-radius: 7px;
+        }
+
+            .input-group .form-control {
+                padding-right: 40px; /* Adjust padding to accommodate icon */
+            }
+        /* Default height for text input */
+        .form-control[type="text"] {
+            height: 45px;
+        }
+
+            /* Increased height for text input */
+            .form-control[type="text"].expanded {
+                height: 60px;
+            }
+
+            .input-group .input-group-addon .fa-eye-slash{
+                position: absolute;
+                right: 7px;
+                top: 40%;
+                cursor: pointer;
+                transform: translate(-50%, -50%);
+            }
+        .input-group .input-group-addon .fa-eye {
+            position: absolute;
+            right: 9px;
+            top: 40%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+        }
+
         .navbar {
             border-bottom: 1px solid #29353c;
             margin-bottom: 20px;
