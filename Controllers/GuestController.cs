@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
+using System.Security.Claims;
 
 namespace OnShop.Controllers
 {
@@ -25,6 +25,9 @@ namespace OnShop.Controllers
 
         public IActionResult GuestHome()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+
             // Veritabanýndan kategorileri çek
             var categories = _guestDbFunctions.GuestGetCategoriesWithTypes();
 

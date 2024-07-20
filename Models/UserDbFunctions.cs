@@ -25,7 +25,7 @@ namespace OnShop
         }
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task RegisterIndividual(UserModel user)
+        public async Task<bool> RegisterIndividual(UserModel user,string role)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace OnShop
                     command.Parameters.AddWithValue("@SurName", user.SurName);
                     command.Parameters.AddWithValue("@Email", user.Email);
                     command.Parameters.AddWithValue("@PasswordHash", hashedPassword); 
-                    command.Parameters.AddWithValue("@Role", "User");
+                    command.Parameters.AddWithValue("@Role", role);
                     command.Parameters.AddWithValue("@Address", string.IsNullOrEmpty(user.Address) ? string.Empty : user.Address);
                     command.Parameters.AddWithValue("@PhoneNumber", string.IsNullOrEmpty(user.PhoneNumber) ? string.Empty : user.PhoneNumber);
 
@@ -61,7 +61,9 @@ namespace OnShop
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
                     connection.Close();
+                    return true;
                 }
+                return false;
             }
             catch (Exception ex)
             {
@@ -69,6 +71,80 @@ namespace OnShop
                 throw;
             }
         }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task RegisterCompany(IFormFile companyLogo, IFormFile companyBanner, CompanyModel company, UserModel user)
+        {
+            try
+            {
+                if(await RegisterIndividual(user, "Vendor"))
+                {
+                    int userId = await GetUserIdByEmail(user.Email);
+
+
+
+                    string query = "INSERT INTO Companies (Score, UserId, CompanyName, ContactName, Description, Address, PhoneNumber, CreatedAt, BirthDate, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin) " +
+                                             "VALUES (@Score, @UserId, @CompanyName, @ContactName, @Description, @Address, @PhoneNumber, @CreatedAt, @BirthDate, @Email, @LogoUrl, @BannerUrl, @TaxIDNumber, @IBAN, @IsValidatedByAdmin)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Score", 0);
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        command.Parameters.AddWithValue("@CompanyName", company.CompanyName);
+                        command.Parameters.AddWithValue("@ContactName", user.Name);
+                        command.Parameters.AddWithValue("@Description", company.CompanyDescription);
+                        command.Parameters.AddWithValue("@Address", user.Address);
+                        command.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber);
+                        command.Parameters.AddWithValue("CreatedAt", DateTime.Now);
+                        command.Parameters.AddWithValue("BirthDate", DateTime.Now);
+                        command.Parameters.AddWithValue("Email", user.Email);
+                        command.Parameters.AddWithValue("TaxIDNumber", company.taxIDNumber);
+                        command.Parameters.AddWithValue("IBAN", company.IBAN);
+                        command.Parameters.AddWithValue("IsValidatedByAdmin", 0);
+
+
+                        string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyLogos");
+                        if (!Directory.Exists(logoPath)){Directory.CreateDirectory(logoPath);}
+                        string uniqueFileNameLogo = $"{Guid.NewGuid().ToString()}.jpg";
+                        string filePathLogo = Path.Combine(logoPath, uniqueFileNameLogo);
+                        using (var fileStream = new FileStream(filePathLogo, FileMode.Create))
+                        {
+                            await companyLogo.CopyToAsync(fileStream);
+                        }
+                        string filePathtoDBLogo = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameLogo);
+                        command.Parameters.AddWithValue("LogoUrl", filePathtoDBLogo);
+
+
+                        string bannerPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyBanners");
+                        if (!Directory.Exists(bannerPath)) { Directory.CreateDirectory(bannerPath); }
+                        string uniqueFileNameBanner = $"{Guid.NewGuid().ToString()}.jpg";
+                        string filePathBanner = Path.Combine(logoPath, uniqueFileNameBanner);
+                        using (var fileStream = new FileStream(filePathBanner, FileMode.Create))
+                        {
+                            await companyBanner.CopyToAsync(fileStream);
+                        }
+                        string filePathtoDBBanner = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameBanner);
+                        command.Parameters.AddWithValue("BannerUrl", filePathtoDBBanner);
+
+
+                        await connection.OpenAsync();
+                        await command.ExecuteNonQueryAsync();
+                        connection.Close();
+                    }
+
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to register user: {ex.Message}");
+                throw;
+            }
+        }
+
+
         // --------------------------------------------------------------------------------------------------------------------------
         public async Task<bool> ValidateUserCredentials(string email, string password)
         {
@@ -88,6 +164,7 @@ namespace OnShop
 
                     if (result != null)
                     {
+
                         string storedHash = result.ToString();
                         return storedHash.Equals(hashedPassword);
                     }
@@ -102,6 +179,37 @@ namespace OnShop
             }
         }
 
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<int> GetUserIdByEmail(string email)
+        {
+            try
+            {
+                string query = "SELECT UserId FROM Users WHERE Email = @Email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    await connection.OpenAsync();
+                    var result = await command.ExecuteScalarAsync();
+                    connection.Close();
+
+                    if (result != null && int.TryParse(result.ToString(), out int userId))
+                    {
+                        return userId;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to get user ID: {ex.Message}");
+                throw;
+            }
+        }
         // --------------------------------------------------------------------------------------------------------------------------
         public string HashPassword(string password)
         {

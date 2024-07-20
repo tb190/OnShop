@@ -57,6 +57,7 @@
 {
                                 <div class="alert alert-danger">
                                     @TempData["ErrorMessage"]
+                                    Invalid email or password!
                                 </div>
 }
 
@@ -121,7 +122,6 @@
 
                                 <div id="registercontainerCompany" class="col registration-fields">
                                     <form asp-area="" asp-controller="Login" asp-action="RegisterCompany" method="post" enctype="multipart/form-data">
-                                        
                                         <div class="form-container" style="display: flex; gap: 20px; ">
                                             <div id="registerfields" style="flex: 1;">
                                                 <label for="name-register">Name</label>
@@ -131,13 +131,16 @@
                                                 <input type="text" id="surnameCompany" name="User.SurName" required>
 
                                                 <label for="email-register">Email</label>
-                                                <input type="email" id="email-registerCompany" name="Company.Email" required>
+                                                <input type="email" id="email-registerCompany" name="User.Email" required>
 
                                                 <label for="password-register">Password</label>
                                                 <input type="password" id="password-registerCompany" name="User.PasswordHash" required>
 
                                                 <label for="companyPhone">Phone Number</label>
-                                                <input type="text" id="companyPhone" name="Company.PhoneNumber">
+                                                <input type="text" id="companyPhone" name="User.PhoneNumber">
+
+                                                <label for="BirthDate">Birthdate:</label>
+                                                <input type="date" placeholder="Birthdate" name="BirthDate" required>
                                             </div>
 
                                             <div id="companyFields" style="flex: 1;">
@@ -149,10 +152,9 @@
                                                 <textarea id="companyDescription" name="Company.Description"></textarea>
 
                                                 <label for="companyAddress">Address</label>
-                                                <input type="text" id="companyAddress" name="Company.Address">
+                                                <input type="text" id="companyAddress" name="User.Address">
 
-                                                <label for="BirthDate">Birthdate:</label>
-                                                <input type="date" placeholder="Birthdate" name="BirthDate" required>
+                                                
 
 
                                                 <label for="taxIDNumber">Tax ID Number</label>
@@ -173,6 +175,7 @@
                                         <div class="button-container" style=" width: 100%; display: flex; justify-content: center; margin-top: 20px; ">
                                             <button type="submit" class="btn-register" style="width:200px;">SIGN UP</button>
                                         </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -205,10 +208,10 @@
                     const registercontainerCompany = document.getElementById('registercontainerCompany');
                     
                     if (dataTab === 'login') {
-                        loginpart.style.height = '75vh';
+                        loginpart.style.height = `${currentHeight + 20}px`;
                         logincontainer.style.width = '400px';
                     } else {
-                        loginpart.style.height = '50vh';
+                        loginpart.style.height = `${currentHeight + 20}px`;
                         logincontainer.style.width = '400px';
                     }
 
@@ -263,7 +266,7 @@
                         registercontainerIndividual.style.display = 'block';
                         registercontainerCompany.style.display = 'none';
                         loginpart.style.height = '111vh';
-                        logincontainer.style.width = '800px';
+                        loginpart.style.height = `${currentHeight + 20}px`;
                         individualFields.style.display = 'flex';
                         individualFields.style.flexDirection = 'column';
                         registerfields.style.display = 'flex';
@@ -271,7 +274,7 @@
                     } else if (this.value === 'company') {
                         registercontainerIndividual.style.display = 'none';
                         registercontainerCompany.style.display = 'block';
-                        loginpart.style.height = '168vh';
+                        loginpart.style.height = `${currentHeight + 20}px`;
                         logincontainer.style.width = '800px';
                         companyFields.style.display = 'flex';
                         companyFields.style.flexDirection = 'column';
@@ -329,7 +332,8 @@
             display: flex;
             /*justify-content: center;*/
             align-items: center;
-            height: 75vh;
+            height: auto;
+            padding-bottom: 20px;
             border-radius: 10px;
             flex-direction: column;
             position: relative;

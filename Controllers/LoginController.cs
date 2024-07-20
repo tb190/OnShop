@@ -8,7 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace OnShop.Controllers
 {
@@ -33,7 +35,7 @@ namespace OnShop.Controllers
         {
             try
             {
-                _userDbFunctions.RegisterIndividual(viewModel.User);
+                _userDbFunctions.RegisterIndividual(viewModel.User,"User");
 
 
                 return RedirectToAction("Login");
@@ -47,11 +49,11 @@ namespace OnShop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterCompany(LoginViewModel viewModel)
+        public async Task<IActionResult> RegisterCompany(IFormFile companyLogo, IFormFile companyBanner, LoginViewModel viewModel)
         {
             try
             {
-
+                _userDbFunctions.RegisterCompany(companyLogo, companyBanner, viewModel.Company, viewModel.User);
 
 
                 return RedirectToAction("Login");
@@ -76,7 +78,12 @@ namespace OnShop.Controllers
                 bool isValidUser = await _userDbFunctions.ValidateUserCredentials(email, password);
 
                 if (isValidUser)
-                {                  
+                {
+                    // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);  bununla alýcaksýn diger yerlerde
+                    int userId = await _userDbFunctions.GetUserIdByEmail(email);
+
+                    HttpContext.Session.SetInt32("UserId", userId);
+
                     return RedirectToAction("GuestHome", "Guest");// Kullanýcý doðrulandý, baþarýlý bir þekilde yönlendirme
                 }
                 else
