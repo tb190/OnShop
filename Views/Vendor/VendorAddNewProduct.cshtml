@@ -22,6 +22,7 @@
         <h3 style="font-size:15px;">Add New Product</h3>
         <form asp-controller="Vendor" asp-action="AddNewProduct" method="post" enctype="multipart/form-data">
 
+            <!-- ProductName -->
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -30,7 +31,7 @@
                         <span asp-validation-for="ProductName" class="text-danger"></span>
                     </div>
                 </div>
-
+                <!-- Category -->
                 <div class="col-md-6">
                     <div class="form-group">
                         <label style="font-size:12px;">Select or Enter Category</label>
@@ -52,6 +53,7 @@
                 </div>
             </div>
 
+            <!-- Description -->
             <div class="form-group">
                 <label asp-for="Description" style="font-size:12px;"></label>
                 <textarea name="Description" asp-for="Description" class="form-control" required></textarea>
@@ -60,7 +62,7 @@
 
 
 
-
+            <!-- Price -->
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -69,7 +71,7 @@
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
-
+                <!-- Stock -->
                 <div class="col-md-6">
                     <div class="form-group">
                         <label style="font-size:12px;" asp-for="Stock">Stock</label>
@@ -79,6 +81,7 @@
                 </div>
             </div>
 
+            <!-- Status -->
             <div class="form-group">
                 <label style="font-size:12px;" asp-for="Status"></label>
                 <select asp-for="Status" name="Status" class="form-control" required>
@@ -94,7 +97,7 @@
                 <span asp-validation-for="Photos" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary" >Save</button>
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 

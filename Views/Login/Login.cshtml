@@ -1,0 +1,487 @@
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/OnShop.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="container" >
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Guest" asp-action="GuestHome" style="font-size: 1.55rem; color: #29353c; font-family: 'Montserrat', cursive;">OnShop</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+
+        <div class="login-part row" id="login-part">
+            <div class="header-text">
+                <h2 class="hello">Hello,</h2>
+                <h2 class=" text-muted" style="font-size: 1rem;">Log in to OnShop or create an account.</h2>
+            </div>
+
+
+            <div class="login-container" id="login-container">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="login">Login</button>
+                    <button class="tab-button" data-tab="register">Sign Up</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- LOGIN PART -->
+                    <div id="login" class="tab-pane active">
+                        <form>
+
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+
+                            <!--label for="password">Password</!--label>
+    <div class="input-container">
+        <input id="password" class="input-field" type="password">
+        <div class="eye-button">
+            <span id="togglePassword" class="toggle-password">
+                <i class="fa fa-eye-slash"></i>
+            </span>
+        </div>
+    </div-->
+
+                            <label for="password-register">Password</label>
+                            <input type="password" id="password-register" required>
+
+
+                            <a href="#" class="forgot-password">I forgot my password</a>
+
+                            <button type="submit" class="btn-login">LOGIN</button>
+
+                        </form>
+                    </div>
+
+                    <!-- REGISTER PART -->
+                    <div id="register" class="tab-pane">
+                        <form>
+                            <div id="register-container">
+                                <div id="register-fields">
+                                    <label for="email-register">Email</label>
+                                    <input type="email" id="email-register" required>
+
+                                    <label for="password-register">Password</label>
+                                    <input type="password" id="password-register" required>
+
+                                    <!--p class="password-hint">Þifreniz en az 10 karakter olmalý. 1 büyük harf, 1 küçük harf ve rakam içermelidir.</p-->
+                                    <!-- New Section for Registration Type -->
+                                    <label>Registration Type</label>
+                                    <div class="registration-type-options">
+                                        <label><input type="radio" name="registrationType" value="individual"> Individual</label>
+                                        <label><input type="radio" name="registrationType" value="company"> Company</label>
+                                    </div>
+                                </div>
+                                <!-- Individual fields -->
+                                <div id="individualFields" value="individual" class="registration-fields">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name">
+
+                                    <label for="surname">Surname</label>
+                                    <input type="text" id="surname">
+
+                                    <label for="address">Address</label>
+                                    <input type="text" id="address">
+
+                                    <label for="age">Age</label>
+                                    <input type="number" id="age">
+
+                                    <label for="phone">Phone Number</label>
+                                    <input type="text" id="phone">
+                                </div>
+
+                                <!-- Company fields -->
+                                <div id="companyFields" value="company" class="registration-fields" style="display: none;">
+                                    <label for="companyName">Company Name</label>
+                                    <input type="text" id="companyName">
+
+                                    <label for="companyDescription">Description</label>
+                                    <textarea id="companyDescription"></textarea>
+
+                                    <label for="companyAddress">Address</label>
+                                    <input type="text" id="companyAddress">
+
+                                    <label for="companyPhone">Phone Number</label>
+                                    <input type="text" id="companyPhone">
+
+                                    <label for="taxIDNumber">Tax ID Number</label>
+                                    <input type="text" id="taxIDNumber">
+
+                                    <label for="IBAN">IBAN</label>
+                                    <input type="text" id="IBAN" placeholder="TR00000000000000000000000000" maxlength="26" required>
+
+                                    <label for="companyLogo">Company Logo</label>
+                                    <input type="file" id="companyLogo" accept="image/*" onchange="previewImage('companyLogo', 'logoPreview')">
+                                    <img id="logoPreview" class="preview-image" src="" alt="Logo Preview" style="display: none;">
+
+                                    <label for="companyBanner">Company Banner</label>
+                                    <input type="file" id="companyBanner" accept="image/*" onchange="previewImage('companyBanner', 'bannerPreview')">
+                                    <img id="bannerPreview" class="preview-image" src="" alt="Banner Preview" style="display: none;">
+
+                                </div>
+                            </div>
+                            <!--div class="captcha">
+        <label><input type="checkbox" required>I am not a Robot!</label>
+    </div-->
+
+                            <button type="submit" class="btn-register">Sign Up</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script>
+
+            /* ----------------- Login VEYA Singup ----------------- */
+            document.addEventListener('DOMContentLoaded', function () {
+                const tabButtons = document.querySelectorAll('.tab-button');
+                const tabPanes = document.querySelectorAll('.tab-pane');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        tabPanes.forEach(pane => pane.classList.remove('active'));
+
+                        button.classList.add('active');
+                        document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+                    });
+                });
+            });
+
+            /* ----------------- Password Open or Closed ----------------- */
+            document.addEventListener('DOMContentLoaded', function () {
+                const togglePassword = document.getElementById('togglePassword');
+                const password = document.getElementById('password');
+
+
+                const togglePasswordRegister = document.getElementById('togglePasswordRegister');
+                const passwordRegister = document.getElementById('password-register');
+
+                togglePassword.addEventListener('click', function () {
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+
+                togglePasswordRegister.addEventListener('click', function () {
+                    const type = passwordRegister.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordRegister.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            });
+
+            /* ----------------- Registration Type Switch ----------------- */
+            // Handle Registration Type Change
+            document.addEventListener('DOMContentLoaded', function () {
+                const registrationTypeRadios = document.querySelectorAll('input[name="registrationType"]');
+                const individualFields = document.getElementById('individualFields');
+                const companyFields = document.getElementById('companyFields');
+                const loginpart = document.getElementById('login-part');
+                const logincontainer = document.getElementById('login-container');       
+                const register = document.getElementById('register');
+                const registerfields = document.getElementById('register-fields');
+                const registercontainer = document.getElementById('register-container');
+
+                registrationTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', function () {                      
+                        if (this.value === 'individual') {
+                            individualFields.style.display = 'block';
+                            companyFields.style.display = 'none';
+                            loginpart.style.height = '150vh';
+                            logincontainer.style.width = '800px';
+                            registercontainer.style.display = 'grid';
+                            registercontainer.style.gridTemplateColumns = '1fr 1fr';
+                            individualFields.style.display = 'flex';
+                            individualFields.style.flexDirection = 'column';
+                            registerfields.style.display = 'flex';
+                            registerfields.style.flexDirection = 'column';
+                        } else if (this.value === 'company') {
+                            individualFields.style.display = 'none';
+                            companyFields.style.display = 'block';
+                            loginpart.style.height = '200vh';
+                            logincontainer.style.width = '800px';
+                            registercontainer.style.display = 'grid';
+                            registercontainer.style.gridTemplateColumns = '1fr 1fr';
+                            companyFields.style.display = 'flex';
+                            companyFields.style.flexDirection = 'column';
+                            registerfields.style.display = 'flex';
+                            registerfields.style.flexDirection = 'column';
+                        }
+                    });
+                });
+
+                // Initialize fields visibility based on the default selected option
+                const checkedRadio = document.querySelector('input[name="registrationType"]:checked');
+                if (checkedRadio) {
+                    if (checkedRadio.value === 'individual') {
+                        individualFields.style.display = 'block';
+                        companyFields.style.display = 'none';
+                    } else if (checkedRadio.value === 'company') {
+                        individualFields.style.display = 'none';
+                        companyFields.style.display = 'block';
+                    }
+                }
+            });
+
+            // Function to preview uploaded images
+            function previewImage(inputId, previewId) {
+                const file = document.getElementById(inputId).files[0];
+                const preview = document.getElementById(previewId);
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                }
+            }
+
+        </script>
+
+
+
+        <style>
+            .navbar {
+                border-bottom: 1px solid #29353c;
+                margin-bottom: 20px;
+            }
+
+            .login-part {
+                background: linear-gradient(270.43deg, rgba(239, 236, 233, 0.5) 0%, rgba(239, 239, 233, 0.5) 100%);
+                display: flex;
+                /*justify-content: center;*/
+                align-items: center;
+                height: 80vh;
+                border-radius: 10px;
+                flex-direction: column;
+                position: relative;
+            }
+
+            .header-text {
+                text-align: center;
+                margin-bottom: 20px;
+                margin-top: 25px;
+            }
+
+                .header-text h2 {
+                    margin: 0;
+                    font-size: 1.2rem;
+                    font-weight: normal;
+                }
+
+
+
+            .login-container {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                padding: 20px;
+                width: 400px;
+            }
+
+            .input-container {
+                position: relative;
+                display: flex;
+                align-items: center; /* Center items vertically */              
+            }
+
+            #register-fields {
+                display: flex;
+                flex-direction: column;
+                max-width: 500px; /* Optional: Set a max width */
+                margin: 0 auto; /* Optional: Center the form */
+            }
+
+
+            /* Styles for the input field */
+            .input-field {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+                width: 100%;
+                height: 100%;
+                box-sizing: border-box; 
+            }
+
+            /* Styles for the toggle button */
+            .toggle-password {
+                cursor: pointer;
+                position: absolute;
+                top: 40%; /* Adjust as needed */
+                right: 10px; /* Adjust as needed */
+          
+                border: none;
+                background: none;
+                width: 24px;
+                height: 24px;
+                z-index: 1; /* Ensure it stays above the input field */
+            }
+
+                /* Icon styles */
+                .toggle-password i {
+                    font-size: 18px; /* Adjust as needed */
+                    color: #666; /* Adjust as needed */
+                }
+
+
+
+            .tabs {
+                display: flex;
+                justify-content: space-around;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .tab-button {
+                background: none;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-size: 16px;
+                color: #333;
+                transition: color 0.3s;
+            }
+
+                .tab-button.active {
+                    color: #008DDA;
+                    border-bottom: 2px solid #008DDA;
+                }
+
+            .tab-content {
+                margin-top: 20px;
+            }
+
+            .tab-pane {
+                display: none;
+            }
+
+                .tab-pane.active {
+                    display: block;
+                }
+
+            form {
+                display: flex;
+                flex-direction: column;
+            }
+
+            label {
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            input[type="email"],
+            input[type="password"] {
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .forgot-password {
+                color: #008DDA;
+                text-align: right;
+                margin-bottom: 20px;
+            }
+
+            .btn-login,
+            .btn-register {
+                background: linear-gradient(to right, #29353c, #4b5861);
+                color: #fff;
+                border: none;
+                padding: 10px 0;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+                .btn-login:hover,
+                .btn-register:hover {
+                    background-color: #4b5861;
+                }
+
+            .password-hint {
+                font-size: 12px;
+                color: #888;
+                margin-bottom: 15px;
+            }
+
+
+            /* Styles for gender options */
+            .registration-type-options {
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 10px;
+            }
+
+                .registration-type-options label {
+                    margin-bottom: 5px; 
+                }
+
+            /* Ensure consistent styling */
+            input[type="radio"] {
+                margin-right: 5px; 
+                margin-top: px;
+            }
+
+
+            .registration-fields {
+                display: none;
+                margin-top: 10px;
+            }
+
+                .registration-fields input,
+                .registration-fields textarea {
+                    width: 100%;
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    box-sizing: border-box; /* Ensure padding and border are included in width */
+                }
+
+
+            /* Add styles for preview images */
+            .preview-image {
+                max-width: 150px; /* Set maximum width */
+                max-height: 150px; /* Set maximum height */
+                object-fit: cover; /* Maintain aspect ratio */
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                margin-top: 10px;
+                display: block;
+            }
+
+        </style>
+
+</body>
+</html>

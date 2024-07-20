@@ -21,10 +21,19 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Search Button -->
+                <div class="container mb-2 col-md-6" style="margin-top:20px; margin-left: 210px;">
+                    <form class="d-flex ">
+                        <input class="form-control me-2 no-outline" type="search" placeholder="Search for Product..." aria-label="Search">
+                        <button class="btn btn-outline-secondary" type="submit"><i class="las la-search"></i></button>
+                    </form>
+                </div>
+
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorHome">
+                            <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Login">
                                 <span class="fa-regular fa-user"></span>
                                 <span class="nav-text">Login</span>
                             </a>
@@ -168,6 +177,10 @@
 
 
     <style>
+        .no-outline:focus {
+            outline: none; /* Mavi outline'u kaldır */
+            box-shadow: none; /* Box shadow'u kaldır */
+        }
         .navbar {
             background-color: #fff;
         }

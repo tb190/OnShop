@@ -12,6 +12,9 @@ namespace OnShop.Models
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string LogoUrl { get; set; }
+        public string BannerUrl { get; set; }
+        public string taxIDNumber { get; set; }
+        public string IBAN { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
