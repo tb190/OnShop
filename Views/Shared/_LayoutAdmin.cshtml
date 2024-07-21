@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,30 +25,17 @@
                 <div class="sidebar-main mt-2">
                     <ul class="nav flex-column">
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorHome" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorHome">
+                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminHome">
                                 <span class="las la-chalkboard"></span>
                                 <span class="nav-text">DashBoard</span>
                             </a>
                         </li>
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorCustomers" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorCustomers">
-                                <span class="las la-users"></span>
-                                <span class="nav-text">Customers</span>
+                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminCompanies">
+                                <span class="las la-briefcase"></span>
+                                <span class="nav-text">Companies</span>
                             </a>
-                        </li>
-                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && (ViewContext.RouteData.Values["Action"].ToString() == "VendorProducts" || ViewContext.RouteData.Values["Action"].ToString() == "VendorAddNewProduct") ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorProducts" asp-route-page="1">
-                                <span class="las la-shopping-bag"></span>
-                                <span class="nav-text">Products</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorInvertory" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorInvertory">
-                                <span class="las la-shopping-cart"></span>
-                                <span class="nav-text">Orders</span>
-                            </a>
-                        </li>
+                        </li>              
                     </ul>
                 </div>
 
@@ -84,7 +71,8 @@
     <style>
         .sidebar {
             max-width: 200px;
-            background-color: linear-gradient(to right, #29353c, #4b5861);
+            background: linear-gradient(to right, #29353c, #4b5861);
+            /*background-color: #29353c;*/
             padding-top: 20px;
         }
 
@@ -117,22 +105,22 @@
                 padding-right: 1rem;
             }
 
-        .nav-link .nav-text {
-            font-family: 'Montserrat';
-        }
+            .nav-link .nav-text {
+                font-family: 'Montserrat';
+            }
 
         .nav-item.active {
             background: #ffffff;
             border-radius: 30px 0px 0px 30px;
         }
 
-        .nav-item.active .nav-text {
-            color: #000;
-        }
+            .nav-item.active .nav-text {
+                color: #000;
+            }
 
-        .nav-item.active .las {
-            color: #000;
-        }
+            .nav-item.active .las {
+                color: #000;
+            }
 
         .nav-link:hover {
             color: #cdbcab;
@@ -201,9 +189,9 @@
             border-radius: 3px;
         }
 
-        .sidebar-main::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+            .sidebar-main::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
     </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -18,6 +18,14 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Casper\Desktop\OnShop
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/Casper/Desktop/OnShop/Views/Admin/AdminCompanies.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5Db21wYW5pZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Casper/Desktop/OnShop/Views/Admin/AdminHome.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5Ib21lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Casper/Desktop/OnShop/Views/Guest/GuestHome.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3Vlc3RcR3Vlc3RIb21lLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -36,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Casper/Desktop/OnShop/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Casper/Desktop/OnShop/Views/Shared/_LayoutAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZG1pbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Casper/Desktop/OnShop/Views/Shared/_LayoutGuest.cshtml]

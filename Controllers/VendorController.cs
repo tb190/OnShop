@@ -52,6 +52,7 @@ namespace OnShop.Controllers
             int totalProducts = productsQuery.Count();
             var paginatedProducts = productsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
+            ViewBag.CurrentFilter = statusFilter;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
             ViewBag.SearchString = searchString; // Pass searchString to keep it in the input field

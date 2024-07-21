@@ -157,31 +157,48 @@ namespace OnShop
 
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task<bool> ValidateUserCredentials(string email, string password)
+        public async Task<string> ValidateUserCredentials(string email, string password)
         {
             try
             {
                 string hashedPassword = HashPassword(password);
-
-                string query = "SELECT PasswordHash FROM Users WHERE Email = @Email";
+                await connection.OpenAsync();
+                string query = @"
+                        SELECT Users.PasswordHash, Users.Role, Companies.IsValidatedByAdmin
+                        FROM Users
+                        LEFT JOIN Companies ON Users.Email = Companies.Email
+                        WHERE Users.Email = @Email";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Email", email);
 
-                    connection.Open();
-                    var result = command.ExecuteScalar(); // SQL sorgusunun sonucunda dönen ilk satýrýn ilk sütunundaki deðeri döndürür.
-                    connection.Close();
-
-                    if (result != null)
+                    
+                    using (var reader = command.ExecuteReader())
                     {
+                        if (reader.Read())
+                        {
+                            string storedHash = reader["PasswordHash"].ToString();
+                            string role = reader["Role"].ToString();
+                            bool? isValidatedByAdmin = reader["IsValidatedByAdmin"] as bool?;
 
-                        string storedHash = result.ToString();
-                        return storedHash.Equals(hashedPassword);
+                            
+                            if (storedHash.Equals(hashedPassword))
+                            {                              
+                                if (role == "Vendor" && (isValidatedByAdmin == false))
+                                {                                   
+                                    connection.Close();
+                                    return "Your account has not been validated by the admin.";
+                                }
+                                connection.Close();
+                                return "User validated successfully.";
+                            }
+                        }
+                        
                     }
-
-                    return false;
                 }
+                connection.Close();
+                return "Invalid email or password.";
             }
             catch (Exception ex)
             {

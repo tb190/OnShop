@@ -77,9 +77,9 @@ namespace OnShop.Controllers
                 string email = Request.Form["email"];
                 string password = Request.Form["password"];
 
-                bool isValidUser = await _userDbFunctions.ValidateUserCredentials(email, password);
+                string validationResult = await _userDbFunctions.ValidateUserCredentials(email, password);
 
-                if (isValidUser)
+                if (validationResult == "User validated successfully.")
                 {
                     // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);  bununla alýcaksýn diger yerlerde
                     int userId = await _userDbFunctions.GetUserIdByEmail(email);
@@ -90,7 +90,7 @@ namespace OnShop.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Invalid email or password.";// Kullanýcý doðrulanamadý, hata mesajý
+                    TempData["ErrorMessage"] = validationResult;// Kullanýcý doðrulanamadý, hata mesajý
                     return RedirectToAction("Login");
                 }
             }
