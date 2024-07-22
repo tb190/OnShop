@@ -99,5 +99,39 @@ namespace OnShop
 
             return companiesWithUsers;
         }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> ToggleCompanyValidationAsync(int companyId)
+        {
+            try
+            {
+                string query = @"
+                   UPDATE Companies
+                    SET isValidatedbyAdmin = CASE 
+                        WHEN isValidatedbyAdmin = 1 THEN 0
+                        ELSE 1
+                    END
+                    WHERE companyId = @companyId";
+
+                
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@companyId", companyId);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                    connection.Close();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while toggling the validation status.", ex);
+            }
+        }
+
     }
 }

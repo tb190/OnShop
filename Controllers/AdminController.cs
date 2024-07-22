@@ -30,6 +30,7 @@ namespace OnShop.Controllers
             return View();
         }
 
+        // -----------------------------------------------------------------------------------------------------------------------------
         public async Task<IActionResult> AdminCompanies(int page = 1, string searchString = "", string validationFilter = "")
         {
             try
@@ -74,6 +75,7 @@ namespace OnShop.Controllers
                 ViewBag.CurrentPage = page;
                 ViewBag.TotalPages = (int)Math.Ceiling((double)totalcompaniesWithUsers / pageSize);
                 ViewBag.SearchString = searchString; // Pass searchString to keep it in the input field
+                ViewBag.AllCompanies = companiesWithUsers;
 
 
                 return View(paginatedcompaniesWithUsers);
@@ -82,6 +84,21 @@ namespace OnShop.Controllers
             {
                 TempData["ErrorMessage"] = "Failed to retrieve companies: " + ex.Message;
                 return View(new List<LoginViewModel>()); // Hata durumunda boþ bir liste gönder
+            }
+        }
+
+        // -----------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> AdminToggleValidation(int companyId, int page, string searchString, string validationFilter)
+        {
+            try
+            {
+                bool isToogle = await _adminDbFunctions.ToggleCompanyValidationAsync(companyId);
+                return RedirectToAction("AdminCompanies", new { page, searchString, validationFilter });            
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to toggle validation status: " + ex.Message;
+                return RedirectToAction("AdminCompanies", new { page, searchString, validationFilter });
             }
         }
     }

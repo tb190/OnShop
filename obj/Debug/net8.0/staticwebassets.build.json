@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "1VyJ8MCbaEOKYeY9IoxEKMITsbYZvGaV5yglV0rYx2s=",
+  "Hash": "5L1gaPDW6BRNaBq55cBcV588ARS8YAp8bf5ZoLVxw8k=",
   "Source": "OnShop",
   "BasePath": "_content/OnShop",
   "Mode": "Default",
@@ -16,44 +16,6 @@
     }
   ],
   "Assets": [
-    {
-      "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\bundle\\OnShop.styles.css",
-      "SourceId": "OnShop",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
-      "BasePath": "_content/OnShop",
-      "RelativePath": "OnShop.styles.css",
-      "AssetKind": "All",
-      "AssetMode": "CurrentProject",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ApplicationBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\bundle\\OnShop.styles.css"
-    },
-    {
-      "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OnShop.bundle.scp.css",
-      "SourceId": "OnShop",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
-      "BasePath": "_content/OnShop",
-      "RelativePath": "OnShop.bundle.scp.css",
-      "AssetKind": "All",
-      "AssetMode": "Reference",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ProjectBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OnShop.bundle.scp.css"
-    },
     {
       "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\css\\site.css",
       "SourceId": "OnShop",

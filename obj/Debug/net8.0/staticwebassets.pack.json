@@ -1,10 +1,6 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OnShop.bundle.scp.css",
-      "PackagePath": "staticwebassets\\OnShop.bundle.scp.css"
-    },
-    {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\1be99c6c-0641-4472-b567-9a41af07078a.jpg",
       "PackagePath": "staticwebassets\\Pictures\\Category1\\1be99c6c-0641-4472-b567-9a41af07078a.jpg"
     },

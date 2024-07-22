@@ -1,7 +1,7 @@
-@model OnShop.Models.GuestHomeViewModel
+﻿@model OnShop.Models.ProductViewModel
 @{
-    ViewData["Title"] = "Guest Home";
-    Layout = "~/Views/Shared/_LayoutGuest.cshtml";
+    ViewData["Title"] = "User Home";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
 <!DOCTYPE html>
@@ -40,11 +40,11 @@
                         </div>
 
                         <div class="styles-module_slider__o0fqa" id="product-slider">
-                            @for (int index = 0; index < Model.MostClickedProducts.Count; index++)
+                            @for (int index = 0; index < Model.GuestHomeView.MostClickedProducts.Count; index++)
                                     {
-                                        var product = Model.MostClickedProducts[index];
+                                        var product = Model.GuestHomeView.MostClickedProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="Guest" asp-action="GuestProductDetails"  asp-route-companyId = "@product.ProductId">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="p-card-img" src="@product.Photos.FirstOrDefault()">
                                         <div class="product-stamps">
@@ -52,13 +52,13 @@
                                                         {
                                             <div class="stamp-box-wrapper enhanced">
                                                 <!--div class="stamp fc">
-                                                <div class="inner">
-                                                    <i class="i-my-orders"></i><span>KARGO BEDAVA</span>
-                                                </div>
-                                            </div-->
+                                                    <div class="inner">
+                                                        <i class="i-my-orders"></i><span>KARGO BEDAVA</span>
+                                                    </div>
+                                                </div-->
                                             </div>
                                                         }
-                                            @if (index < 3 && Model.MostClickedProducts.Contains(product))
+                                            @if (index < 3 && Model.GuestHomeView.MostClickedProducts.Contains(product))
                                                         {
                                             <div class="pr-rc-top-ranking-badge">
                                                 <img alt="en iyi s�ralama rozeti" src="https://cdn.dsmcdn.com/web/production/category-top-ranking-icon.svg" width="8" height="12">
@@ -145,9 +145,9 @@
                         </div>
 
                         <div class="styles-module_slider__o0fqa" id="product-slider">
-                            @for (int index = 0; index < Model.MostClickedProducts.Count; index++)
+                            @for (int index = 0; index < Model.GuestHomeView.MostClickedProducts.Count; index++)
                              {
-                                 var product = Model.MostClickedProducts[index];
+                                 var product = Model.GuestHomeView.MostClickedProducts[index];
                             <div class="widget-product" title="@product.ProductName">
                                 <a href="/products/details/@product.ProductId">
                                     <div class="image-container">
@@ -157,13 +157,13 @@
                                                  {
                                             <div class="stamp-box-wrapper enhanced">
                                                 <!--div class="stamp fc">
-                                                <div class="inner">
-                                                    <i class="i-my-orders"></i><span>KARGO BEDAVA</span>
-                                                </div>
-                                            </div-->
+                                                    <div class="inner">
+                                                        <i class="i-my-orders"></i><span>KARGO BEDAVA</span>
+                                                    </div>
+                                                </div-->
                                             </div>
                                                  }
-                                            @if (index < 3 && Model.MostClickedProducts.Contains(product))
+                                            @if (index < 3 && Model.GuestHomeView.MostClickedProducts.Contains(product))
                                                  {
                                             <div class="pr-rc-top-ranking-badge">
                                                 <img alt="en iyi s�ralama rozeti" src="https://cdn.dsmcdn.com/web/production/category-top-ranking-icon.svg" width="8" height="12">
@@ -261,7 +261,7 @@
         });
 
 
-   </script>
+    </script>
     <style>
 
         /* Tüm bağlantılar (anchor) için genel bir stil */
@@ -290,96 +290,95 @@
             border: 0px;
             background-size: cover;
             box-shadow: none;
-            
         }
 
         .widget-gw-widget {
             height: 440px;
         }
 
-        /* Widget Header */
-        .widget-gw-widget .widget-header {
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            height: auto;
-            border: 0;
-            align-items: center;
-            width: 100%;
-            padding: 0 20px 16px !important;
-        }
+            /* Widget Header */
+            .widget-gw-widget .widget-header {
+                box-sizing: border-box;
+                display: flex;
+                justify-content: space-between;
+                height: auto;
+                border: 0;
+                align-items: center;
+                width: 100%;
+                padding: 0 20px 16px !important;
+            }
 
-            .widget-gw-widget .widget-header span {
-                line-height: 26px;
-                font-size: 12px;
+                .widget-gw-widget .widget-header span {
+                    line-height: 26px;
+                    font-size: 12px;
+                    color: #333;
+                    background: transparent;
+                    padding-right: 12px;
+                    text-decoration: none;
+                    font-family: 'source_sans_prosemibold', sans-serif;
+                }
+
+            .widget-gw-widget .widget-header-navigation {
+                margin-left: auto;
+                display: flex;
                 color: #333;
                 background: transparent;
-                padding-right: 12px;
-                text-decoration: none;
-                font-family: 'source_sans_prosemibold', sans-serif;
             }
 
-        .widget-gw-widget .widget-header-navigation {
-            margin-left: auto;
-            display: flex;
-            color: #333;
-            background: transparent;
-        }
+                .widget-gw-widget .widget-header-navigation a {
+                    text-decoration: none !important;
+                    font-family: 'source_sans_prosemibold', sans-serif;
+                    color: #333;
+                    font-size: 16px;
+                    line-height: 20px;
+                    display: flex;
+                    align-items: normal;
+                }
 
-            .widget-gw-widget .widget-header-navigation a {
-                text-decoration: none !important;
-                font-family: 'source_sans_prosemibold', sans-serif;
-                color: #333;
-                font-size: 16px;
-                line-height: 20px;
-                display: flex;
-                align-items: normal;
+                .widget-gw-widget .widget-header-navigation i {
+                    margin-top: 2px;
+                    margin-left: 6px;
+                }
+
+            /* Product Container */
+            .widget-gw-widget .product-slider {
+                position: relative;
+                min-height: 100px;
+                max-height: 440px;
+                margin-bottom: 20px;
+                overflow: hidden;
             }
 
-            .widget-gw-widget .widget-header-navigation i {
-                margin-top: 2px;
-                margin-left: 6px;
-            }
+                .widget-gw-widget .product-slider div[data-arrow][data-arrow="right"] button {
+                    background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-right.png);
+                    background-position-x: 14px;
+                    margin-right: 4px;
+                }
 
-        /* Product Container */
-        .widget-gw-widget .product-slider {
-            position: relative;
-            min-height: 100px;
-            max-height: 440px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-            .widget-gw-widget .product-slider div[data-arrow][data-arrow="right"] button {
-                background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-right.png);
-                background-position-x: 14px;
-                margin-right: 4px;
-            }
-
-            .widget-gw-widget .product-slider div[data-arrow][data-arrow="left"] button {
-                background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-left.png);
-                background-position-x: 14px;
-                margin-left:4px;
-            }
+                .widget-gw-widget .product-slider div[data-arrow][data-arrow="left"] button {
+                    background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-left.png);
+                    background-position-x: 14px;
+                    margin-left: 4px;
+                }
 
 
-            .widget-gw-widget .product-slider button {
-                width: 42px;
-                height: 42px;
-                border-radius: 25px;
-                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
-                border: solid 1px #e6e6e6;
-                box-sizing: border-box;
-                background-color: #ffffff;
-                position: absolute;
-                top: 50%;
-                margin-top: -21px;
-                cursor: pointer;
-                transition: all 400ms;
-                background-position: center;
-                background-repeat: no-repeat;
-                background-size: 10px 17px;
-            }
+                .widget-gw-widget .product-slider button {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 25px;
+                    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+                    border: solid 1px #e6e6e6;
+                    box-sizing: border-box;
+                    background-color: #ffffff;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -21px;
+                    cursor: pointer;
+                    transition: all 400ms;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 10px 17px;
+                }
 
         .arrow-button {
             display: inline-block;
@@ -387,6 +386,7 @@
             border: none;
             cursor: pointer;
         }
+
         .arrow-container {
             position: absolute;
             top: 50%;
@@ -444,7 +444,7 @@
             cursor: pointer;
             overflow: hidden;
             box-sizing: border-box;
-            width: 200px !important; 
+            width: 200px !important;
             height: 340px !important;
             border-radius: 8px !important;
             box-shadow: none !important;

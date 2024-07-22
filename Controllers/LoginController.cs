@@ -77,7 +77,10 @@ namespace OnShop.Controllers
                 string email = Request.Form["email"];
                 string password = Request.Form["password"];
 
-                string validationResult = await _userDbFunctions.ValidateUserCredentials(email, password);
+                var result = await _userDbFunctions.ValidateUserCredentials(email, password);
+                string validationResult = result.Message;
+                string role = result.Role;
+
 
                 if (validationResult == "User validated successfully.")
                 {
@@ -86,7 +89,9 @@ namespace OnShop.Controllers
 
                     HttpContext.Session.SetInt32("UserId", userId);
 
-                    return RedirectToAction("GuestHome", "Guest");// Kullanýcý doðrulandý, baþarýlý bir þekilde yönlendirme
+                    if(role=="Vendor") return RedirectToAction("VendorHome", "Vendor");
+                    else if(role=="Admin") return RedirectToAction("AdminHome", "Admin");
+                    return RedirectToAction("UserHome", "User");// Kullanýcý doðrulandý, baþarýlý bir þekilde yönlendirme
                 }
                 else
                 {
@@ -100,6 +105,26 @@ namespace OnShop.Controllers
                 return RedirectToAction("Login");
             }
         }
+
+
+        public async Task<IActionResult> LogOut()
+        {
+            try
+            {
+                // Kullanýcý oturumunu sonlandýr
+                HttpContext.Session.Remove("UserId");
+                // Kullanýcýyý giriþ sayfasýna yönlendir
+                return RedirectToAction("GuestHome", "Guest");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to log out: " + ex.Message;
+                return RedirectToAction("AdminHome", "Admin");
+            }
+        }
+
+
+
     }
 
 

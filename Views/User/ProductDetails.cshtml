@@ -1,0 +1,850 @@
+@model OnShop.Models.ProductViewModel
+@{
+    ViewData["Title"] = "User Product";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/OnShop.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="row" style="overflow-y:auto;">
+
+        <div class="col-md-3">
+            <div class="photosLeftSide">
+
+                <div style="width: 280px; height: 410px; overflow: hidden; ">
+
+                    <div id="carouselId" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            @if (Model.Product.Photos != null)
+                        {
+                            for (int i = 0; i < Model.Product.Photos.Count; i++)
+                            {
+                            <li data-bs-target="#carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+                            }
+                        }
+                        </ol>
+                        <div class="carousel-inner">
+                            @if (Model.Product.Photos != null)
+                        {
+                            for (int i = 0; i < Model.Product.Photos.Count; i++)
+                            {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img class="carousel-img d-block w-100" src="@Model.Product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style=" border-radius: 5px; border: 1.5px solid #f2f2eb;">
+                            </div>
+                            }
+                        }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="main-content col-md-9">
+            <div class="product-header">
+                <div class="product-name-wrapper" style="text-decoration:none;">
+                    <span class="brand">@Model.Product.ProductName</span>
+                    @{
+                                    var description = @Model.Product.Description;
+                                    var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                    }
+
+                    <span class="name">@firstSentence</span>
+                </div>
+
+                <div class="product-details col" style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <div class="above-part" style="display: flex; flex-direction: row; gap: 20px;">
+
+                        <div class="above-left-part" style="display: flex; flex-direction: row; flex: 1;">
+                            <div class="product-rating" style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <span class="rating" style="display: flex; align-items: center;">
+                                    @for (int i = 0; i < 5; i++)
+                                {
+                                    if (i < Model.Product.Rating)
+                                    {
+                                    <i class="las la-star" style="color: gold; font-size: 14px; margin-right: 2px;"></i>
+                                    }
+                                    else
+                                    {
+                                    <i class="las la-star" style="color: #ccc; font-size: 14px; margin-right: 2px;"></i>
+                                    }
+                                }
+                                </span>
+                                <span style="margin-left: 5px; display: flex; align-items: center;">@Model.Product.Rating <i style="color: #e6e6e6; margin-left: 5px;"> | </i></span>
+                            </div>
+
+                            <div class="product-reviews" style="display: flex; align-items: center; margin-bottom: 10px; margin-left: 5px; ">
+                                <span style="display: flex; align-items: center;">@Model.Product.ProductReviews.Count <i class="las la-comment-dots" style="margin-left: 5px; font-size: 14px;"></i> <i style="color:#e6e6e6; margin-left: 5px;"> | </i></span>
+                            </div>
+
+                            <div class="product-favorites" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <span class="favorites" style="display: flex; align-items: center;">
+                                    <i class="las la-heart" style="color: red; font-size: 14px; margin-right: 5px;"></i> @Model.Product.Favorites : Person favorited!
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="above-right-part" style="display: flex; flex-direction: column; flex: 1; align-items: flex-end;">
+                            <form asp-area="" asp-controller="Login" asp-action="RegisterIndividual" method="post" enctype="multipart/form-data" style="width: 100%;">
+                                <div class="button-container" style="display: flex; justify-content: flex-end;">
+                                    <button class="btn-addToCard" type="button" style="width: 100px; max-width: 300px;">Add to Cart</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="product-price">
+                        <span>@Model.Product.Price.ToString("C")</span>
+                    </div>
+
+
+                    <div class="below-part" style="display: flex; flex-direction: column; gap: 10px;">
+
+
+                        <div class="product-description-wrapper">
+                            @{
+                                var description_ = @Model.Product.Description;
+                                var sentences_ = description_.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                            }
+                            <div class="product-description">
+                                <ul style="list-style-type: disc; padding-left: 20px;">
+                                    @foreach (var sentence_ in sentences_)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(sentence_))
+                                        {
+                                    <li>@sentence_.Trim()</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="reviews-container">
+            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;">Product Reviews</h1>
+            @if (Model.ProductReviews == null || !Model.ProductReviews.Any())
+            {
+            <p>No reviews available.</p>
+            }
+            else{
+                foreach (var review in Model.ProductReviews)
+                {
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="review-rating">
+                        @for (int i = 0; i < 5; i++)
+                                {
+                        <i class="las la-star" style="color: @(i < review.Rating ? "gold" : "#ccc"); font-size: 18px;"></i>
+                                }
+                    </span>
+                    <span class="review-date">@review.CreatedAt.ToString("MMMM d, yyyy")</span>
+                </div>
+                <div class="review-body">
+                    @review.Review
+                </div>
+            </div>
+                }
+            }
+
+        </div>
+
+
+
+       
+
+
+        <div class="component-list component-small-list" style="overflow-x:auto">
+            <article class="component-item widget-width">
+                <div class="widget-container extended-container">
+                    <div class="widget-gw-widget">
+                        <div>
+                            <div class="widget-header">
+                                <h4 style="font-size:20px;">Other Products</h4>
+                                <div class="widget-header-navigation">
+                                    <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                        <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                            <div class="arrow-container" data-arrow="left">
+                                <button class="arrow-button" id="prevBtn">
+                                </button>
+                            </div>
+
+                            <div class="styles-module_slider__o0fqa" id="product-slider">
+                                @for (int index = 0; index < Model.OtherProducts.Count; index++)
+                                    {
+                                        var product = Model.OtherProducts[index];
+                                <div class="widget-product" title="@product.ProductName">
+                                    <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                        <div class="image-container">
+                                            <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        </div>
+                                        <div class="product-details">
+                                            <div class="product-info-area">
+                                                <div class="product-name-wrapper" style="text-decoration:none;">
+                                                    <span class="brand">@product.ProductName</span>
+                                                    @{
+                                                                    var description = @product.Description;
+                                                                    var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                                                    }
+
+                                                    <span class="name">@firstSentence</span>
+                                                </div>
+                                                <div class="ratings-container">
+                                                    <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                    <div class="ratings">
+                                                        <span class="rating">
+                                                            @for (int i = 0; i < 5; i++)
+                                                                        {
+                                                                            if (i < product.Rating)
+                                                                            {
+                                                            <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                            <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                                                            }
+                                                                        }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="price-container">
+                                                    <div class="prices">
+                                                        <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="badges"></div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="fvrt-btn-wrppr">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </div>
+                                    <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                                </div>
+                                    }
+                            </div>
+                            <div class="arrow-container" data-arrow="right">
+                                <button class="arrow-button" id="nextBtn">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+
+
+    </div>
+
+    <script>
+
+        // --------------------------------- Carousel ---------------------------------
+        $(document).ready(function () {
+            $('.carousel').carousel({
+                interval: false // Otomatik dönmeyi devre dışı bırak
+            });
+        });
+
+        // --------------------------------- Slider ---------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.querySelector('.styles-module_slider__o0fqa'); // Slider'ı seçin
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            const updateButtons = () => {
+                const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+                const scrollLeft = slider.scrollLeft;
+
+                prevBtn.style.display = scrollLeft > 0 ? 'block' : 'none';
+                nextBtn.style.display = scrollLeft < maxScrollLeft ? 'block' : 'none';
+            };
+
+            prevBtn.addEventListener('click', () => {
+                slider.scrollBy({ left: -200, behavior: 'smooth' });
+                setTimeout(updateButtons, 300);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                slider.scrollBy({ left: 200, behavior: 'smooth' });
+                setTimeout(updateButtons, 300);
+            });
+
+            // İlk yükleme ve scroll sırasında butonları güncelleyin
+            updateButtons();
+            slider.addEventListener('scroll', updateButtons);
+        });
+
+    </script>
+
+    <style>
+
+        /* Ürün Başlığı */
+        .product-header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .product-name-wrapper {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+            .product-name-wrapper .brand {
+                color: #333; /* Markanın rengini ayarlamak için */
+            }
+
+            .product-name-wrapper .name {
+                display: block;
+                margin-top: 5px;
+                color: #555;
+                font-size: 1rem;
+            }
+
+        /* Ürün Detayları */
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .above-part {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .above-left-part, .above-right-part {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Ürün Puanı */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .product-rating .rating i {
+                color: gold;
+            }
+
+
+        /* Ürün Yorumları */
+        .product-reviews, .product-favorites {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .product-reviews i, .product-favorites i {
+                font-size: 14px;
+            }
+
+        /* Ürün Fiyatı */
+        .product-price {
+            padding-bottom: 10px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        /* Ürün Açıklaması */
+        .product-description-wrapper {
+            padding-top: 0px;
+            padding-bottom: 10px;
+        }
+
+        .product-description ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .product-description li {
+            margin-bottom: 5px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        /* Sepete Ekle Butonu */
+        .btn-addToCard {
+            background: linear-gradient(to right, #8f8f8f, #9b8f8f);
+            color: #fff;
+            border: none;
+            padding: 10px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-login:hover,
+            .btn-register:hover {
+                background-color: #4b5861;
+            }
+
+        .reviews-container {
+            max-width: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 0.4px solid #eeeeee;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .review-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .review-item:last-child {
+                border-bottom: none;
+            }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .review-rating {
+            font-size: 18px;
+        }
+
+            .review-rating i {
+                margin-right: 3px;
+            }
+
+        .review-date {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .review-body {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+
+
+
+        /* ------------------------------- article için ------------------------------ */
+        a {
+            text-decoration: none;
+        }
+
+        .component-list.component-small-list {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+            .component-list.component-small-list .component-item {
+                width: 100%;
+                box-sizing: border-box;
+                /*height: fit-content;*/
+                height: 440px;
+                background: linear-gradient(270.43deg, #f6f5f5 0%,#e6e6e6 100%);
+                border-radius: 7px;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border: 0.4px solid #eeeeee;
+                overflow-y: hidden;
+            }
+
+
+        .component-list .widget-container:not(.no-padding).extended-container {
+            padding: 20px 0px 0px 0px;
+            border-radius: 8px;
+            border: 0px;
+            background-size: cover;
+            box-shadow: none;
+        }
+
+        .widget-gw-widget {
+            height: 440px;
+        }
+
+            /* Widget Header */
+            .widget-gw-widget .widget-header {
+                box-sizing: border-box;
+                display: flex;
+                justify-content: space-between;
+                height: auto;
+                border: 0;
+                align-items: center;
+                width: 100%;
+                padding: 0 20px 16px !important;
+            }
+
+                .widget-gw-widget .widget-header span {
+                    line-height: 26px;
+                    font-size: 12px;
+                    color: #333;
+                    background: transparent;
+                    padding-right: 12px;
+                    text-decoration: none;
+                    font-family: 'source_sans_prosemibold', sans-serif;
+                }
+
+            .widget-gw-widget .widget-header-navigation {
+                margin-left: auto;
+                display: flex;
+                color: #333;
+                background: transparent;
+            }
+
+                .widget-gw-widget .widget-header-navigation a {
+                    text-decoration: none !important;
+                    font-family: 'source_sans_prosemibold', sans-serif;
+                    color: #333;
+                    font-size: 16px;
+                    line-height: 20px;
+                    display: flex;
+                    align-items: normal;
+                }
+
+                .widget-gw-widget .widget-header-navigation i {
+                    margin-top: 2px;
+                    margin-left: 6px;
+                }
+
+            /* Product Container */
+            .widget-gw-widget .product-slider {
+                position: relative;
+                min-height: 100px;
+                max-height: 440px;
+                margin-bottom: 20px;
+                overflow: hidden;
+            }
+
+                .widget-gw-widget .product-slider div[data-arrow][data-arrow="right"] button {
+                    background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-right.png);
+                    background-position-x: 14px;
+                    margin-right: 4px;
+                }
+
+                .widget-gw-widget .product-slider div[data-arrow][data-arrow="left"] button {
+                    background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-left.png);
+                    background-position-x: 14px;
+                    margin-left: 4px;
+                }
+
+
+                .widget-gw-widget .product-slider button {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 25px;
+                    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+                    border: solid 1px #e6e6e6;
+                    box-sizing: border-box;
+                    background-color: #ffffff;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -21px;
+                    cursor: pointer;
+                    transition: all 400ms;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 10px 17px;
+                }
+
+        .arrow-button {
+            display: inline-block;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .arrow-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+            .arrow-container[data-arrow="left"] {
+                left: 10px;
+            }
+
+            .arrow-container[data-arrow="right"] {
+                right: 10px;
+            }
+
+        /* Sağda ve ortada konumlandırma */
+        .component-list .widget-container:not(.no-padding).extended-container {
+            position: relative; /* Relative konumlandırma, butonun konumunu ayarlamak için */
+        }
+
+            .component-list .widget-container:not(.no-padding).extended-container div[data-arrow="right"] {
+                position: absolute;
+                right: 50px; /* Sağdan uzaklığı ayarlayın */
+                top: 50%; /* Yatayda ortalamak için */
+                transform: translateY(-50%); /* Dikeyde tam ortalamak için */
+                z-index: 9;
+            }
+
+
+            /* Optional: Prevent wrapping */
+            .component-list .widget-container:not(.no-padding).extended-container [class^="styles-module_slider_"] {
+                padding: 0px 20px 0px 20px;
+            }
+
+        .styles-module_slider__o0fqa {
+            min-height: 340px;
+            height: 340px;
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin: 0 auto;
+            padding: 0 10px;
+            gap: 16px;
+        }
+
+        .component-list .widget-container:not(.no-padding).extended-container .widget-product {
+            margin: 1px 16px 1px 1px;
+        }
+
+        .widget-product {
+            margin: 0 0 20px 0 !important;
+            transition: box-shadow 0.2s linear;
+            cursor: pointer;
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 200px !important;
+            height: 340px !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            flex: 0 0 auto;
+            background-color: #fff;
+        }
+
+            .widget-product:hover {
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+
+        /* Image Container */
+        .widget-gw-widget .widget-product .image-container {
+            overflow: hidden;
+            position: relative;
+            height: 60%;
+            margin-bottom: 10px;
+        }
+
+        .component-list .widget-container:not(.no-padding) .widget-product .image-container .p-card-img {
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
+            object-fit: contain;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .widget-gw-widget .widget-product .product-stamps {
+            display: flex;
+            flex-direction: column;
+            left: 0;
+            top: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+
+            .widget-gw-widget .widget-product .product-stamps .custom-stamp-box-wrapper {
+                position: relative;
+                height: 100%;
+            }
+
+
+
+        .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(270.43deg, #29353c 0%, #3c5759 100%);
+            position: absolute;
+            width: 100% !important;
+            height: 20px;
+            bottom: 0;
+        }
+
+        fieldset, img {
+            border: 0;
+            vertical-align: middle;
+        }
+
+        .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge .top-ranking-text {
+            color: #ffffff;
+            margin-left: 5px;
+            font-size: 11px;
+            font-family: source_sans_proregular, sans-serif;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Description */
+        .product-info-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            margin-left: 10px;
+        }
+
+        .product-name-wrapper {
+            flex: 1;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .widget-gw-widget .widget-product .product-info-area .brand {
+            font-weight: bold;
+            font-size: 15px;
+            color: #29353c;
+        }
+
+
+        .widget-gw-widget .product-slider .product-info-area .name {
+            font-size: 12px;
+            color: #333;
+            margin: 2px 0;
+            white-space: normal;
+            overflow: visible;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+
+
+
+        /* Ratings */
+        .widget-gw-widget .product-slider .product-info-area .ratings-container {
+            display: flex;
+            min-height: 15px;
+            align-items: center;
+            margin-top: 2px;
+            text-decoration: none;
+        }
+
+            .widget-gw-widget .product-slider .product-info-area .ratings-container .ratings-score {
+                font-family: source_sans_proregular, sans-serif;
+                font-size: 15px;
+                font-weight: 400;
+                line-height: 15px;
+                padding: 0 2px 0 0;
+                text-decoration: none;
+                color: #333;
+            }
+
+        /* Price */
+
+        .widget-gw-widget .widget-product .description .price-container {
+            display: flex;
+            align-items: center;
+            height: 20px;
+            color: #333;
+        }
+
+            .widget-gw-widget .widget-product .description .price-container .prices {
+                display: flex;
+                align-items: center;
+                height: 20px;
+                line-height: 20px;
+                color: #333;
+            }
+
+        .widget-gw-widget .widget-product .description div.price-box {
+            color: #333;
+            font-weight: 600;
+        }
+
+
+
+        /* Favorite Button */
+        .fvrt-btn-wrppr {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .fa-regular {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 27px;
+            height: 27px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
+            border: solid 1px #f0f0f0;
+            background: #ffffff;
+            box-sizing: border-box;
+            border-radius: 100%;
+            font-size: 14px;
+        }
+
+            .fa-regular:hover {
+                color: #73a1b2; /* Favori butonu �zerine gelindi�inde renk */
+            }
+    </style>
+
+</body >
+</html >

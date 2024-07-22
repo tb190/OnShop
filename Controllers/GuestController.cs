@@ -23,15 +23,15 @@ namespace OnShop.Controllers
             _guestDbFunctions = new GuestDbFunctions();
         }
 
-        public IActionResult GuestHome()
+        public async Task<IActionResult> GuestHome()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
 
 
             // Veritabanýndan kategorileri çek
-            var categories = _guestDbFunctions.GuestGetCategoriesWithTypes();
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
 
-            List<ProductModel> products = _guestDbFunctions.GuestGetProducts();
+            List<ProductModel> products = await _guestDbFunctions.GuestGetProducts();
 
             var sortedProducts = products.OrderByDescending(p => p.Clicked).ToList();
 

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap">
 </head>
-<body style="overflow: hidden;">
+<body >
     <div class="container-fluid">
         <div class="row flex-nowrap">
 
@@ -31,7 +31,7 @@
                             </a>
                         </li>
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorCustomers" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminCompanies">
+                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminCompanies" asp-route-page="1" asp-route-statusFilter="validated" asp-route-searchString="">
                                 <span class="las la-briefcase"></span>
                                 <span class="nav-text">Companies</span>
                             </a>
@@ -53,7 +53,7 @@
 
                     <!-- Logout Button -->
                     <div class="logout-button">
-                        <a asp-area="" asp-controller="Vendor" asp-action="VendorHome" class="btn">
+                        <a asp-area="" asp-controller="Login" asp-action="LogOut" class="btn">
                             <span class="las la-sign-out-alt" style="color:#ffffff; fill:none; font-size:1.5rem "></span>
                         </a>
                     </div>
@@ -71,7 +71,7 @@
     <style>
         .sidebar {
             max-width: 200px;
-            background: linear-gradient(to right, #29353c, #4b5861);
+            background: linear-gradient(to right, #610c27, #72383d);
             /*background-color: #29353c;*/
             padding-top: 20px;
         }

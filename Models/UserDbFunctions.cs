@@ -157,7 +157,7 @@ namespace OnShop
 
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task<string> ValidateUserCredentials(string email, string password)
+        public async Task<(string Message, string Role)> ValidateUserCredentials(string email, string password)
         {
             try
             {
@@ -188,17 +188,17 @@ namespace OnShop
                                 if (role == "Vendor" && (isValidatedByAdmin == false))
                                 {                                   
                                     connection.Close();
-                                    return "Your account has not been validated by the admin.";
+                                    return ("Your account has not been validated by the admin.",role);
                                 }
                                 connection.Close();
-                                return "User validated successfully.";
+                                return ("User validated successfully.",role);
                             }
                         }
                         
                     }
                 }
                 connection.Close();
-                return "Invalid email or password.";
+                return ("Invalid email or password.","empty");
             }
             catch (Exception ex)
             {
@@ -239,7 +239,7 @@ namespace OnShop
             }
         }
         // --------------------------------------------------------------------------------------------------------------------------
-        public string HashPassword(string password)
+        private string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
             {
@@ -251,6 +251,261 @@ namespace OnShop
                 }
                 return builder.ToString();
             }
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<ProductViewModel> GuestGetProductDetails(int productId)
+        {
+            ProductModel product = null;
+            CompanyModel company = null;
+            UserModel user = null;
+            List<ProductReviewModel> reviews = null;
+
+            int CompanyId;
+            int UserId;
+
+            try
+            {
+
+                //  Product detaylarý için query 
+                await connection.OpenAsync();
+
+                string query = @"
+                SELECT 
+                    ProductId,
+                    Rating,
+                    Favorites,
+                    CompanyID,
+                    Stock,
+                    Clicked,
+                    Price,
+                    ProductName,
+                    Description,
+                    Category,
+                    Status,
+                    CreatedAt
+                FROM Products
+                WHERE ProductId = @ProductId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            product = new ProductModel
+                            {
+                                ProductId = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                Rating = reader.GetInt32(reader.GetOrdinal("Rating")),
+                                Favorites = reader.GetInt32(reader.GetOrdinal("Favorites")),
+                                CompanyID = reader.GetInt32(reader.GetOrdinal("CompanyID")),
+                                Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
+                                Clicked = reader.GetInt32(reader.GetOrdinal("Clicked")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                ProductName = reader.GetString(reader.GetOrdinal("ProductName")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Category = reader.GetString(reader.GetOrdinal("Category")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                ProductReviewsID = new List<int>(), // Separate query needed
+                                ProductReviews = new List<string>(), // Separate query needed
+                                Photos = new List<string>() // Separate query needed
+                            };  
+                        }
+                    }
+                }
+                
+                CompanyId = product.CompanyID;
+
+                           
+                if (product == null)
+                {
+                    Console.WriteLine("Product is null");
+                    throw new NullReferenceException("Product not found");
+                    
+                }
+
+
+                //  Company detaylarý için query 
+                string query1 = @"
+                SELECT CompanyId, Score, UserId, CompanyName, ContactName, Description, 
+                      Address, PhoneNumber, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin, CreatedAt, BirthDate
+                        FROM Companies where CompanyId = @CompanyId";
+
+                       
+                using (SqlCommand command = new SqlCommand(query1, connection))
+                {
+        
+                    command.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {                      
+                        if (await reader.ReadAsync())
+                        {
+                            company = new CompanyModel
+                            {
+                                CompanyId = reader.GetInt32(reader.GetOrdinal("CompanyId")),
+                                Score = reader.GetInt32(reader.GetOrdinal("Score")),
+                                UserID = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                CompanyName = reader.GetString(reader.GetOrdinal("CompanyName")),
+                                ContactName = reader.GetString(reader.GetOrdinal("ContactName")),
+                                CompanyDescription = reader.GetString(reader.GetOrdinal("Description")),
+                                CompanyAddress = reader.GetString(reader.GetOrdinal("Address")),
+                                CompanyPhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                LogoUrl = reader.GetString(reader.GetOrdinal("LogoUrl")),
+                                BannerUrl = reader.GetString(reader.GetOrdinal("BannerUrl")),
+                                taxIDNumber = reader.GetString(reader.GetOrdinal("TaxIDNumber")),
+                                IBAN = reader.GetString(reader.GetOrdinal("IBAN")),
+                                isValidatedbyAdmin = reader.GetBoolean(reader.GetOrdinal("IsValidatedByAdmin")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                BirthDate = reader.GetDateTime(reader.GetOrdinal("BirthDate"))
+                            };
+                        }
+                    }                
+                }
+
+                
+                UserId = company.UserID;
+
+             
+                if (company == null)
+                {
+                    Console.WriteLine("Company is null");
+                    throw new NullReferenceException("Company not found");
+                    
+                }
+
+
+                //  User detaylarý için query 
+                
+                query = @"
+                SELECT UserId,UserName, UserSurName, PasswordHash, Email, Role, Address, PhoneNumber, Age, BirthDate , CreatedAt
+                       FROM Users where Users.UserId = @UserId";
+
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", UserId);
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            user = new UserModel
+                            {
+                                UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                Name = reader.GetString(reader.GetOrdinal("UserName")),
+                                SurName = reader.GetString(reader.GetOrdinal("UserSurName")),
+                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                Role = reader.GetString(reader.GetOrdinal("Role")),
+                                Address = reader.GetString(reader.GetOrdinal("Address")),
+                                PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                Age = reader.GetInt32(reader.GetOrdinal("Age")),
+                                BirthDate = reader.GetDateTime(reader.GetOrdinal("BirthDate")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                            };
+
+                        }
+                    }
+
+                }
+
+               
+                if (user == null)
+                {
+                    Console.WriteLine("User is null");
+                    throw new NullReferenceException("User not found");
+                    
+                }
+
+
+
+                // Product Reviews için
+                reviews = new List<ProductReviewModel>();
+                
+                query = @"
+                    SELECT ReviewId, ProductId,  CompanyId, Rating, Review, CreatedAt
+                    FROM Reviews
+                    WHERE ProductId = @ProductId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            reviews.Add(new ProductReviewModel
+                            {
+                                ReviewId = reader.GetInt32(0),
+                                ProductId = reader.GetInt32(1),
+                                CompanyId = reader.GetInt32(2),
+                                Rating = reader.GetInt32(3),
+                                Review = reader.GetString(4),
+                                CreatedAt = reader.GetDateTime(5)
+                            });
+                        }
+                    }
+                }
+                product.ProductReviewsID = reviews.Select(r => r.ReviewId).ToList();
+                product.ProductReviews = reviews.Select(r => r.Review).ToList();
+               
+                if (reviews == null)
+                {
+                    throw new NullReferenceException("Reviews not found");
+                    Console.WriteLine("Reviews is null");
+                }
+
+                // Product Photos için
+                
+                query = @"
+                    SELECT PhotoURL
+                    FROM Photos
+                    WHERE ProductId = @ProductId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            product.Photos.Add(reader.GetString(reader.GetOrdinal("PhotoURL")));
+                        }
+                    }
+                }
+                await connection.CloseAsync();
+
+                if (product.Photos == null)
+                {
+                    throw new NullReferenceException("Photos not found");
+                }
+
+
+                if (product == null) Console.WriteLine("Product is null");
+                if (company == null) Console.WriteLine("Company is null");
+                if (user == null) Console.WriteLine("User is null");
+                if (product.Photos == null) Console.WriteLine("Photos is null");
+
+                ProductViewModel productViewModel = new ProductViewModel
+                {
+                    Company = company,
+                    User = user,
+                    Product = product,
+                    ProductReviews = reviews
+                };
+
+                return productViewModel;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.Message);
+                connection.Close();
+                throw;
+            } 
         }
 
 

@@ -25,7 +25,7 @@ namespace OnShop
 
         // --------------------------------------------------------------------------------------------------------------------------
         // Get Categories from the Database
-        public List<CategoryModel> GuestGetCategoriesWithTypes()
+        public async Task<List<CategoryModel>> GuestGetCategoriesWithTypes()
         {
             List<CategoryModel> categories = new List<CategoryModel>();
 
@@ -83,7 +83,7 @@ namespace OnShop
         }
 
         // Get the Product with specified id from the Database
-        public ProductModel GuestGetProductById(int productId)
+        public async Task<ProductModel> GuestGetProductById(int productId)
         {
             ProductModel product = null;
 
@@ -150,7 +150,7 @@ namespace OnShop
         }
 
         // Get all the Product from the Database
-        public List<ProductModel> GuestGetProducts()
+        public async Task<List<ProductModel>> GuestGetProducts()
         {
             List<ProductModel> products = new List<ProductModel>();
 

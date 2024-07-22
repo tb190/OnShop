@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap">
 </head>
-<body style="overflow: hidden;">
+<body >
     <div class="container-fluid">
         <div class="row flex-nowrap">
 
@@ -66,7 +66,7 @@
 
                     <!-- Logout Button -->
                     <div class="logout-button">
-                        <a asp-area="" asp-controller="Vendor" asp-action="VendorHome" class="btn">
+                        <a asp-area="" asp-controller="Login" asp-action="LogOut" class="btn">
                             <span class="las la-sign-out-alt" style="color:#ffffff; fill:none; font-size:1.5rem "></span>
                         </a>
                     </div>
@@ -84,7 +84,7 @@
     <style>
         .sidebar {
             max-width: 200px;
-            background-color: linear-gradient(to right, #29353c, #4b5861);
+            background: linear-gradient(to right, #29353c, #4b5861);
             padding-top: 20px;
         }
 
