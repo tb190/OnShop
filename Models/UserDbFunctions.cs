@@ -17,10 +17,11 @@ namespace OnShop
     public class UserDbFunctions
     {
         private SqlConnection connection;
+        string connection_String;
 
         public UserDbFunctions()
         {
-            string connection_String = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Casper\Documents\OnShopDB.mdf;Integrated Security=True;Connect Timeout=30";
+            connection_String = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Casper\Documents\OnShopDB.mdf;Integrated Security=True;Connect Timeout=30";
             connection = new SqlConnection(connection_String);
         }
 
@@ -43,14 +44,14 @@ namespace OnShop
                     command.Parameters.AddWithValue("@PhoneNumber", string.IsNullOrEmpty(user.PhoneNumber) ? string.Empty : user.PhoneNumber);
 
                     /*
-                    // Birthdate kontrolü
+                    // Birthdate kontrolï¿½
                     if (user.BirthDate < new DateTime(1753, 1, 1) || user.BirthDate > new DateTime(9999, 12, 31))
                     {
                         throw new ArgumentOutOfRangeException("BirthDate", "BirthDate must be between 1/1/1753 and 12/31/9999.");
                     }
                     command.Parameters.AddWithValue("@BirthDate", user.BirthDate);
 
-                    // Age hesaplamasý
+                    // Age hesaplamasï¿½
                     int age = DateTime.Today.Year - user.BirthDate.Year;
                     command.Parameters.AddWithValue("@Age", age);
 
@@ -255,7 +256,7 @@ namespace OnShop
 
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task<ProductViewModel> GuestGetProductDetails(int productId)
+        public async Task<ProductViewModel> UserGetProductDetails(int productId)
         {
             ProductModel product = null;
             CompanyModel company = null;
@@ -268,8 +269,20 @@ namespace OnShop
             try
             {
 
-                //  Product detaylarý için query 
+                //  Product detaylarï¿½ iï¿½in query 
                 await connection.OpenAsync();
+
+                // Update Clicked field
+                string updateQuery = @"
+                UPDATE Products
+                SET Clicked = Clicked + 1
+                WHERE ProductId = @ProductId";
+
+                using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                {
+                    updateCommand.Parameters.AddWithValue("@ProductId", productId);
+                    updateCommand.ExecuteNonQuery();
+                }
 
                 string query = @"
                 SELECT 
@@ -328,7 +341,7 @@ namespace OnShop
                 }
 
 
-                //  Company detaylarý için query 
+                //  Company detaylarï¿½ iï¿½in query 
                 string query1 = @"
                 SELECT CompanyId, Score, UserId, CompanyName, ContactName, Description, 
                       Address, PhoneNumber, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin, CreatedAt, BirthDate
@@ -378,7 +391,7 @@ namespace OnShop
                 }
 
 
-                //  User detaylarý için query 
+                //  User detaylarï¿½ iï¿½in query 
                 
                 query = @"
                 SELECT UserId,UserName, UserSurName, PasswordHash, Email, Role, Address, PhoneNumber, Age, BirthDate , CreatedAt
@@ -422,7 +435,7 @@ namespace OnShop
 
 
 
-                // Product Reviews için
+                // Product Reviews iï¿½in
                 reviews = new List<ProductReviewModel>();
                 
                 query = @"
@@ -458,7 +471,7 @@ namespace OnShop
                     Console.WriteLine("Reviews is null");
                 }
 
-                // Product Photos için
+                // Product Photos iï¿½in
                 
                 query = @"
                     SELECT PhotoURL
@@ -508,6 +521,142 @@ namespace OnShop
             } 
         }
 
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> ProductAddToCartDb(int ProductId,int CompanyId,int? UserId)
+        {
+                var query = "INSERT INTO BasketProducts (UserId, ProductId, CompanyId) VALUES (@UserId, @ProductId, @CompanyId)";
+
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@UserId", UserId);
+                        command.Parameters.AddWithValue("@ProductId", ProductId);
+                        command.Parameters.AddWithValue("@CompanyId", CompanyId);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    connection.Close();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Error: " + ex.Message);
+                    connection.Close();
+                    return false;
+                }
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public int GetNumberOfProductInBasket(int? userId)
+        {
+            int productCount = 0;
+
+            string query = @"
+                SELECT COUNT(*)
+                FROM BasketProducts
+                WHERE UserId = @UserId";
+
+            try
+            {
+                connection.Open();
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+
+                    productCount = (int)command.ExecuteScalar();
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (if you have logging in place)
+                // Handle the exception if necessary
+                Debug.WriteLine("Error: " + ex.Message);
+                connection.Close();
+            }
+
+            return productCount;
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<List<ProductModel>> GetUserBasketProducts(int? userId)
+        {
+            var products = new List<ProductModel>(); 
+            var productIds = new List<int>();
+
+            try
+            {
+                connection.Open();
+                string queryProductIds = @"
+                    SELECT ProductId
+                    FROM BasketProducts
+                    WHERE UserId = @UserId";
+
+                using (SqlCommand cmd = new SqlCommand(queryProductIds, connection))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            productIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                for (int i = 0; i < productIds.Count; i++)
+                {
+                    string queryProducts = @"
+                    SELECT *
+                    FROM Products
+                    WHERE ProductId = @ProductId";
+
+
+                    using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@ProductId", productIds[i]);
+                        using (SqlDataReader detailsReader = cmd.ExecuteReader())
+                        {
+                            while (detailsReader.Read())
+                            {
+                                ProductModel product = new ProductModel
+                                {
+                                    ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId")),
+                                    Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating")),
+                                    Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites")),
+                                    CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID")),
+                                    Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock")),
+                                    Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price")),
+                                    ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName")),
+                                    Description = detailsReader.GetString(detailsReader.GetOrdinal("Description")),
+                                    Category = detailsReader.GetString(detailsReader.GetOrdinal("Category")),
+                                    Status = detailsReader.GetString(detailsReader.GetOrdinal("Status")),
+                                    CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt")),
+                                    Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked")),
+                                    Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"))
+                                };
+                                products.Add(product);
+                            }
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {              
+                Console.WriteLine("Error: " + ex.Message);
+                connection.Close();
+                throw;
+            }
+
+            return products;
+        }
 
     }
 }

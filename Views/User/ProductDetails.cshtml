@@ -95,9 +95,14 @@
                                 <span style="margin-left: 5px; display: flex; align-items: center;">@Model.Product.Rating <i style="color: #e6e6e6; margin-left: 5px;"> | </i></span>
                             </div>
 
-                            <div class="product-reviews" style="display: flex; align-items: center; margin-bottom: 10px; margin-left: 5px; ">
-                                <span style="display: flex; align-items: center;">@Model.Product.ProductReviews.Count <i class="las la-comment-dots" style="margin-left: 5px; font-size: 14px;"></i> <i style="color:#e6e6e6; margin-left: 5px;"> | </i></span>
+                            <div class="product-reviews" style="display: flex; align-items: center; margin-bottom: 10px; margin-left: 5px;">
+                                <span style="display: flex; align-items: center;" id="toggleReviews">
+                                    @Model.Product.ProductReviews.Count
+                                    <i class="las la-comment-dots" style="margin-left: 5px; font-size: 14px; cursor:pointer;"></i>
+                                    <i style="color:#e6e6e6; margin-left: 5px;"> | </i>
+                                </span>
                             </div>
+
 
                             <div class="product-favorites" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
                                 <span class="favorites" style="display: flex; align-items: center;">
@@ -107,11 +112,14 @@
                         </div>
 
                         <div class="above-right-part" style="display: flex; flex-direction: column; flex: 1; align-items: flex-end;">
-                            <form asp-area="" asp-controller="Login" asp-action="RegisterIndividual" method="post" enctype="multipart/form-data" style="width: 100%;">
+                            
+                            <form asp-area="" asp-controller="User" asp-action="ProductAddToCart" asp-method="post"  asp-route-ProductId="@Model.Product.ProductId" enctype="multipart/form-data" style="width: 100%;">
                                 <div class="button-container" style="display: flex; justify-content: flex-end;">
-                                    <button class="btn-addToCard" type="button" style="width: 100px; max-width: 300px;">Add to Cart</button>
+                                    <button class="btn-addToCard" type="button" style="width: 100px; max-width: 300px;" onclick="addToCart(@Model.Product.ProductId,@Model.Product.CompanyID)">Add to Cart</button>
                                 </div>
                             </form>
+
+
                         </div>
                     </div>
 
@@ -137,7 +145,7 @@
                                     {
                                         if (!string.IsNullOrWhiteSpace(sentence_))
                                         {
-                                    <li>@sentence_.Trim()</li>
+                                            <li>@sentence_.Trim()</li>
                                         }
                                     }
                                 </ul>
@@ -177,14 +185,42 @@
             </div>
                 }
             }
-
         </div>
 
 
+        <!-- Add Review Form -->
+        <div class="mt-4" style="border-top: 1px solid #e6e7e8;">
+    
+            <form method="post" action="@Url.Action("AddReview", "User")">
+                <input type="hidden" name="ProductId" value="@Model.Product.ProductId" />
+
+                <div class="form-group d-flex align-items-center" >
+                    <label for="rating" style="margin-right:10px;">Rating</label>
+                    <div class="rating">
+                        <input type="radio" id="star5" name="Rating" value="5" />
+                        <label for="star5" title="5 stars"></label>
+                        <input type="radio" id="star4" name="Rating" value="4" />
+                        <label for="star4" title="4 stars"></label>
+                        <input type="radio" id="star3" name="Rating" value="3" />
+                        <label for="star3" title="3 stars"></label>
+                        <input type="radio" id="star2" name="Rating" value="2" />
+                        <label for="star2" title="2 stars"></label>
+                        <input type="radio" id="star1" name="Rating" value="1" />
+                        <label for="star1" title="1 star"></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="review">Your Review</label>
+                    <textarea id="review" name="Review" class="form-control" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-primary search-button no-outline" style="margin-top:15px; border:1px solid black; color:black;">Submit Review</button>
+            </form>
+        </div>
 
        
 
-
+        <!-- Other Products -->
         <div class="component-list component-small-list" style="overflow-x:auto">
             <article class="component-item widget-width">
                 <div class="widget-container extended-container">
@@ -219,11 +255,11 @@
                                                 <div class="product-name-wrapper" style="text-decoration:none;">
                                                     <span class="brand">@product.ProductName</span>
                                                     @{
-                                                                    var description = @product.Description;
-                                                                    var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                                                                    var Description_ = @product.Description;
+                                                                    var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
                                                     }
 
-                                                    <span class="name">@firstSentence</span>
+                                                    <span class="name">@firstSentence_</span>
                                                 </div>
                                                 <div class="ratings-container">
                                                     <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
@@ -276,6 +312,26 @@
 
     <script>
 
+        // --------------------------------- Commands Scrool the Screen ---------------------------------
+        document.getElementById('toggleReviews').addEventListener('click', function () {
+            var reviewsContainer = document.querySelector('.reviews-container');
+            if (reviewsContainer.style.display === 'none' || reviewsContainer.style.display === '') {
+                reviewsContainer.style.display = 'block';
+                reviewsContainer.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                reviewsContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // --------------------------------- addToCart ---------------------------------
+        function addToCart(productId,companyId) {
+            $.ajax({
+                url: '@Url.Action("ProductAddToCart", "User")',
+                type: 'POST',
+                data: { productId: productId, CompanyId: companyId }
+                
+            });
+        }
         // --------------------------------- Carousel ---------------------------------
         $(document).ready(function () {
             $('.carousel').carousel({

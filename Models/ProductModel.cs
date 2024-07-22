@@ -8,6 +8,7 @@ namespace OnShop.Models
         public int CompanyID { get; set; }
         public int Stock { get; set; }
         public int Clicked { get; set; }
+        public int Sold { get; set; }
 
         public decimal Price { get; set; }
 

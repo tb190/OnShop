@@ -17,7 +17,7 @@
     <div class="All">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
-                <a class="navbar-brand  justify-content-flex-start" asp-area="" asp-controller="Guest" asp-action="GuestHome" style="font-size: 1.55rem; color: #29353c; font-family: 'Montserrat', cursive;">OnShop</a>
+                <a class="navbar-brand  justify-content-flex-start" asp-area="" asp-controller="User" asp-action="UserHome" style="font-size: 1.55rem; color: #29353c; font-family: 'Montserrat', cursive;">OnShop</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -36,9 +36,11 @@
                             <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Login">
                                 <span class="lar la-heart" style="font-size: 22px;"></span>
                             </a>
-                            <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Login">
+                            <a class="nav-link" asp-area="" asp-controller="User" asp-action="UserBasket" style="position: relative;">
                                 <span class="las la-shopping-cart" style="font-size: 22px;"></span>
+                                <span id="basketCount" class="badge badge-danger position-relative" style="display: none; top: -10px; right:1px; "></span>
                             </a>
+
                             <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Login">
                                 <span class="las la-user" style="font-size: 22px;"></span>
                             </a>
@@ -130,6 +132,18 @@
 
 
     <script>
+
+        $(document).ready(function () {
+            $.getJSON('@Url.Action("GetBasketCount", "User")', function (data) {
+                if (data > 0) {
+                    $('#basketCount').text(data).show();
+                } else {
+                    $('#basketCount').hide();
+                }
+            });
+        });
+
+
         $(document).ready(function () {
             // Hide all type lists initially
             $('.types-list').hide();
@@ -187,7 +201,14 @@
 
     <style>
 
-  
+        .badge {
+            font-size: 9px;
+            padding: 0.5em 0.65em;
+            border-radius: 50%;
+            color: #fff;
+            background-color: #dc3545; /* Red color */
+        }
+
         .no-outline:focus {
             outline: none; /* Mavi outline'u kaldır */
             box-shadow: none; /* Box shadow'u kaldır */
