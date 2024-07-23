@@ -18,16 +18,13 @@
 </head>
 <body>
     <div class="container mt-4">
-
         <div class="buy-part" style="flex-direction: row;">
-
             <!-- Toplam Fiyat -->
-            <div style="margin-left: 860px; ">
+            <div style="margin-left: 860px;">
                 <span style="font-size: 18px; font-weight: bold;">Total Price:</span>
                 <span style="font-size: 18px; font-weight: bold; margin-left: 10px;">@Model.TotalPrice.ToString("C")</span>
             </div>
-
-            <form asp-area="" asp-controller="User" asp-action="BuyProducts" asp-method="post" enctype="multipart/form-data" >
+            <form asp-area="" asp-controller="User" asp-action="BuyProducts" asp-method="post" enctype="multipart/form-data">
                 <div class="button-container" style="display: flex; justify-content: flex-end;">
                     <button class="btn btn-outline-secondary" type="button" style="width: 200px; max-width: 300px; margin-bottom:30px; margin-top:-35px;">Purchase Products</button>
                 </div>
@@ -37,32 +34,33 @@
         @foreach (var product in Model.BasketProducts)
         {
             var carouselId = "carousel" + product.ProductId; // Each product should have a unique ID
+            var quantityInputId = "quantityInput" + product.ProductId;
+            var hiddenQuantityId = "hiddenQuantity" + product.ProductId;
+            var formId = "quantityForm" + product.ProductId;
 
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card h-100 flex-row">
-
-
                     <div id="@carouselId" class="carousel slide" data-ride="carousel" style="width: 200px;">
                         <ol class="carousel-indicators">
                             @if (product.Photos != null)
-                            {
-                                for (int i = 0; i < product.Photos.Count; i++)
                                 {
+                                    for (int i = 0; i < product.Photos.Count; i++)
+                                    {
                             <li data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+                                    }
                                 }
-                            }
                         </ol>
                         <div class="carousel-inner">
                             @if (product.Photos != null)
-                            {
-                                for (int i = 0; i < product.Photos.Count; i++)
                                 {
+                                    for (int i = 0; i < product.Photos.Count; i++)
+                                    {
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img class="d-block w-100" src="@product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style="height: auto; object-fit: cover;">
+                                <img class="d-block w-100" src="@product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style="height: 280px; object-fit: cover;">
                             </div>
+                                    }
                                 }
-                            }
                         </div>
                         <a class="carousel-control-prev" href="#@carouselId" role="button" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -74,13 +72,11 @@
                         </a>
                     </div>
 
-
                     <div class="card-body" onclick="window.location.href='@Url.Action("ProductDetails", "User", new { ProductId = product.ProductId })'" style="cursor: pointer;">
                         <div class="details-container" style="display: flex; align-items: center;">
                             <div class="details" style="flex: 1;">
                                 <div class="d-flex justify-content-between">
                                     <h5 class="card-title">@product.ProductName</h5>
-
                                     <!-- Çöp Kutusu -->
                                     <a asp-area="" asp-controller="User" asp-action="RemoveProductFromBasket" asp-route-ProductId="@product.ProductId" asp-route-CompanyId="@product.CompanyID" class="btn btn-like no-outline" style="font-size: 21px; margin-left: 15px;" onclick="event.stopPropagation();">
                                         <i class="las la-trash-alt"></i>
@@ -89,8 +85,8 @@
 
                                 <p class="card-text">
                                     @{
-                                var description = @product.Description;
-                                var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                                            var description = @product.Description;
+                                            var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
                                     }
                                     <span class="name">@firstSentence</span>
                                 </p>
@@ -100,32 +96,141 @@
                                     <strong>Rating:</strong>
                                     <span class="rating">
                                         @for (int i = 0; i < 5; i++)
-                                    {
-                                        if (i < product.Rating)
-                                        {
-                                                        <i class="las la-star" style="color: gold; font-size: 14px;"></i>
-                                        }
-                                        else
-                                        {
-                                                        <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
-                                        }
-                                    }
+                                            {
+                                                if (i < product.Rating)
+                                                {
+                                        <i class="las la-star" style="color: gold; font-size: 14px;"></i>
+                                                }
+                                                else
+                                                {
+                                        <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
+                                                }
+                                            }
                                     </span>
                                     <span>@product.Rating</span>
                                 </p>
-                                <!-- Count bilgisi -->
-                                <p class="card-text"><strong>Count:</strong> @product.Count</p>
+
+                                <!-- Count bilgisi ve butonlar -->
+                                <div class="quantity-container" style="display: flex; align-items: center;">
+                                    <form asp-area="" asp-controller="User" asp-action="UpdateBasketProductQuantity" asp-method="post" id="@formId" style="display: none;">
+                                        <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                        <input type="hidden" name="CompanyId" value="@product.CompanyID" />
+                                        <input type="hidden" name="Quantity" id="@hiddenQuantityId" value="@product.Count" />
+                                    </form>
+
+                                    <p class="card-text" style="margin-right: 10px; margin-top: 10px;"><strong>Count:</strong></p>
+                                    <button type="button" class="quantity-btn" onclick="changeQuantity(-1, event, '@quantityInputId', '@hiddenQuantityId', '@formId')" style="margin-right:5px;">-</button>
+                                    <input class="quantityInput" type="number" id="@quantityInputId" value="@product.Count" min="1" style="width: 50px; text-align: center; cursor:pointer;" readonly />
+                                    <button type="button" class="quantity-btn" onclick="changeQuantity(1, event, '@quantityInputId', '@hiddenQuantityId', '@formId')" style="margin-left:5px;">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>
         }
+
+
+
+        <!-- Previously Added -->
+        <div class="component-list component-small-list" style="overflow-x:auto">
+            <article class="component-item widget-width">
+                <div class="widget-container extended-container">
+                    <div class="widget-gw-widget">
+                        <div>
+                            <div class="widget-header">
+                                <h4 style="font-size:20px; margin-top:-20px;">Previously Added</h4>
+                                <!--div class="widget-header-navigation">
+                                    <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                </div-->
+                            </div>
+                        </div>
+                        <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                        <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                            <div class="arrow-container" data-arrow="left">
+                                <button class="arrow-button" id="prevBtn">
+                                </button>
+                            </div>
+
+                            <div class="styles-module_slider__o0fqa" id="product-slider">
+                                @{
+                                    // Initialize count based on the number of deleted products
+                                    var count = 0;
+                                    if (Model.DeletedProducts.Count < 10)
+                                    {
+                                        count = Model.DeletedProducts.Count;
+                                    }
+                                    else
+                                    {
+                                        count = 10;
+                                    }
+                                }
+
+                                @for (int index = 0; index < count; index++)
+                                {
+                                 var product = Model.DeletedProducts[index];
+                                <div class="widget-product" title="@product.ProductName">
+                                    <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                        <div class="image-container">
+                                            <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        </div>
+                                        <div class="product-details">
+                                            <div class="product-info-area">
+                                                <div class="product-name-wrapper" style="text-decoration:none;">
+                                                    <span class="brand">@product.ProductName</span>
+                                                    @{
+                                                             var Description_ = @product.Description;
+                                                             var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                    }
+
+                                                    <span class="name">@firstSentence_</span>
+                                                </div>
+                                                <div class="ratings-container">
+                                                    <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                    <div class="ratings">
+                                                        <span class="rating">
+                                                            @for (int i = 0; i < 5; i++)
+                                                                 {
+                                                                     if (i < product.Rating)
+                                                                     {
+                                                            <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                                                     }
+                                                                     else
+                                                                     {
+                                                            <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                                                     }
+                                                                 }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="price-container">
+                                                    <div class="prices">
+                                                        <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="badges"></div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                                </div>
+                             }
+                            </div>
+                            <div class="arrow-container" data-arrow="right">
+                                <button class="arrow-button" id="nextBtn">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+
+
     </div>
 
     <style>
@@ -134,10 +239,10 @@
             color: #333;
         }
 
-        a:hover {
-            text-decoration: none;
-            color: #333;
-        }
+            a:hover {
+                text-decoration: none;
+                color: #333;
+            }
 
         .card {
             background-image: linear-gradient(to right bottom, #f6f6f8, #f7f7fa, #f8f8fb, #f9f9fd, #fafaff);
@@ -146,10 +251,6 @@
             transition: transform 0.2s ease-in-out;
             cursor: pointer; /* Add pointer cursor to indicate it's clickable */
         }
-            /*
-            .card:hover {
-                transform: scale(1.02);
-            }*/
 
             .card h5 {
                 font-size: 1.25rem;
@@ -174,7 +275,7 @@
 
         /* Satın Al Butonu */
         .Buy {
-            background-image: linear-gradient( 89.7deg, rgba(0,0,0,1) -10.7%, rgba(53,92,125,1) 88.8% );
+            background-image: linear-gradient(89.7deg, rgba(0,0,0,1) -10.7%, rgba(53,92,125,1) 88.8%);
             color: #fff;
             border: none;
             padding: 10px 0;
@@ -183,13 +284,421 @@
             transition: background-color 0.3s;
         }
 
-        .Buy:hover{
-            color: #fff;
+            .Buy:hover {
+                color: #fff;
+            }
+
+        /* quantity butonu */
+        .quantity-btn {
+            font-size: 20px;
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            cursor: pointer;
         }
 
+        .quantityInput {
+            outline: none;
+            border: 1px solid #ccc;
+        }
+
+            .quantityInput:hover {
+                outline: none;
+                border: 1px solid #ccc;
+            }
+
+        /* ------------------------------- article için ------------------------------ */
+        a {
+            text-decoration: none;
+        }
+
+        .component-list.component-small-list {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+            .component-list.component-small-list .component-item {
+                width: 100%;
+                box-sizing: border-box;
+                /*height: fit-content;*/
+                height: 440px;
+                background-image: linear-gradient(to right bottom, #f6f6f8, #f3f3f4, #f0f0f1, #ededed, #eaeaea);
+                border-radius: 7px;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border: 0.4px solid #eeeeee;
+                overflow-y: hidden;
+            }
+
+
+        .component-list .widget-container:not(.no-padding).extended-container {
+            padding: 20px 0px 0px 0px;
+            border-radius: 8px;
+            border: 0px;
+            background-size: cover;
+            box-shadow: none;
+        }
+
+        .widget-gw-widget {
+            height: 440px;
+        }
+
+            /* Widget Header */
+            .widget-gw-widget .widget-header {
+                box-sizing: border-box;
+                display: flex;
+                justify-content: space-between;
+                height: auto;
+                border: 0;
+                align-items: center;
+                width: 100%;
+                padding: 0 20px 16px !important;
+            }
+
+                .widget-gw-widget .widget-header span {
+                    line-height: 26px;
+                    font-size: 12px;
+                    color: #333;
+                    background: transparent;
+                    padding-right: 12px;
+                    text-decoration: none;
+                    font-family: 'source_sans_prosemibold', sans-serif;
+                }
+
+            .widget-gw-widget .widget-header-navigation {
+                margin-left: auto;
+                display: flex;
+                color: #333;
+                background: transparent;
+            }
+
+                .widget-gw-widget .widget-header-navigation a {
+                    text-decoration: none !important;
+                    font-family: 'source_sans_prosemibold', sans-serif;
+                    color: #333;
+                    font-size: 16px;
+                    line-height: 20px;
+                    display: flex;
+                    align-items: normal;
+                }
+
+                .widget-gw-widget .widget-header-navigation i {
+                    margin-top: 2px;
+                    margin-left: 6px;
+                }
+
+            /* Product Container */
+            .widget-gw-widget .product-slider {
+                position: relative;
+                min-height: 100px;
+                max-height: 440px;
+                margin-bottom: 20px;
+                overflow: hidden;
+            }
+
+                .widget-gw-widget .product-slider div[data-arrow][data-arrow="right"] button {
+                    background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-right.png);
+                    background-position-x: 14px;
+                    margin-right: 4px;
+                }
+
+                .widget-gw-widget .product-slider div[data-arrow][data-arrow="left"] button {
+                    background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-left.png);
+                    background-position-x: 14px;
+                    margin-left: 4px;
+                }
+
+
+                .widget-gw-widget .product-slider button {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 25px;
+                    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+                    border: solid 1px #e6e6e6;
+                    box-sizing: border-box;
+                    background-color: #ffffff;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -21px;
+                    cursor: pointer;
+                    transition: all 400ms;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 10px 17px;
+                }
+
+        .arrow-button {
+            display: inline-block;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .arrow-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+            .arrow-container[data-arrow="left"] {
+                left: 10px;
+            }
+
+            .arrow-container[data-arrow="right"] {
+                right: 10px;
+            }
+
+        /* Sağda ve ortada konumlandırma */
+        .component-list .widget-container:not(.no-padding).extended-container {
+            position: relative; /* Relative konumlandırma, butonun konumunu ayarlamak için */
+        }
+
+            .component-list .widget-container:not(.no-padding).extended-container div[data-arrow="right"] {
+                position: absolute;
+                right: 50px; /* Sağdan uzaklığı ayarlayın */
+                top: 50%; /* Yatayda ortalamak için */
+                transform: translateY(-50%); /* Dikeyde tam ortalamak için */
+                z-index: 9;
+            }
+
+
+            /* Optional: Prevent wrapping */
+            .component-list .widget-container:not(.no-padding).extended-container [class^="styles-module_slider_"] {
+                padding: 0px 20px 0px 20px;
+            }
+
+        .styles-module_slider__o0fqa {
+            min-height: 340px;
+            height: 340px;
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin: 0 auto;
+            padding: 0 10px;
+            gap: 16px;
+        }
+
+        .component-list .widget-container:not(.no-padding).extended-container .widget-product {
+            margin: 1px 16px 1px 1px;
+        }
+
+        .widget-product {
+            margin: 0 0 20px 0 !important;
+            transition: box-shadow 0.2s linear;
+            cursor: pointer;
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 200px !important;
+            height: 340px !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            flex: 0 0 auto;
+            background-color: #fff;
+        }
+
+            .widget-product:hover {
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+
+        /* Image Container */
+        .widget-gw-widget .widget-product .image-container {
+            overflow: hidden;
+            position: relative;
+            height: 60%;
+            margin-bottom: 10px;
+        }
+
+        .component-list .widget-container:not(.no-padding) .widget-product .image-container .p-card-img {
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
+            object-fit: contain;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .widget-gw-widget .widget-product .product-stamps {
+            display: flex;
+            flex-direction: column;
+            left: 0;
+            top: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+
+            .widget-gw-widget .widget-product .product-stamps .custom-stamp-box-wrapper {
+                position: relative;
+                height: 100%;
+            }
+
+
+
+        .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(270.43deg, #29353c 0%, #3c5759 100%);
+            position: absolute;
+            width: 100% !important;
+            height: 20px;
+            bottom: 0;
+        }
+
+        fieldset, img {
+            border: 0;
+            vertical-align: middle;
+        }
+
+        .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge .top-ranking-text {
+            color: #ffffff;
+            margin-left: 5px;
+            font-size: 11px;
+            font-family: source_sans_proregular, sans-serif;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Description */
+        .product-info-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            margin-left: 10px;
+        }
+
+        .product-name-wrapper {
+            flex: 1;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .widget-gw-widget .widget-product .product-info-area .brand {
+            font-weight: bold;
+            font-size: 15px;
+            color: #29353c;
+        }
+
+
+        .widget-gw-widget .product-slider .product-info-area .name {
+            font-size: 12px;
+            color: #333;
+            margin: 2px 0;
+            white-space: normal;
+            overflow: visible;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+
+
+
+        /* Ratings */
+        .widget-gw-widget .product-slider .product-info-area .ratings-container {
+            display: flex;
+            min-height: 15px;
+            align-items: center;
+            margin-top: 2px;
+            text-decoration: none;
+        }
+
+            .widget-gw-widget .product-slider .product-info-area .ratings-container .ratings-score {
+                font-family: source_sans_proregular, sans-serif;
+                font-size: 15px;
+                font-weight: 400;
+                line-height: 15px;
+                padding: 0 2px 0 0;
+                text-decoration: none;
+                color: #333;
+            }
+
+        /* Price */
+
+        .widget-gw-widget .widget-product .description .price-container {
+            display: flex;
+            align-items: center;
+            height: 20px;
+            color: #333;
+        }
+
+            .widget-gw-widget .widget-product .description .price-container .prices {
+                display: flex;
+                align-items: center;
+                height: 20px;
+                line-height: 20px;
+                color: #333;
+            }
+
+        .widget-gw-widget .widget-product .description div.price-box {
+            color: #333;
+            font-weight: 600;
+        }
+
+
+
+        /* Favorite Button */
+        .fvrt-btn-wrppr {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .fa-regular {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 27px;
+            height: 27px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
+            border: solid 1px #f0f0f0;
+            background: #ffffff;
+            box-sizing: border-box;
+            border-radius: 100%;
+            font-size: 14px;
+        }
+
+            .fa-regular:hover {
+                color: #73a1b2; /* Favori butonu �zerine gelindi�inde renk */
+            }
     </style>
 
     <script>
+        // --------------------------------- Change Quantity ---------------------------------
+        function changeQuantity(amount, event, quantityInputId, hiddenQuantityId, formId) {
+            event.stopPropagation(); // Propagasyonu durdurur
+
+            var quantityInput = document.getElementById(quantityInputId);
+            var currentQuantity = parseInt(quantityInput.value);
+
+            // Yeni miktarı hesapla
+            var newQuantity = currentQuantity + amount;
+            if (newQuantity < 1) newQuantity = 1; // Minimum değer 1
+
+            quantityInput.value = newQuantity;
+
+            // Formu güncelle
+            document.getElementById(hiddenQuantityId).value = newQuantity;
+
+            // Formu gönder
+            document.getElementById(formId).submit();
+        }
+
         // --------------------------------- Carousel ---------------------------------
         $(document).ready(function () {
             $('.carousel').carousel({

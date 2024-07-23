@@ -18,10 +18,11 @@ namespace OnShop.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<int> ProductReviewsID { get; set; } // foreign keys
-        public ICollection<int> FollowedCompaniesID { get; set; } // foreign keys
+        public ICollection<ProductReviewModel> ProductReviews { get; set; } // foreign keys
+        public ICollection<CompanyModel> FollowedCompanies { get; set; } // foreign keys
+        public ICollection<CreditCardModel> CreditCards { get; set; } // foreign keys
+        public ICollection<ProductModel> PurchasedProducts { get; set; } // foreign keys
+
         public ICollection<int> BasketProductsID { get; set; } // foreign keys
-        public ICollection<int> PurchasedProductsID { get; set; } // foreign keys
-        public ICollection<int> CreditCardsID { get; set; } // foreign keys
     }
 }

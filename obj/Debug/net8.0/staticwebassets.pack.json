@@ -57,8 +57,16 @@
       "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\42afe602-e735-499c-a3fb-45d49958d58d.jpg"
     },
     {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\bg.png",
+      "PackagePath": "staticwebassets\\Pictures\\bg.png"
+    },
+    {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logo.png",
       "PackagePath": "staticwebassets\\Pictures\\logo.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logoW.png",
+      "PackagePath": "staticwebassets\\Pictures\\logoW.png"
     },
     {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\profile.jpg",

@@ -118,6 +118,7 @@ namespace OnShop.Controllers
                 int? userId = HttpContext.Session.GetInt32("UserId");
 
                 List<BasketProductModel> BasketProducts = await _userDbFunctions.GetUserBasketProducts(userId);
+                List<ProductModel> DeletedProducts = await _userDbFunctions.GetUserDeletedProducts(userId);
 
                 decimal TotalPrice = 0;
                
@@ -134,10 +135,11 @@ namespace OnShop.Controllers
                     ProductReviews = null,
                     Categories = categories,
                     GuestHomeView = null,
-                    BasketProducts = BasketProducts
+                    BasketProducts = BasketProducts,
+                    DeletedProducts = DeletedProducts,
                 };
 
-                foreach (var product in productviewModel.BasketProducts) TotalPrice += product.Price;
+                foreach (var product in productviewModel.BasketProducts) TotalPrice += product.Price * product.Count;
 
                 productviewModel.TotalPrice = TotalPrice;
 
@@ -175,9 +177,40 @@ namespace OnShop.Controllers
             var result = await _userDbFunctions.RemoveProductFromBasketDB(ProductId, CompanyId, userId);
 
             return RedirectToAction("UserBasket");
-        } 
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> UpdateBasketProductQuantity(int ProductId, int CompanyId, int Quantity)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            var result = await _userDbFunctions.UpdateBasketProductQuantityDB(ProductId, CompanyId, userId, Quantity);
+                                                                      
+            return RedirectToAction("UserBasket");
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> UserProfile()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            var userModel = await _userDbFunctions.GetUserProfile(userId);
+
+            var productviewModel = new ProductViewModel
+            {
+                Company = null,
+                User = null,
+                Product = null,
+                ProductReviews = null,
+                Categories = null,
+                GuestHomeView = null,
+                BasketProducts = null,
+                DeletedProducts = null,
+                userModel = userModel,
+            };
+
+            return View(productviewModel);
+
+        }
 
     }
-
-
 }

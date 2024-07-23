@@ -1,3 +1,5 @@
+using OnShop.Models;
+
 public class ProductReviewModel
 {
     public int ReviewId { get; set; } // primary key
@@ -5,6 +7,8 @@ public class ProductReviewModel
     public int CompanyId { get; set; }
     public int Rating { get; set; }
     public string Review { get; set; }
+
+    public ProductModel product { get; set; }
 
     public DateTime CreatedAt { get; set; }
 }

@@ -14,5 +14,7 @@ namespace OnShop.Models
         public List<BasketProductModel> BasketProducts { get; set; }
 
         public List<ProductModel> DeletedProducts { get; set; }
+
+        public UserModel userModel { get; set; }
     }
 }

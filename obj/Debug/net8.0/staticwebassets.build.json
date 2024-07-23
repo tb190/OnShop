@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "+XIfE3fFzrDEUio4rUMthT+P6/bRY9PxQqmpCvk/FJk=",
+  "Hash": "/SFgzvT7EIV/so7kuBf53dSl//OeMBMEmGxHW4IQ16o=",
   "Source": "OnShop",
   "BasePath": "_content/OnShop",
   "Mode": "Default",
@@ -1157,6 +1157,25 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
     },
     {
+      "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\bg.png",
+      "SourceId": "OnShop",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\",
+      "BasePath": "_content/OnShop",
+      "RelativePath": "Pictures/bg.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Pictures\\bg.png"
+    },
+    {
       "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\1be99c6c-0641-4472-b567-9a41af07078a.jpg",
       "SourceId": "OnShop",
       "SourceType": "Discovered",
@@ -1440,6 +1459,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Pictures\\logo.png"
+    },
+    {
+      "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logoW.png",
+      "SourceId": "OnShop",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\",
+      "BasePath": "_content/OnShop",
+      "RelativePath": "Pictures/logoW.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Pictures\\logoW.png"
     },
     {
       "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\profile.jpg",
