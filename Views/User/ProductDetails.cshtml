@@ -78,7 +78,7 @@
                     <div class="above-part" style="display: flex; flex-direction: row; gap: 20px;">
 
                         <div class="above-left-part" style="display: flex; flex-direction: row; flex: 1;">
-                            <div class="product-rating" style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div class="product-rating" style="display: flex; align-items: center; margin-bottom: 10px; ">
                                 <span class="rating" style="display: flex; align-items: center;">
                                     @for (int i = 0; i < 5; i++)
                                 {
@@ -92,35 +92,56 @@
                                     }
                                 }
                                 </span>
-                                <span style="margin-left: 5px; display: flex; align-items: center;">@Model.Product.Rating <i style="color: #e6e6e6; margin-left: 5px;"> | </i></span>
+                                <span style="margin-left: 5px; display: flex; align-items: center; ">@Model.Product.Rating <i style="color: #e6e6e6; margin-left: 10px;"> | </i></span>
                             </div>
 
                             <div class="product-reviews" style="display: flex; align-items: center; margin-bottom: 10px; margin-left: 5px;">
                                 <span style="display: flex; align-items: center;" id="toggleReviews">
                                     @Model.Product.ProductReviews.Count
                                     <i class="las la-comment-dots" style="margin-left: 5px; font-size: 14px; cursor:pointer;"></i>
-                                    <i style="color:#e6e6e6; margin-left: 5px;"> | </i>
+                                    <i style="color:#e6e6e6; margin-left: 10px;"> | </i>
                                 </span>
                             </div>
 
 
                             <div class="product-favorites" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
                                 <span class="favorites" style="display: flex; align-items: center;">
-                                    <i class="las la-heart" style="color: red; font-size: 14px; margin-right: 5px;"></i> @Model.Product.Favorites : Person favorited!
+                                    <i class="las la-heart" style="color: red; font-size: 14px; margin-right: 5px;"></i> @Model.Product.Favorites : Person favorited!<i style="color: #e6e6e6; margin-left: 10px;"> | </i>
                                 </span>
                             </div>
+
+                            <div class="product-favorites" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <span class="favorites" style="display: flex; align-items: center;">
+                                    <i class="las la-eye" style="font-size: 17px; margin-right: 7px; margin-top:2px;"></i> @Model.Product.Clicked
+                                </span>
+                            </div>
+
                         </div>
 
                         <div class="above-right-part" style="display: flex; flex-direction: column; flex: 1; align-items: flex-end;">
-                            
-                            <form asp-area="" asp-controller="User" asp-action="ProductAddToCart" asp-method="post"  asp-route-ProductId="@Model.Product.ProductId" enctype="multipart/form-data" style="width: 100%;">
-                                <div class="button-container" style="display: flex; justify-content: flex-end;">
-                                    <button class="btn-addToCard" type="button" style="width: 100px; max-width: 300px;" onclick="addToCart(@Model.Product.ProductId,@Model.Product.CompanyID)">Add to Cart</button>
+                            <!-- Miktar girişi -->
+                            <form asp-area="" asp-controller="User" asp-action="ProductAddToCart" asp-method="post" enctype="multipart/form-data" style="width: 100%;">
+
+                                <!--label for="quantity" style="margin-right: 50px;">Quantity</!--label-->
+                                <div class="quantity-input" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: flex-end; ">
+                                    <button type="button" id="decrement" class="quantity-btn">-</button>
+                                    <input type="text" id="quantity" name="quantity" min="1" value="1" class="quantity-input-field" />
+                                    <button type="button" id="increment" class="quantity-btn">+</button>
+                                </div>
+
+                                <input type="hidden" id="hiddenProductId" name="ProductId" value="@Model.Product.ProductId" />
+                                <input type="hidden" id="hiddenCompanyId" name="CompanyId" value="@Model.Product.CompanyID" />
+                                <input type="hidden" id="hiddenQuantity" name="Quantity" value="1" />
+                                <div class="button-container" style="display: flex; justify-content: flex-end; margin-right:15px;">
+                                    <button class="btn-addToCard" type="submit" style="width: 100px; max-width: 300px;">Add to Cart</button>
                                 </div>
                             </form>
-
-
                         </div>
+
+
+
+
+
                     </div>
 
 
@@ -312,6 +333,23 @@
 
     <script>
 
+        // --------------------------------- Product Count ---------------------------------
+        document.addEventListener('DOMContentLoaded', function () {
+            var quantityInput = document.getElementById('quantity');
+            var incrementButton = document.getElementById('increment');
+            var decrementButton = document.getElementById('decrement');
+
+            incrementButton.addEventListener('click', function () {
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+            });
+
+            decrementButton.addEventListener('click', function () {
+                var currentValue = parseInt(quantityInput.value);
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                }
+            });
+        });
         // --------------------------------- Commands Scrool the Screen ---------------------------------
         document.getElementById('toggleReviews').addEventListener('click', function () {
             var reviewsContainer = document.querySelector('.reviews-container');
@@ -324,14 +362,38 @@
         });
 
         // --------------------------------- addToCart ---------------------------------
-        function addToCart(productId,companyId) {
-            $.ajax({
-                url: '@Url.Action("ProductAddToCart", "User")',
-                type: 'POST',
-                data: { productId: productId, CompanyId: companyId }
-                
-            });
+        function addToCart(productId, companyId) {
+        $.ajax({
+            url: '@Url.Action("ProductAddToCart", "User")',
+            type: 'POST',
+            data: {
+                ProductId: productId,
+                CompanyId: companyId
+            },
+            success: function() {
+                // Sepet başarıyla güncellendi, sepet sayısını güncelle
+                updateBasketCount();
+                // Sayfayı yeniden yükle
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error("Hata: " + error);
+            }
+        });
         }
+        function updateBasketCount() {
+        $.ajax({
+            url: '@Url.Action("GetBasketCount", "User")',
+            type: 'GET',
+            success: function(data) {
+                $('#basketCount').text(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Hata: " + error);
+            }
+        });
+        }
+
         // --------------------------------- Carousel ---------------------------------
         $(document).ready(function () {
             $('.carousel').carousel({
@@ -467,9 +529,9 @@
 
         /* Sepete Ekle Butonu */
         .btn-addToCard {
-            background: linear-gradient(to right, #8f8f8f, #9b8f8f);
-            color: #fff;
-            border: none;
+            background-image: linear-gradient(to right bottom, #f6f6f8, #f3f3f6, #efeff3, #ececf1, #e9e9ef);
+            color: #000;
+            border: 1px solid #eeeeee;
             padding: 10px 0;
             border-radius: 4px;
             cursor: pointer;
@@ -533,7 +595,38 @@
             line-height: 1.5;
         }
 
+        /* quantity butonu */
+        .quantity-input {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
 
+        .quantity-btn {
+            font-size: 20px;
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .quantity-input-field {
+            width: 60px;
+            text-align: center;
+            margin: 0 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .quantity-btn:hover {
+            background-color: #f0f0f0;
+        }
 
 
         /* ------------------------------- article için ------------------------------ */
@@ -551,7 +644,7 @@
                 box-sizing: border-box;
                 /*height: fit-content;*/
                 height: 440px;
-                background: linear-gradient(270.43deg, #f6f5f5 0%,#e6e6e6 100%);
+                background-image: linear-gradient(to right bottom, #f6f6f8, #f3f3f4, #f0f0f1, #ededed, #eaeaea);
                 border-radius: 7px;
                 margin: 20px auto;
                 padding: 20px;

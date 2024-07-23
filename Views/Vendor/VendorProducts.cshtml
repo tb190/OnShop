@@ -103,7 +103,14 @@
                                     </div>
                                 </td>
                                 <td>@product.ProductName</td>
-                                <td>@product.Description</td>
+                                <td>
+                                    @{
+                    var description = @product.Description;
+                    var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                                                                }
+
+                                                                <span class="name">@firstSentence</span>
+                                                            </td>
                                 <td>@product.Category</td>
                                 <td>@product.Price.ToString("C")</td>
                                 <td>@product.Stock</td>

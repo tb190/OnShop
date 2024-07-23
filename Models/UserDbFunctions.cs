@@ -522,32 +522,53 @@ namespace OnShop
         }
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task<bool> ProductAddToCartDb(int ProductId,int CompanyId,int? UserId)
+        public async Task<bool> ProductAddToCartDb(int ProductId, int CompanyId, int? UserId, int Quantity)
         {
-                var query = "INSERT INTO BasketProducts (UserId, ProductId, CompanyId) VALUES (@UserId, @ProductId, @CompanyId)";
+            var queryCheck = "SELECT Count FROM BasketProducts WHERE UserId = @UserId AND ProductId = @ProductId AND CompanyId = @CompanyId";
+            var queryUpdate = "UPDATE BasketProducts SET Count = Count + @Quantity WHERE UserId = @UserId AND ProductId = @ProductId AND CompanyId = @CompanyId";
+            var queryInsert = "INSERT INTO BasketProducts (UserId, ProductId, CompanyId, Count) VALUES (@UserId, @ProductId, @CompanyId, @Quantity)";
 
-                try
+            try
+            {
+                await connection.OpenAsync();
+
+                // İlk olarak mevcut ürünü kontrol edelim
+                using (SqlCommand command = new SqlCommand(queryCheck, connection))
                 {
-                    await connection.OpenAsync();
+                    command.Parameters.AddWithValue("@UserId", UserId);
+                    command.Parameters.AddWithValue("@ProductId", ProductId);
+                    command.Parameters.AddWithValue("@CompanyId", CompanyId);
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    var result = await command.ExecuteScalarAsync();
+
+                    if (result != null) // Ürün mevcutsa
                     {
-                        command.Parameters.AddWithValue("@UserId", UserId);
-                        command.Parameters.AddWithValue("@ProductId", ProductId);
-                        command.Parameters.AddWithValue("@CompanyId", CompanyId);
+                        // Count değerini artır
+                        command.CommandText = queryUpdate;
+                        command.Parameters.AddWithValue("@Quantity", Quantity);
                         await command.ExecuteNonQueryAsync();
                     }
+                    else // Ürün mevcut değilse
+                    {
+                        // Yeni kayıt ekle
+                        command.CommandText = queryInsert;
+                        command.Parameters.AddWithValue("@Quantity", Quantity);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
 
-                    connection.Close();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Error: " + ex.Message);
-                    connection.Close();
-                    return false;
-                }
+                connection.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.Message);
+                connection.Close();
+                return false;
+            }
         }
+
+
 
         // --------------------------------------------------------------------------------------------------------------------------
         public int GetNumberOfProductInBasket(int? userId)
@@ -555,7 +576,7 @@ namespace OnShop
             int productCount = 0;
 
             string query = @"
-                SELECT COUNT(*)
+                SELECT SUM(Count)
                 FROM BasketProducts
                 WHERE UserId = @UserId";
 
@@ -584,16 +605,16 @@ namespace OnShop
 
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task<List<ProductModel>> GetUserBasketProducts(int? userId)
+        public async Task<List<BasketProductModel>> GetUserBasketProducts(int? userId)
         {
-            var products = new List<ProductModel>(); 
+            var products = new List<BasketProductModel>();
             var productIds = new List<int>();
 
             try
             {
-                connection.Open();
+                await connection.OpenAsync();
                 string queryProductIds = @"
-                    SELECT ProductId
+                    SELECT ProductId, Count
                     FROM BasketProducts
                     WHERE UserId = @UserId";
 
@@ -601,9 +622,9 @@ namespace OnShop
                 {
                     cmd.Parameters.AddWithValue("@UserId", userId);
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             productIds.Add(reader.GetInt32(0));
                         }
@@ -612,44 +633,77 @@ namespace OnShop
 
                 for (int i = 0; i < productIds.Count; i++)
                 {
+                    var product = new BasketProductModel();
                     string queryProducts = @"
-                    SELECT *
-                    FROM Products
-                    WHERE ProductId = @ProductId";
-
+                        SELECT *
+                        FROM Products
+                        WHERE ProductId = @ProductId";
 
                     using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                     {
                         cmd.Parameters.AddWithValue("@ProductId", productIds[i]);
-                        using (SqlDataReader detailsReader = cmd.ExecuteReader())
+
+                        using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
                         {
-                            while (detailsReader.Read())
+                            if (await detailsReader.ReadAsync())
                             {
-                                ProductModel product = new ProductModel
-                                {
-                                    ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId")),
-                                    Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating")),
-                                    Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites")),
-                                    CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID")),
-                                    Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock")),
-                                    Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price")),
-                                    ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName")),
-                                    Description = detailsReader.GetString(detailsReader.GetOrdinal("Description")),
-                                    Category = detailsReader.GetString(detailsReader.GetOrdinal("Category")),
-                                    Status = detailsReader.GetString(detailsReader.GetOrdinal("Status")),
-                                    CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt")),
-                                    Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked")),
-                                    Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"))
-                                };
-                                products.Add(product);
+                                product.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                                product.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                                product.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                                product.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                                product.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                                product.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                                product.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                                product.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                                product.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                                product.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                                product.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                                product.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                                product.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
                             }
                         }
                     }
+
+                    // Sepet ürünü için adet bilgisi al
+                    string queryCount = @"
+                        SELECT Count
+                        FROM BasketProducts
+                        WHERE UserId = @UserId AND ProductId = @ProductId";
+
+                    using (SqlCommand cmd = new SqlCommand(queryCount, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        cmd.Parameters.AddWithValue("@ProductId", product.ProductId);
+
+                        product.Count = (int)await cmd.ExecuteScalarAsync();
+                    }
+
+                    product.Photos = new List<string>();
+                    string queryPhotos = @"
+                        SELECT PhotoURL
+                        FROM Photos
+                        WHERE ProductId = @ProductId";
+
+                    using (var command = new SqlCommand(queryPhotos, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", productIds[i]);
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                product.Photos.Add(reader.GetString(reader.GetOrdinal("PhotoURL")));
+                            }
+                        }
+                    }
+
+                    products.Add(product);
                 }
+
                 connection.Close();
             }
             catch (Exception ex)
-            {              
+            {
                 Console.WriteLine("Error: " + ex.Message);
                 connection.Close();
                 throw;
@@ -657,6 +711,58 @@ namespace OnShop
 
             return products;
         }
+
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> RemoveProductFromBasketDB(int ProductId,int CompanyId, int? UserId)
+        {
+            await connection.OpenAsync();
+
+            // Transaction başlat
+            //SqlTransaction transaction = connection.BeginTransaction();
+
+            Console.WriteLine("burdaa");
+            try
+            {
+               
+                var query = "INSERT INTO DeletedProducts (UserId, ProductId, CompanyId) VALUES (@UserId, @ProductId, @CompanyId)";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", UserId);
+                    command.Parameters.AddWithValue("@ProductId", ProductId);
+                    command.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    await command.ExecuteNonQueryAsync();
+                }
+
+
+                query = "DELETE FROM BasketProducts WHERE UserId = @UserId AND ProductId = @ProductId AND CompanyId = @CompanyId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", UserId);
+                    command.Parameters.AddWithValue("@ProductId", ProductId);
+                    command.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    await command.ExecuteNonQueryAsync();
+                }
+
+                // Tüm sorgular başarılı ise transaction'ı commit et
+                //transaction.Commit();
+
+                connection.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Hata oluşursa transaction'ı rollback yap
+                //transaction.Rollback();
+                Debug.WriteLine("Error: " + ex.Message);
+                connection.Close();
+                return false;
+            }
+        }
+
 
     }
 }

@@ -64,6 +64,8 @@ namespace OnShop.Controllers
         {
             try
             {
+                Console.WriteLine("id: "+ProductId);
+
                 var productViewModel = await _userDbFunctions.UserGetProductDetails(ProductId);
 
                 var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
@@ -91,12 +93,13 @@ namespace OnShop.Controllers
 
         // --------------------------------------------------------------------------------------------------------------------------
         [HttpPost]
-        public async Task<IActionResult> ProductAddToCart(int ProductId,int CompanyId)
+        public async Task<IActionResult> ProductAddToCart(int ProductId,int CompanyId,int Quantity)
         {
             try
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
-                var result = await _userDbFunctions.ProductAddToCartDb(ProductId,CompanyId,userId);
+                var result = await _userDbFunctions.ProductAddToCartDb(ProductId,CompanyId,userId, Quantity);
+
 
                 return RedirectToAction("ProductDetails", new { ProductId = ProductId });
             }
@@ -113,12 +116,15 @@ namespace OnShop.Controllers
             try
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
-                var BasketProducts = await _userDbFunctions.GetUserBasketProducts(userId);
 
-                ViewBag.BasketProducts = BasketProducts;
-                Console.WriteLine(BasketProducts.Count);
+                List<BasketProductModel> BasketProducts = await _userDbFunctions.GetUserBasketProducts(userId);
+
+                decimal TotalPrice = 0;
+               
 
                 var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+
+                
 
                 var productviewModel = new ProductViewModel
                 {
@@ -127,8 +133,13 @@ namespace OnShop.Controllers
                     Product = null,
                     ProductReviews = null,
                     Categories = categories,
-                    GuestHomeView = null
+                    GuestHomeView = null,
+                    BasketProducts = BasketProducts
                 };
+
+                foreach (var product in productviewModel.BasketProducts) TotalPrice += product.Price;
+
+                productviewModel.TotalPrice = TotalPrice;
 
                 return View(productviewModel);
 
@@ -155,6 +166,16 @@ namespace OnShop.Controllers
             return Json(basketCount);
         }
 
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> RemoveProductFromBasket(int ProductId,int CompanyId)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+
+            var result = await _userDbFunctions.RemoveProductFromBasketDB(ProductId, CompanyId, userId);
+
+            return RedirectToAction("UserBasket");
+        } 
 
     }
 

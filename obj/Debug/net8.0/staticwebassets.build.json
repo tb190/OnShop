@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "5L1gaPDW6BRNaBq55cBcV588ARS8YAp8bf5ZoLVxw8k=",
+  "Hash": "+XIfE3fFzrDEUio4rUMthT+P6/bRY9PxQqmpCvk/FJk=",
   "Source": "OnShop",
   "BasePath": "_content/OnShop",
   "Mode": "Default",
@@ -1421,6 +1421,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Pictures\\CompanyLogos\\42afe602-e735-499c-a3fb-45d49958d58d.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logo.png",
+      "SourceId": "OnShop",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\",
+      "BasePath": "_content/OnShop",
+      "RelativePath": "Pictures/logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Pictures\\logo.png"
     },
     {
       "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\profile.jpg",

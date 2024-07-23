@@ -1,7 +1,7 @@
 @model OnShop.Models.ProductViewModel
 @{
-        ViewData["Title"] = "User Basket Page";
-        Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    ViewData["Title"] = "User Basket Page";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
 <!DOCTYPE html>
@@ -17,174 +17,231 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+    <div class="container mt-4">
 
-    <div class="">
-        <div class="row mt-4">
-            <div class="col table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Photos</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var product in ViewBag.BasketProducts)
-                    {
-                    var carouselId = "carousel" + ViewBag.BasketProducts.ProductId; // Each product should have a unique ID
+        <div class="buy-part" style="flex-direction: row;">
 
-                        <tr class="product-row" data-status="@ViewBag.BasketProducts.Status">
-                            <td>
-                                <div style="width: 4rem; height: 5rem; overflow: hidden;">
-                                    <div id="@carouselId" class="carousel slide" data-ride="carousel">
-                                        <ol class="carousel-indicators">
-                                            @if (ViewBag.BasketProducts.Photos != null)
-                                        {
-                                            for (int i = 0; i < ViewBag.BasketProducts.Photos.Count; i++)
-                                            {
-                                            <li data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
-                                            }
-                                        }
-                                        </ol>
-                                        <div class="carousel-inner">
-                                            @if (ViewBag.BasketProducts.Photos != null)
-                                        {
-                                            for (int i = 0; i < ViewBag.BasketProducts.Photos.Count; i++)
-                                            {
-                                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                                <img class="d-block w-100" src="@ViewBag.BasketProducts.Photos.ElementAt(i)" alt="Slide @(i + 1)" style=" border-radius: 5px;">
-                                            </div>
-                                            }
-                                        }
-                                        </div>
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>@ViewBag.BasketProducts.ProductName</td>
-                            <td>@ViewBag.BasketProducts.Description</td>
-                            <td>@ViewBag.BasketProducts.Category</td>
-                            <td>@ViewBag.BasketProducts.Price.ToString("C")</td>
-                            <td>
-                                <span class="rating">
-                                    @for (int i = 0; i < 5; i++)
+            <!-- Toplam Fiyat -->
+            <div style="margin-left: 860px; ">
+                <span style="font-size: 18px; font-weight: bold;">Total Price:</span>
+                <span style="font-size: 18px; font-weight: bold; margin-left: 10px;">@Model.TotalPrice.ToString("C")</span>
+            </div>
+
+            <form asp-area="" asp-controller="User" asp-action="BuyProducts" asp-method="post" enctype="multipart/form-data" >
+                <div class="button-container" style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-outline-secondary" type="button" style="width: 200px; max-width: 300px; margin-bottom:30px; margin-top:-35px;">Purchase Products</button>
+                </div>
+            </form>
+        </div>
+
+        @foreach (var product in Model.BasketProducts)
+        {
+            var carouselId = "carousel" + product.ProductId; // Each product should have a unique ID
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card h-100 flex-row">
+
+
+                    <div id="@carouselId" class="carousel slide" data-ride="carousel" style="width: 200px;">
+                        <ol class="carousel-indicators">
+                            @if (product.Photos != null)
+                            {
+                                for (int i = 0; i < product.Photos.Count; i++)
                                 {
-                                    if (i < ViewBag.BasketProducts.Rating)
-                                    {
-                                    <i class="las la-star" style="color: gold; font-size: 14px;"></i>
-                                    }
-                                    else
-                                    {
-                                    <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
-                                    }
+                            <li data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
                                 }
-                                </span>
-                                <span>@ViewBag.BasketProducts.Rating</span>
-                            </td>
+                            }
+                        </ol>
+                        <div class="carousel-inner">
+                            @if (product.Photos != null)
+                            {
+                                for (int i = 0; i < product.Photos.Count; i++)
+                                {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img class="d-block w-100" src="@product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style="height: auto; object-fit: cover;">
+                            </div>
+                                }
+                            }
+                        </div>
+                        <a class="carousel-control-prev" href="#@carouselId" role="button" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#@carouselId" role="button" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </a>
+                    </div>
 
-                        </tr>
-                }
-                    </tbody>
-                </table>
+
+                    <div class="card-body" onclick="window.location.href='@Url.Action("ProductDetails", "User", new { ProductId = product.ProductId })'" style="cursor: pointer;">
+                        <div class="details-container" style="display: flex; align-items: center;">
+                            <div class="details" style="flex: 1;">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title">@product.ProductName</h5>
+
+                                    <!-- Ã‡Ã¶p Kutusu -->
+                                    <a asp-area="" asp-controller="User" asp-action="RemoveProductFromBasket" asp-route-ProductId="@product.ProductId" asp-route-CompanyId="@product.CompanyID" class="btn btn-like no-outline" style="font-size: 21px; margin-left: 15px;" onclick="event.stopPropagation();">
+                                        <i class="las la-trash-alt"></i>
+                                    </a>
+                                </div>
+
+                                <p class="card-text">
+                                    @{
+                                var description = @product.Description;
+                                var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                                    }
+                                    <span class="name">@firstSentence</span>
+                                </p>
+                                <p class="card-text"><strong>Category:</strong> @product.Category</p>
+                                <p class="card-text"><strong>Price:</strong> @product.Price.ToString("C")</p>
+                                <p class="card-text">
+                                    <strong>Rating:</strong>
+                                    <span class="rating">
+                                        @for (int i = 0; i < 5; i++)
+                                    {
+                                        if (i < product.Rating)
+                                        {
+                                                        <i class="las la-star" style="color: gold; font-size: 14px;"></i>
+                                        }
+                                        else
+                                        {
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
+                                        }
+                                    }
+                                    </span>
+                                    <span>@product.Rating</span>
+                                </p>
+                                <!-- Count bilgisi -->
+                                <p class="card-text"><strong>Count:</strong> @product.Count</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
             </div>
         </div>
+        }
     </div>
 
     <style>
-
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
-            padding: 2px 4px;
+        a {
+            text-decoration: none;
+            color: #333;
         }
 
-        .product-row {
-            font-size: 12px;
-            padding: 2px 4px;
+        a:hover {
+            text-decoration: none;
+            color: #333;
         }
 
-            .product-row td {
-                padding: 4px 8px;
-                vertical-align: middle;
+        .card {
+            background-image: linear-gradient(to right bottom, #f6f6f8, #f7f7fa, #f8f8fb, #f9f9fd, #fafaff);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer; /* Add pointer cursor to indicate it's clickable */
+        }
+            /*
+            .card:hover {
+                transform: scale(1.02);
+            }*/
+
+            .card h5 {
+                font-size: 1.25rem;
+                font-weight: bold;
             }
 
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0,0,0,.05);
+            .card p {
+                font-size: 0.875rem;
+            }
+
+        .rating i {
+            margin-right: 2px;
         }
 
-        .table-hover tbody tr:hover {
-            background-color: rgba(0,0,0,.075);
+        .card-body {
+            flex: 1;
         }
+
+        .carousel {
+            flex-shrink: 0;
+        }
+
+        /* SatÄ±n Al Butonu */
+        .Buy {
+            background-image: linear-gradient( 89.7deg, rgba(0,0,0,1) -10.7%, rgba(53,92,125,1) 88.8% );
+            color: #fff;
+            border: none;
+            padding: 10px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .Buy:hover{
+            color: #fff;
+        }
+
     </style>
 
     <script>
+        // --------------------------------- Carousel ---------------------------------
+        $(document).ready(function () {
+            $('.carousel').carousel({
+                interval: false // Disable automatic cycling
+            });
+        });
 
-            // --------------------------------- Carousel ---------------------------------
-            $(document).ready(function () {
-                $('.carousel').carousel({
-                    interval: false // Otomatik dönmeyi devre dýþý býrak
-                });
+        // --------------------------------- Open or Close Modal ---------------------------------
+        $(document).ready(function () {
+            $('.btn[data-toggle="modal"]').on('click', function () {
+                var targetModal = $(this).data('target');
+                $(targetModal).modal('show');
+            });
+        });
+
+        $(document).ready(function () {
+            $(document).on('click', '[data-dismiss="modal"]', function () {
+                var targetModal = $(this).closest('.modal');
+                $(targetModal).modal('hide');
+            });
+        });
+
+        // --------------------------------- All or Online ---------------------------------
+        $(document).ready(function () {
+            // Handle showing only online products
+            $('.btn-outline-secondary[data-status="online"]').on('click', function () {
+                window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
             });
 
-            // --------------------------------- Open or Close Modal ---------------------------------
-
-            $(document).ready(function () {
-                $('.btn[data-toggle="modal"]').on('click', function () {
-                    var targetModal = $(this).data('target');
-                    $(targetModal).modal('show');
-                });
+            // Handle showing all products
+            $('.btn-outline-secondary[data-status="all"]').on('click', function () {
+                window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
             });
-            $(document).ready(function () {
-                $(document).on('click', '[data-dismiss="modal"]', function () {
-                    var targetModal = $(this).closest('.modal');
-                    $(targetModal).modal('hide');
-                });
-            });
+        });
 
-            // --------------------------------- All or Online ---------------------------------
-            $(document).ready(function () {
-                // Handle showing only online products
-                $('.btn-outline-secondary[data-status="online"]').on('click', function () {
-                    window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
-                });
+        // --------------------------------- Search ---------------------------------
+        $(document).ready(function () {
+            // Handle search functionality
+            $('#button-search').on('click', function () {
+                var searchString = $('#searchInput').val().toLowerCase().trim();
 
-                // Handle showing all products
-                $('.btn-outline-secondary[data-status="all"]').on('click', function () {
-                    window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
-                });
+                // Redirect to the action with updated search string
+                window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?searchString=' + searchString;
             });
 
-            // --------------------------------- Search ---------------------------------
-            $(document).ready(function () {
-                // Handle search functionality
-                $('#button-search').on('click', function () {
-                    var searchString = $('#searchInput').val().toLowerCase().trim();
-
-                    // Redirect to the action with updated search string
-                    window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?searchString=' + searchString;
-                });
-
-                // Optionally, handle search on Enter key press
-                $('#searchInput').keypress(function (e) {
-                    if (e.which === 13) { // 13 is the Enter key code
-                        $('#button-search').click();
-                    }
-                });
+            // Optionally, handle search on Enter key press
+            $('#searchInput').keypress(function (e) {
+                if (e.which === 13) { // 13 is the Enter key code
+                    $('#button-search').click();
+                }
             });
-
-
-
+        });
     </script>
 </body>
 </html>

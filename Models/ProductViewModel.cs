@@ -2,6 +2,7 @@ namespace OnShop.Models
 {
     public class ProductViewModel
     {
+        public decimal TotalPrice { get; set; }
         public CompanyModel Company { get; set; }
         public UserModel User { get; set; }
         public ProductModel Product { get; set; }
@@ -9,5 +10,9 @@ namespace OnShop.Models
         public GuestHomeViewModel GuestHomeView { get; set; }
         public List<CategoryModel> Categories { get; set; }
         public List<ProductModel> OtherProducts { get; set; }
+
+        public List<BasketProductModel> BasketProducts { get; set; }
+
+        public List<ProductModel> DeletedProducts { get; set; }
     }
 }

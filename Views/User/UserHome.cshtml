@@ -20,7 +20,7 @@
 <body>
 
 
-    <div class="component-list component-small-list" style="overflow-x:auto">
+    <div class="component-list component-small-list"  style="overflow-y: hidden; overflow-x: hidden;">
         <article class="component-item widget-width">
             <div class="widget-container extended-container">
                 <div class="widget-gw-widget">
@@ -279,7 +279,8 @@
                 box-sizing: border-box;
                 /*height: fit-content;*/
                 height: 440px;
-                background: linear-gradient(270.43deg, rgba(239, 236, 233, 0.5) 0%, rgba(239, 239, 233, 0.5) 100%);
+                /*background: linear-gradient(270.43deg, rgba(239, 236, 233, 0.5) 0%, rgba(239, 239, 233, 0.5) 100%);*/
+                background-image: linear-gradient(to right bottom, #f6f6f8, #f3f3f4, #f0f0f1, #ededed, #eaeaea);
                 border-radius: 7px;
             }
 
@@ -431,7 +432,7 @@
             -ms-overflow-style: none;
             margin: 0 auto;
             padding: 0 10px;
-            gap: 16px;
+            gap: 17px;
         }
 
         .component-list .widget-container:not(.no-padding).extended-container .widget-product {
