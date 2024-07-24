@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using OnShop.Models;
 using System.Diagnostics;
 using System;
@@ -35,7 +35,8 @@ namespace OnShop.Controllers
         {
             try
             {
-                if( await _userDbFunctions.RegisterIndividual(viewModel.User, "User")){
+                if (await _userDbFunctions.RegisterIndividual(viewModel.User, "User"))
+                {
                     return RedirectToAction("GuestHome", "Guest");
                 }
                 return RedirectToAction("Login");
@@ -54,8 +55,9 @@ namespace OnShop.Controllers
         public async Task<IActionResult> RegisterCompany(IFormFile LogoUrl, IFormFile BannerUrl, LoginViewModel viewModel)
         {
             try
-            {       
-                if (await _userDbFunctions.RegisterCompany(LogoUrl, BannerUrl, viewModel.Company, viewModel.User)){
+            {
+                if (await _userDbFunctions.RegisterCompany(LogoUrl, BannerUrl, viewModel.Company, viewModel.User))
+                {
                     return RedirectToAction("GuestHome", "Guest");
                 }
                 return RedirectToAction("Login");
@@ -69,13 +71,13 @@ namespace OnShop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> LoginLogin()
+        public async Task<IActionResult> LoginLogin(string email,string password)
         {
             try
             {
                 // Form verilerini al
-                string email = Request.Form["email"];
-                string password = Request.Form["password"];
+               /* string email = Request.Form["email"];
+                string password = Request.Form["password"];*/
 
                 var result = await _userDbFunctions.ValidateUserCredentials(email, password);
                 string validationResult = result.Message;
@@ -84,18 +86,18 @@ namespace OnShop.Controllers
 
                 if (validationResult == "User validated successfully.")
                 {
-                    // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);  bununla alýcaksýn diger yerlerde
+                    // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);  bununla alï¿½caksï¿½n diger yerlerde
                     int userId = await _userDbFunctions.GetUserIdByEmail(email);
 
                     HttpContext.Session.SetInt32("UserId", userId);
 
-                    if(role=="Vendor") return RedirectToAction("VendorHome", "Vendor");
-                    else if(role=="Admin") return RedirectToAction("AdminHome", "Admin");
-                    return RedirectToAction("UserHome", "User");// Kullanýcý doðrulandý, baþarýlý bir þekilde yönlendirme
+                    if (role == "Vendor") return RedirectToAction("VendorHome", "Vendor");
+                    else if (role == "Admin") return RedirectToAction("AdminHome", "Admin");
+                    return RedirectToAction("UserHome", "User");// Kullanï¿½cï¿½ doï¿½rulandï¿½, baï¿½arï¿½lï¿½ bir ï¿½ekilde yï¿½nlendirme
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = validationResult;// Kullanýcý doðrulanamadý, hata mesajý
+                    TempData["ErrorMessage"] = validationResult;// Kullanï¿½cï¿½ doï¿½rulanamadï¿½, hata mesajï¿½
                     return RedirectToAction("Login");
                 }
             }
@@ -111,9 +113,9 @@ namespace OnShop.Controllers
         {
             try
             {
-                // Kullanýcý oturumunu sonlandýr
+                // Kullanï¿½cï¿½ oturumunu sonlandï¿½r
                 HttpContext.Session.Remove("UserId");
-                // Kullanýcýyý giriþ sayfasýna yönlendir
+                // Kullanï¿½cï¿½yï¿½ giriï¿½ sayfasï¿½na yï¿½nlendir
                 return RedirectToAction("GuestHome", "Guest");
             }
             catch (Exception ex)

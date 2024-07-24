@@ -106,9 +106,6 @@
                                         </div>
                                     </div>
                                 </a>
-                                <div class="fvrt-btn-wrppr">
-                                    <i class="fa-regular fa-heart"></i>
-                                </div>
                                 <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
                             </div>
                                     }
@@ -126,109 +123,7 @@
         </article>
 
 
-        <article class="component-item widget-width" style="margin-top:30px;">
-            <div class="widget-container extended-container">
-                <div class="widget-gw-widget">
-                    <div>
-                        <div class="widget-header">
-                            <h4 style="font-size:20px;">Populer Products</h4>
-                            <div class="widget-header-navigation">
-                                <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
-                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
-                        <div class="arrow-container" data-arrow="left">
-                            <button class="arrow-button" id="prevBtn">
-                            </button>
-                        </div>
-
-                        <div class="styles-module_slider__o0fqa" id="product-slider">
-                            @for (int index = 0; index < Model.MostClickedProducts.Count; index++)
-                             {
-                                 var product = Model.MostClickedProducts[index];
-                            <div class="widget-product" title="@product.ProductName">
-                                <a href="/products/details/@product.ProductId">
-                                    <div class="image-container">
-                                        <img class="p-card-img" src="@product.Photos.FirstOrDefault()">
-                                        <div class="product-stamps">
-                                            @if (product.Stock > 0)
-                                                 {
-                                            <div class="stamp-box-wrapper enhanced">
-                                                <!--div class="stamp fc">
-                                                <div class="inner">
-                                                    <i class="i-my-orders"></i><span>KARGO BEDAVA</span>
-                                                </div>
-                                            </div-->
-                                            </div>
-                                                 }
-                                            @if (index < 3 && Model.MostClickedProducts.Contains(product))
-                                                 {
-                                            <div class="pr-rc-top-ranking-badge">
-                                                <img alt="en iyi s�ralama rozeti" src="https://cdn.dsmcdn.com/web/production/category-top-ranking-icon.svg" width="8" height="12">
-                                                <span class="top-ranking-text">@((index + 1)). Most Viewed</span>
-                                            </div>
-                                                 }
-                                        </div>
-                                    </div>
-                                    <div class="product-details">
-                                        <div class="product-info-area">
-                                            <div class="product-name-wrapper" style="text-decoration:none;">
-                                                <span class="brand">@product.ProductName</span>
-                                                @{
-                                                             var description = @product.Description;
-                                                             var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
-                                                }
-
-                                                <span class="name">@firstSentence</span>
-                                            </div>
-                                            <div class="ratings-container">
-                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
-                                                <div class="ratings">
-                                                    <span class="rating">
-                                                        @for (int i = 0; i < 5; i++)
-                                                                 {
-                                                                     if (i < product.Rating)
-                                                                     {
-                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
-                                                                     }
-                                                                     else
-                                                                     {
-                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
-                                                                     }
-                                                                 }
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="price-container">
-                                                <div class="prices">
-                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
-
-                                                </div>
-                                            </div>
-                                            <div class="badges"></div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <div class="fvrt-btn-wrppr">
-                                    <i class="fa-regular fa-heart"></i>
-                                </div>
-                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
-                            </div>
-                             }
-                        </div>
-
-
-
-                        <div class="arrow-container" data-arrow="right">
-                            <button class="arrow-button" id="nextBtn">
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
+       
     </div>
     <script>
         // --------------------------------- Slider ---------------------------------

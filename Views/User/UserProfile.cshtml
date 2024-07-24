@@ -1,6 +1,6 @@
 @model OnShop.Models.ProductViewModel
 @{
-    ViewData["Title"] = "User Basket Page";
+    ViewData["Title"] = "User Profile Page";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
@@ -15,10 +15,1098 @@
     <link rel="stylesheet" href="~/OnShop.styles.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+
 </head>
 <body>
 
+    <div class="container mt-4">
 
+
+
+
+        <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;"> User Profile</h1>
+
+        <!-- user profile -->
+        <div class="card" style="display: flex; flex-direction: row; position: relative;">
+
+            <!-- Profile Picture and Button Wrapper -->
+            <div class="profile-picture-wrapper">
+                <div class="profile-picture">
+                    @Model.userModel.Name[0]@Model.userModel.SurName[0]
+                </div>
+
+            </div>
+
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">@Model.userModel.Name @Model.userModel.SurName</h5>
+                    <a asp-area="" asp-controller="Login" asp-action="LogOut">
+                        <span class="las la-sign-out-alt" style="color:#333; fill:none; font-size:1.5rem "></span>
+                    </a>
+                </div>
+
+                <p class="card-text"><i class="las la-envelope" style="margin-right:5px;"></i><strong>Email:</strong> @Model.userModel.Email</p>
+                <p class="card-text"><i class="las la-user-tag" style="margin-right:5px;"></i><strong>Role:</strong> @Model.userModel.Role</p>
+                <p class="card-text"><i class="las la-home" style="margin-right:5px;"></i><strong>Address:</strong> @Model.userModel.Address</p>
+                <p class="card-text"><i class="las la-phone" style="margin-right:5px;"></i><strong>Phone Number:</strong> @Model.userModel.PhoneNumber</p>
+                <p class="card-text"><i class="las la-birthday-cake" style="margin-right:5px;"></i><strong>Birth Date:</strong> @Model.userModel.BirthDate.ToShortDateString()</p>
+                <p class="card-text"><i class="las la-calendar-day" style="margin-right:5px;"></i><strong>Account Created:</strong> @Model.userModel.CreatedAt.ToShortDateString()</p>
+            </div>
+
+        </div>
+
+
+        <!-- CreditCards -->
+        <div class="CreditCards-container" style="margin-top:40px;">
+
+            <div class="header-container" style="border-bottom: 1px solid #8f8f8f;  display: flex; align-items: center; justify-content: space-between; font-size: 20px;">
+                <h1>Credit Cards</h1>
+                <div class="button-container" style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#reviewModal" style="width: 200px; max-width: 300px; margin-bottom:17px;">Add Card</button>
+                </div>
+            </div>
+            <div class="credit-cards-wrapper">
+                <button class="scroll-button left-button" onclick="scrollCards(-1)">&#9664;</button>
+                <div class="credit-cards-container">
+                    @if (Model.userModel.CreditCards == null || !Model.userModel.CreditCards.Any())
+            {
+                    <p style="padding-top: 17px;">No credit cards available.</p>
+            }
+            else
+            {
+                    @foreach (var card in Model.userModel.CreditCards)
+                {
+                    <label class="credit-card-label" onclick="selectCard(this)">
+                        <div class="credit-card-container">
+                            <div class="credit-card">
+                                <div class="card-front">
+                                    <div class="card-details" style="display: flex; flex-direction: column; justify-content: flex-start; position: absolute; bottom: 20px; left: 20px;">
+                                        <div class="card-number-expiration">
+                                            <div class="card-number">@card.CardNumber</div>
+                                            <div class="card-expiration">Expiry: @card.ExpirationDate</div>
+                                        </div>
+                                        <div class="card-holder">
+                                            <strong>Card Holder:</strong> @card.CardHolderName
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="card-cvv">
+                                        <strong>CVV:</strong> @card.CVV
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                }
+            }
+                </div>
+                <button class="scroll-button right-button" onclick="scrollCards(1)">&#9654;</button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <form asp-area="" asp-controller="User" asp-action="AddCard" asp-method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="cardNumber">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" name="CardNumber" placeholder="1234 5678 9012 3456" oninput="formatCardNumber(this)" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardHolderName">Card Holder Name</label>
+                                    <input type="text" class="form-control" id="cardHolderName" name="CardHolderName" placeholder="John Doe" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="expirationDate">Expiration Date (MM/YY)</label>
+                                    <input type="text" class="form-control" id="expirationDate" name="ExpirationDate" placeholder="MM/YY" oninput="formatExpirationDate(this)" maxlength="5" required />
+                                    <small id="expirationDateError" class="form-text text-danger"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" name="CVV" placeholder="123" oninput="formatCVV(this)" maxlength="3" required />
+                                    <small id="cvvError" class="form-text text-danger"></small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Card</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+        <!-- Reviews -->
+        <div class="reviews-container" style="margin-top:40px;">
+            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;">Product Reviews</h1>
+            @if (Model.userModel.ProductReviews == null || !Model.userModel.ProductReviews.Any())
+            {
+            <p>No reviews available.</p>
+            }
+            else
+            {
+            <div class="reviews-part">
+                @foreach (var review in Model.userModel.ProductReviews)
+                {
+                <div class="review-item">
+
+                    <p>
+                        <strong>@review.product.ProductName,  </strong>
+                        @{
+                        var description = @review.product.Description;
+                        var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                        }
+
+                        <span class="name">@firstSentence</span>
+                    </p>
+                    <div class="review-header">
+                        <span class="review-rating">
+                            @for (int i = 0; i < 5; i++)
+                                    {
+                            <i class="las la-star" style="color: @(i < review.Rating ? "gold" : "#ccc"); font-size: 18px;"></i>
+                                    }
+                        </span>
+                        <span class="review-date">@review.CreatedAt.ToString("MMMM d, yyyy")</span>
+                    </div>
+                    <div class="review-body">
+                        <p>@review.Review</p>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+
+
+
+        <!-- FollowedCompanies -->
+        <div class="companies-container" style="margin-top:40px;">
+            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;"> Followed Companies</h1>
+            @if (Model.userModel.FollowedCompanies == null || !Model.userModel.FollowedCompanies.Any())
+               {
+            <p>No companies available.</p>
+               }
+               else{
+            @foreach (var company in Model.userModel.FollowedCompanies)
+                    {
+            <li class="list-group-item">@company.CompanyName</li>
+                    }
+               }
+        </div>
+
+
+
+
+
+        <!-- PurchasedProducts -->
+        <div class="PurchasedProducts-container" style="margin-top:40px;">
+            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;">Purchased Products</h1>
+            @if (Model.userModel.PurchasedProducts == null || !Model.userModel.PurchasedProducts.Any())
+               {
+            <p>No purchased products available.</p>
+               }
+               else{
+            <div class="component-list component-small-list" style="overflow-x:auto">
+                <article class="component-item widget-width">
+                    <div class="widget-container extended-container">
+                        <div class="widget-gw-widget">
+                            <div>
+                                <div class="widget-header">
+                                    <!--div class="widget-header-navigation">
+                                    <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                </div-->
+                                </div>
+                            </div>
+                            <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                            <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                                <div class="arrow-container" data-arrow="left">
+                                    <button class="arrow-button" id="prevBtn">
+                                    </button>
+                                </div>
+
+                                <div class="styles-module_slider__o0fqa" id="product-slider">
+                                    @{
+                            var count = 0;
+                            if (Model.userModel.PurchasedProducts.Count < 10)
+                            {
+                                count = Model.userModel.PurchasedProducts.Count;
+                            }
+                            else
+                            {
+                                count = 10;
+                            }
+                                    }
+
+                                    @for (int index = 0; index < count; index++)
+                        {
+                         var product = Model.userModel.PurchasedProducts.ElementAt(index);
+                                    <div class="widget-product" title="@product.ProductName">
+                                        <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                            <div class="image-container">
+                                                <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                            </div>
+                                            <div class="product-details">
+                                                <div class="product-info-area">
+                                                    <div class="product-name-wrapper" style="text-decoration:none;">
+                                                        <span class="brand">@product.ProductName</span>
+                                                        @{
+                                                     var Description_ = @product.Description;
+                                                     var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                        }
+
+                                                        <span class="name">@firstSentence_</span>
+                                                    </div>
+                                                    <div class="ratings-container">
+                                                        <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                        <div class="ratings">
+                                                            <span class="rating">
+                                                                @for (int i = 0; i < 5; i++)
+                                                         {
+                                                             if (i < product.Rating)
+                                                             {
+                                                                <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                                             }
+                                                             else
+                                                             {
+                                                                <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                                             }
+                                                         }
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="price-container">
+                                                        <div class="prices">
+                                                            <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="badges"></div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                                    </div>
+                     }
+                                </div>
+                                <div class="arrow-container" data-arrow="right">
+                                    <button class="arrow-button" id="nextBtn">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+               }
+        </div>
+
+
+        <style>
+
+
+            /* profile card */
+            .card {
+                display: flex;
+                align-items: center; /* Center align items vertically */
+                margin-bottom: 20px;
+                justify-content: center; /* Horizontally center-align content */
+            }
+
+            .profile-picture {
+                margin-left: 50px;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #f06, #f79);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-right: 20px; /* Space between picture and text */
+            }
+
+            .card-body {
+                flex: 1; /* Take up remaining space */
+            }
+
+            .card-text {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+                .card-text i {
+                    color: #333;
+                    margin-right: 5px;
+                }
+
+
+
+            /* modal */
+            .modal-body {
+                max-height: 400px; /* Modal penceresinin yüksekliğini sınırlamak için */
+                overflow-y: auto; /* Kaydırma çubuğu eklemek için */
+            }
+
+            .close {
+                background: none; /* Remove any background */
+                border: none; /* Remove any border */
+                color: #000; /* Set text color, adjust as needed */
+                font-size: 1.5rem; /* Adjust size as needed */
+                line-height: 1; /* Align vertically */
+                cursor: pointer; /* Show pointer cursor on hover */
+            }
+
+                .close:focus {
+                    outline: none; /* Remove the default outline */
+                }
+
+                .close span {
+                    font-size: 1.5rem; /* Adjust size to fit the design */
+                    display: block; /* Ensure it is displayed properly */
+                }
+
+            .modal-content {
+                background: url('path/to/your/card-background-image.jpg') no-repeat center center;
+                background-size: cover;
+                color: white; /* Ensure text is visible on the background */
+            }
+
+            .modal-body {
+                background-color: rgba(0, 0, 0, 0.5); /* Add semi-transparent background for better readability */
+                padding: 20px;
+                position: relative;
+            }
+
+                .modal-body .close {
+                    position: absolute;
+                    top: 15px; /* Adjust as needed */
+                    right: 15px; /* Adjust as needed */
+                    padding: 0;
+                    font-size: 1.5rem; /* Adjust font size as needed */
+                    color: #000; /* Adjust color as needed */
+                }
+
+                .modal-body form {
+                    padding-top: 40px; /* Ensure the form doesn't overlap the close button */
+                }
+
+            .form-control {
+                background-color: rgba(255, 255, 255, 0.8); /* Light background for input fields */
+                border: 1px solid #ccc;
+            }
+
+            .btn-primary {
+                margin-top: 10px;
+                background-color: #007bff; /* Button color */
+                border-color: #007bff;
+            }
+
+                .btn-primary:hover {
+                    background-color: #0056b3; /* Darker button color on hover */
+                    border-color: #004085;
+                }
+
+
+
+            /* credit card */
+            .credit-cards-wrapper {
+                display: flex;
+                align-items: center;
+                position: relative;
+                overflow: hidden;
+            }
+            .scroll-button {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                color: white;
+                border: none;
+                padding: 10px;
+                cursor: pointer;
+                z-index: 10;
+            }
+
+            .left-button {
+                left: 0;
+            }
+
+            .right-button {
+                right: 0;
+            }
+            .credit-cards-container {
+                display: flex;
+                flex-direction: row; /* Align cards in a row */
+                overflow-x: auto; /* Enable horizontal scrolling */
+                padding: 20px; /* Padding around the container */
+                white-space: nowrap; /* Prevent wrapping of cards to the next line */
+                gap: 15px; /* Space between cards */
+                width: auto; /* Ensure the container takes up full width */
+                perspective: 1000px;
+            }
+
+            /* Style for individual credit cards */
+            .credit-card {
+                width: 370px; /* Adjust the width as needed */
+                height: 220px; /* Adjust the height as needed */
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                background: #fff;
+                display: flex;
+                flex-direction: column;
+                margin-right: 15px; /* Add some space between cards */
+                flex-shrink: 0; /* Prevent cards from shrinking */
+                position: relative;
+                transform-style: preserve-3d;
+                transition: transform 1s; /* Süreyi burada ayarlayın */
+            }
+                /* Styling for hovering effect */
+                .credit-card:hover {
+                    transform: rotateY(180deg);
+                }
+
+            /* Optional scrollbar styling for Webkit browsers */
+            .credit-cards-container::-webkit-scrollbar {
+                height: 5px; /* Adjust scrollbar height */
+            }
+
+            .credit-cards-container::-webkit-scrollbar-thumb {
+                background-color: #888; /* Color of the scrollbar */
+                border-radius: 4px; /* Rounded corners of the scrollbar thumb */
+            }
+
+                .credit-cards-container::-webkit-scrollbar-thumb:hover {
+                    background-color: #555; /* Darker color on hover */
+                }
+
+            /* Card Back Design */
+            /* Front and Back sides of the card */
+            .card-front, .card-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                border-radius: 12px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Card Front Design */
+            .card-front {
+                background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
+                color: #333;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 100%;
+            }
+
+            /* Card Back Design */
+            .card-back {
+                background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
+                color: #333;
+                transform: rotateY(180deg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* card detailss */
+            /* Card Details Styling */
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+
+            /* Group card number and expiration together */
+            .card-number-expiration {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 10px;
+            }
+
+            .card-number,
+            .card-expiration,
+            .card-holder {
+                font-size: 0.9em;
+                margin-bottom: 5px;
+            }
+
+            .card-holder {
+                text-transform: uppercase;
+            }
+
+            .credit-card-label {
+                cursor: pointer;
+            }
+
+            .card-radio {
+                display: none;
+            }
+
+
+
+
+
+
+            /* reviews */
+            .reviews-part {
+                max-width: auto;
+                max-height: 400px;
+                overflow-y: auto;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border: 0.4px solid #eeeeee;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .review-item {
+                padding: 15px;
+                border-bottom: 1px solid #ddd;
+            }
+
+                .review-item:last-child {
+                    border-bottom: none;
+                }
+
+            .review-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .review-rating {
+                font-size: 18px;
+            }
+
+                .review-rating i {
+                    margin-right: 3px;
+                }
+
+            .review-date {
+                font-size: 14px;
+                color: #777;
+            }
+
+            .review-body {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            /* ------------------------------- article için ------------------------------ */
+            a {
+                text-decoration: none;
+            }
+
+            .component-list.component-small-list {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+                .component-list.component-small-list .component-item {
+                    width: 100%;
+                    box-sizing: border-box;
+                    /*height: fit-content;*/
+                    height: 380px;
+                    background-image: linear-gradient(to right bottom, #f6f6f8, #f3f3f4, #f0f0f1, #ededed, #eaeaea);
+                    border-radius: 7px;
+                    /*margin: 20px auto;
+                padding: 20px;*/
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    border: 0.4px solid #eeeeee;
+                    overflow-y: hidden;
+                }
+
+
+            .component-list .widget-container:not(.no-padding).extended-container {
+                /* padding: 20px 0px 0px 0px;*/
+                border-radius: 8px;
+                border: 0px;
+                background-size: cover;
+                box-shadow: none;
+            }
+
+            .widget-gw-widget {
+                height: 440px;
+            }
+
+                /* Widget Header */
+                .widget-gw-widget .widget-header {
+                    box-sizing: border-box;
+                    display: flex;
+                    justify-content: space-between;
+                    height: auto;
+                    border: 0;
+                    align-items: center;
+                    width: 100%;
+                    padding: 0 20px 16px !important;
+                }
+
+                    .widget-gw-widget .widget-header span {
+                        line-height: 26px;
+                        font-size: 12px;
+                        color: #333;
+                        background: transparent;
+                        padding-right: 12px;
+                        text-decoration: none;
+                        font-family: 'source_sans_prosemibold', sans-serif;
+                    }
+
+                .widget-gw-widget .widget-header-navigation {
+                    margin-left: auto;
+                    display: flex;
+                    color: #333;
+                    background: transparent;
+                }
+
+                    .widget-gw-widget .widget-header-navigation a {
+                        text-decoration: none !important;
+                        font-family: 'source_sans_prosemibold', sans-serif;
+                        color: #333;
+                        font-size: 16px;
+                        line-height: 20px;
+                        display: flex;
+                        align-items: normal;
+                    }
+
+                    .widget-gw-widget .widget-header-navigation i {
+                        margin-top: 2px;
+                        margin-left: 6px;
+                    }
+
+                /* Product Container */
+                .widget-gw-widget .product-slider {
+                    position: relative;
+                    min-height: 100px;
+                    max-height: 440px;
+                    overflow: hidden;
+                }
+
+                    .widget-gw-widget .product-slider div[data-arrow][data-arrow="right"] button {
+                        background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-right.png);
+                        background-position-x: 14px;
+                        margin-right: 4px;
+                    }
+
+                    .widget-gw-widget .product-slider div[data-arrow][data-arrow="left"] button {
+                        background-image: url(https://cdn.dsmcdn.com/web/production/widget-product-slider-left.png);
+                        background-position-x: 14px;
+                        margin-left: 4px;
+                    }
+
+
+                    .widget-gw-widget .product-slider button {
+                        width: 42px;
+                        height: 42px;
+                        border-radius: 25px;
+                        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+                        border: solid 1px #e6e6e6;
+                        box-sizing: border-box;
+                        background-color: #ffffff;
+                        position: absolute;
+                        top: 50%;
+                        margin-top: -21px;
+                        cursor: pointer;
+                        transition: all 400ms;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-size: 10px 17px;
+                    }
+
+            .arrow-button {
+                display: inline-block;
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .arrow-container {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 1;
+            }
+
+                .arrow-container[data-arrow="left"] {
+                    left: 10px;
+                }
+
+                .arrow-container[data-arrow="right"] {
+                    right: 10px;
+                }
+
+            /* Sağda ve ortada konumlandırma */
+            .component-list .widget-container:not(.no-padding).extended-container {
+                position: relative; /* Relative konumlandırma, butonun konumunu ayarlamak için */
+            }
+
+                .component-list .widget-container:not(.no-padding).extended-container div[data-arrow="right"] {
+                    position: absolute;
+                    right: 50px; /* Sağdan uzaklığı ayarlayın */
+                    top: 50%; /* Yatayda ortalamak için */
+                    transform: translateY(-50%); /* Dikeyde tam ortalamak için */
+                    z-index: 9;
+                }
+
+
+                /* Optional: Prevent wrapping */
+                .component-list .widget-container:not(.no-padding).extended-container [class^="styles-module_slider_"] {
+                    padding: 0px 20px 0px 20px;
+                }
+
+            .styles-module_slider__o0fqa {
+                min-height: 340px;
+                height: 340px;
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                margin: 0 auto;
+                padding: 0 10px;
+                gap: 16px;
+            }
+
+            .component-list .widget-container:not(.no-padding).extended-container .widget-product {
+                margin: 1px 16px 1px 1px;
+            }
+
+            .widget-product {
+                margin: 0 0 20px 0 !important;
+                transition: box-shadow 0.2s linear;
+                cursor: pointer;
+                overflow: hidden;
+                box-sizing: border-box;
+                width: 200px !important;
+                height: 340px !important;
+                border-radius: 8px !important;
+                box-shadow: none !important;
+                flex: 0 0 auto;
+                background-color: #fff;
+            }
+
+                .widget-product:hover {
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+
+            /* Image Container */
+            .widget-gw-widget .widget-product .image-container {
+                overflow: hidden;
+                position: relative;
+                height: 60%;
+                margin-bottom: 10px;
+            }
+
+            .component-list .widget-container:not(.no-padding) .widget-product .image-container .p-card-img {
+                max-height: 100%;
+                max-width: 100%;
+                width: auto;
+                object-fit: contain;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .widget-gw-widget .widget-product .product-stamps {
+                display: flex;
+                flex-direction: column;
+                left: 0;
+                top: 0;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+
+                .widget-gw-widget .widget-product .product-stamps .custom-stamp-box-wrapper {
+                    position: relative;
+                    height: 100%;
+                }
+
+
+
+            .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(270.43deg, #29353c 0%, #3c5759 100%);
+                position: absolute;
+                width: 100% !important;
+                height: 20px;
+                bottom: 0;
+            }
+
+            fieldset, img {
+                border: 0;
+                vertical-align: middle;
+            }
+
+            .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge .top-ranking-text {
+                color: #ffffff;
+                margin-left: 5px;
+                font-size: 11px;
+                font-family: source_sans_proregular, sans-serif;
+                font-style: normal;
+                font-weight: 600;
+            }
+
+            /* Description */
+            .product-info-area {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 100%;
+                margin-left: 10px;
+            }
+
+            .product-name-wrapper {
+                flex: 1;
+                overflow: hidden;
+                text-decoration: none;
+            }
+
+            .widget-gw-widget .widget-product .product-info-area .brand {
+                font-weight: bold;
+                font-size: 15px;
+                color: #29353c;
+            }
+
+
+            .widget-gw-widget .product-slider .product-info-area .name {
+                font-size: 12px;
+                color: #333;
+                margin: 2px 0;
+                white-space: normal;
+                overflow: visible;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+
+
+
+
+            /* Ratings */
+            .widget-gw-widget .product-slider .product-info-area .ratings-container {
+                display: flex;
+                min-height: 15px;
+                align-items: center;
+                margin-top: 2px;
+                text-decoration: none;
+            }
+
+                .widget-gw-widget .product-slider .product-info-area .ratings-container .ratings-score {
+                    font-family: source_sans_proregular, sans-serif;
+                    font-size: 15px;
+                    font-weight: 400;
+                    line-height: 15px;
+                    padding: 0 2px 0 0;
+                    text-decoration: none;
+                    color: #333;
+                }
+
+            /* Price */
+
+            .widget-gw-widget .widget-product .description .price-container {
+                display: flex;
+                align-items: center;
+                height: 20px;
+                color: #333;
+            }
+
+                .widget-gw-widget .widget-product .description .price-container .prices {
+                    display: flex;
+                    align-items: center;
+                    height: 20px;
+                    line-height: 20px;
+                    color: #333;
+                }
+
+            .widget-gw-widget .widget-product .description div.price-box {
+                color: #333;
+                font-weight: 600;
+            }
+
+
+
+            /* Favorite Button */
+            .fvrt-btn-wrppr {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                cursor: pointer;
+            }
+
+            .fa-regular {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 27px;
+                height: 27px;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
+                border: solid 1px #f0f0f0;
+                background: #ffffff;
+                box-sizing: border-box;
+                border-radius: 100%;
+                font-size: 14px;
+            }
+
+                .fa-regular:hover {
+                    color: #73a1b2; /* Favori butonu �zerine gelindi�inde renk */
+                }
+
+            .form-control.is-invalid {
+                border-color: #dc3545;
+                padding-right: calc(1.5em + .75rem);
+            }
+
+            .form-text.text-danger {
+                color: #dc3545;
+            }
+        </style>
+
+        <script>
+            // --------------------------------- Scroll Cards ---------------------------------
+            function scrollCards(direction) {
+                const container = document.querySelector('.credit-cards-container');
+                const scrollAmount = 300; // Kartların kaydırılacak mesafesi
+                container.scrollBy({
+                    left: direction * scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+
+            // --------------------------------- Card CVV ---------------------------------
+            function formatCVV(input) {
+                let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
+                let errorElement = document.getElementById('cvvError');
+
+                // Limit value to 3 digits
+                if (value.length > 3) {
+                    value = value.substring(0, 3);
+                }
+
+                // Update the input field with formatted value
+                input.value = value;
+
+                // Validate CVV (must be exactly 3 digits)
+                if (value.length < 3) {
+                    errorElement.textContent = 'CVV must be exactly 3 digits.';
+                    input.classList.add('is-invalid');
+                } else {
+                    errorElement.textContent = '';
+                    input.classList.remove('is-invalid');
+                }
+            }
+            // --------------------------------- Card Exp ---------------------------------
+            function formatExpirationDate(input) {
+                let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
+                let formattedValue = '';
+                let errorElement = document.getElementById('expirationDateError');
+
+                // Limit value to 4 digits
+                if (value.length > 4) {
+                    value = value.substring(0, 4);
+                }
+
+                // Insert a slash between month and year
+                if (value.length > 2) {
+                    formattedValue = value.substring(0, 2) + '/' + value.substring(2);
+                } else {
+                    formattedValue = value;
+                }
+
+                // Validate month (MM) part
+                if (value.length >= 2) {
+                    let month = parseInt(value.substring(0, 2), 10);
+                    if (month < 1 || month > 12) {
+                        errorElement.textContent = 'Month must be between 01 and 12.';
+                        input.classList.add('is-invalid');
+                    } else {
+                        errorElement.textContent = '';
+                        input.classList.remove('is-invalid');
+                    }
+                }
+
+                // Update the input field with formatted value
+                input.value = formattedValue;
+            }
+            // --------------------------------- Card Number ---------------------------------
+            function formatCardNumber(input) {
+                let value = input.value.replace(/\s+/g, ''); // Remove existing spaces
+                let formattedValue = '';
+
+                // Limit value to 16 digits
+                if (value.length > 16) {
+                    value = value.substring(0, 16);
+                }
+
+                // Insert a space every 4 digits
+                for (let i = 0; i < value.length; i += 4) {
+                    if (i > 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value.substring(i, i + 4);
+                }
+
+                // Update the input field with formatted value
+                input.value = formattedValue;
+            }
+            // --------------------------------- Carousel ---------------------------------
+            $(document).ready(function () {
+                $('.carousel').carousel({
+                    interval: false // Disable automatic cycling
+                });
+            });
+
+            // --------------------------------- Open or Close Modal ---------------------------------
+
+            $(document).ready(function () {
+                $('.btn[data-toggle="modal"]').on('click', function () {
+                    var targetModal = $(this).data('target');
+                    $(targetModal).modal('show');
+                });
+            });
+            $(document).ready(function () {
+                $(document).on('click', '[data-dismiss="modal"]', function () {
+                    var targetModal = $(this).closest('.modal');
+                    $(targetModal).modal('hide');
+                });
+            });
+
+        </script>
 
 </body>
 </html>

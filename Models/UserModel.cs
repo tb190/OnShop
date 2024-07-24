@@ -23,6 +23,6 @@ namespace OnShop.Models
         public ICollection<CreditCardModel> CreditCards { get; set; } // foreign keys
         public ICollection<ProductModel> PurchasedProducts { get; set; } // foreign keys
 
-        public ICollection<int> BasketProductsID { get; set; } // foreign keys
+        public ICollection<BasketProductModel> BasketProducts { get; set; } // foreign keys
     }
 }

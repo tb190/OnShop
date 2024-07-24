@@ -45,3 +45,4 @@ C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Re
 C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\Casper\Desktop\OnShop\bin\Debug\net8.0\Dapper.dll

@@ -24,11 +24,85 @@
                 <span style="font-size: 18px; font-weight: bold;">Total Price:</span>
                 <span style="font-size: 18px; font-weight: bold; margin-left: 10px;">@Model.TotalPrice.ToString("C")</span>
             </div>
-            <form asp-area="" asp-controller="User" asp-action="BuyProducts" asp-method="post" enctype="multipart/form-data">
-                <div class="button-container" style="display: flex; justify-content: flex-end;">
-                    <button class="btn btn-outline-secondary" type="button" style="width: 200px; max-width: 300px; margin-bottom:30px; margin-top:-35px;">Purchase Products</button>
+
+         
+
+            <div class="button-container" style="display: flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#reviewModal" style="width: 200px; max-width: 300px; margin-bottom:30px; margin-top:-35px;">Purchase Products</button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+
+                            <div>
+                                @if (Model.userModel.CreditCards == null || !Model.userModel.CreditCards.Any())
+                    {
+                                <p style="padding-top: 17px;">No credit cards available.</p>
+                    }
+                    else
+                    {
+ <!-- Display Total Price -->
+                                <div class="total-price" style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;">
+                                    <strong style="margin-right:10px;">Total Price:</strong> @Model.TotalPrice.ToString("C")
+                                </div>
+
+ <!-- Container for Credit Cards -->
+                                <form asp-area="" asp-controller="User" asp-action="BuyProducts" method="post" class="credit-card-selection-form">
+                                    <div class="credit-cards-container">
+                                        @foreach (var card in Model.userModel.CreditCards)
+{
+                                        <label class="credit-card-label" onclick="selectCard(this)">
+                                            <div class="credit-card-container">
+                                                <div class="credit-card">
+                                                    <div class="card-front">
+                                                        <div class="card-details" style="display: flex; flex-direction: column; justify-content: flex-start; position: absolute; bottom: 20px; left: 20px;">
+                                                            <div class="card-number-expiration">
+                                                                <div class="card-number">
+                                                                    @card.CardNumber
+                                                                </div>
+                                                                <div class="card-expiration">
+                                                                    Expiry: @card.ExpirationDate
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-holder">
+                                                                <strong>Card Holder:</strong> @card.CardHolderName
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-back">
+                                                        <div class="card-cvv">
+                                                            <strong>CVV:</strong> @card.CVV
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="radio" name="CardId" value="@card.CreditCardId" class="card-radio" />
+                                            </div>
+                                        </label>
+}
+                                    </div>
+
+                                    <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
+
+                                    <!-- Confirmation Button -->
+                                    <div class="button-container">
+                                        <button type="submit" class="btn btn-outline-secondary" style="margin-top:10px;">Confirm</button>
+                                    </div>
+                                </form>
+                    }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+
+
         </div>
 
         @foreach (var product in Model.BasketProducts)
@@ -234,6 +308,7 @@
     </div>
 
     <style>
+
         a {
             text-decoration: none;
             color: #333;
@@ -311,6 +386,166 @@
                 outline: none;
                 border: 1px solid #ccc;
             }
+
+
+
+        /* modal */
+        .modal-xl-custom {
+            max-width: 800px; /* Adjust the width as needed */
+            max-height: 600px;
+        }
+
+        .modal-dialog {
+            width: 800px;
+            max-width: none;
+            margin: 1.75rem auto;
+        }
+
+        .modal-body {
+            overflow-x: hidden; /* Kaydırma çubuğu eklemek için */
+        }
+
+        .close {
+            position: absolute;
+            top: 15px; /* Adjust as needed */
+            right: 15px; /* Adjust as needed */
+            background: none; /* Remove any background */
+            border: none; /* Remove any border */
+            color: #000; /* Set text color, adjust as needed */
+            font-size: 1.5rem; /* Adjust size as needed */
+            line-height: 1; /* Align vertically */
+            cursor: pointer; /* Show pointer cursor on hover */
+            margin: 10px;
+        }
+
+            .close:focus {
+                outline: none; /* Remove the default outline */
+            }
+
+            .close span {
+                font-size: 1.5rem; /* Adjust size to fit the design */
+                display: block; /* Ensure it is displayed properly */
+            }
+
+        /* credit card */
+        .credit-cards-container {
+            flex-direction: row; /* Align cards in a row */
+            overflow-x: auto; /* Enable horizontal scrolling */
+            padding: 20px; /* Padding around the container */
+            gap: 15px; /* Space between cards */
+            width: 1000px; /* Ensure the container takes up full width */
+            white-space: nowrap; /* Prevent wrapping of cards to the next line */
+            height: 250px;
+            perspective: 1000px;
+            display: inline-block;
+        }
+
+        /* Style for individual credit cards */
+        .credit-card {
+            width: 370px; /* Adjust the width as needed */
+            height: 220px; /* Adjust the height as needed */
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s; /* Süreyi burada ayarlayın */
+        }
+
+            /* Styling for selected card */
+            .credit-card.selected {
+                border: 2px solid #007bff;
+                box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+            }
+
+            /* Styling for hovering effect */
+            .credit-card:hover {
+                transform: rotateY(180deg);
+
+            }
+
+        /* Optional scrollbar styling for Webkit browsers */
+        .credit-cards-container::-webkit-scrollbar {
+            height: 2px; /* Adjust scrollbar height */
+        }
+
+        .credit-cards-container::-webkit-scrollbar-thumb {
+            background-color: #888; /* Color of the scrollbar */
+            border-radius: 4px; /* Rounded corners of the scrollbar thumb */
+        }
+
+            .credit-cards-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555; /* Darker color on hover */
+            }
+
+        /* Card Back Design */
+        /* Front and Back sides of the card */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card Front Design */
+        .card-front {
+            background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        /* Card Back Design */
+        .card-back {
+            background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
+            color: #333;
+            transform: rotateY(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* card detailss */
+        /* Card Details Styling */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        /* Group card number and expiration together */
+        .card-number-expiration {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .card-number,
+        .card-expiration,
+        .card-holder {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .card-holder {
+            text-transform: uppercase;
+        }
+
+        .credit-card-label {
+            cursor: pointer;
+        }
+
+        .card-radio {
+            display: none;
+        }
+
+
 
         /* ------------------------------- article için ------------------------------ */
         a {
@@ -679,6 +914,20 @@
     </style>
 
     <script>
+
+        // --------------------------------- selectCard ---------------------------------
+        function selectCard(label) {
+            // Remove 'selected' class from all cards
+            document.querySelectorAll('.credit-card').forEach(function (card) {
+                card.classList.remove('selected');
+            });
+
+            // Add 'selected' class to clicked card
+            label.querySelector('.credit-card').classList.add('selected');
+
+            // Check the radio button
+            label.querySelector('.card-radio').checked = true;
+        }
         // --------------------------------- Change Quantity ---------------------------------
         function changeQuantity(amount, event, quantityInputId, hiddenQuantityId, formId) {
             event.stopPropagation(); // Propagasyonu durdurur

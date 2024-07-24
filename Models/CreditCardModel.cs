@@ -2,7 +2,7 @@ namespace OnShop.Models
 {
     public class CreditCardModel
     {
-        public int CardInfoId { get; set; } // primary key
+        public int CreditCardId { get; set; } // primary key
         public int UserId { get; set; } // foreign key
 
         public string CardNumber { get; set; }

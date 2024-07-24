@@ -33,7 +33,6 @@ namespace OnShop.Controllers
 
             int? userId = HttpContext.Session.GetInt32("UserId");
 
-
             // Veritaban�ndan kategorileri �ek
             var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
 
@@ -64,6 +63,12 @@ namespace OnShop.Controllers
         {
             try
             {
+                int? userId = HttpContext.Session.GetInt32("UserId");
+                if (userId == null)
+                {
+                    HttpContext.Session.Remove("UserId");
+                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                }
                 Console.WriteLine("id: "+ProductId);
 
                 var productViewModel = await _userDbFunctions.UserGetProductDetails(ProductId);
@@ -76,8 +81,7 @@ namespace OnShop.Controllers
 
                 productViewModel.OtherProducts = otherproducts;
 
-                int? userId = HttpContext.Session.GetInt32("UserId");
-
+               
 
                 return View(productViewModel);
             }
@@ -98,6 +102,11 @@ namespace OnShop.Controllers
             try
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
+                if (userId == null)
+                {
+                    HttpContext.Session.Remove("UserId");
+                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                }
                 var result = await _userDbFunctions.ProductAddToCartDb(ProductId,CompanyId,userId, Quantity);
 
 
@@ -117,8 +126,16 @@ namespace OnShop.Controllers
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
 
+                if (userId == null)
+                {
+                    HttpContext.Session.Remove("UserId");
+                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                }
+
                 List<BasketProductModel> BasketProducts = await _userDbFunctions.GetUserBasketProducts(userId);
                 List<ProductModel> DeletedProducts = await _userDbFunctions.GetUserDeletedProducts(userId);
+
+                var userModel = await _userDbFunctions.GetUserProfile(userId);
 
                 decimal TotalPrice = 0;
                
@@ -137,6 +154,7 @@ namespace OnShop.Controllers
                     GuestHomeView = null,
                     BasketProducts = BasketProducts,
                     DeletedProducts = DeletedProducts,
+                    userModel = userModel,
                 };
 
                 foreach (var product in productviewModel.BasketProducts) TotalPrice += product.Price * product.Count;
@@ -161,8 +179,13 @@ namespace OnShop.Controllers
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                return Json(0); // Kullanıcı giriş yapmamışsa, sepet sayısı 0
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
             }
+            /*if (userId == null)
+            {
+                return Json(0); // Kullanıcı giriş yapmamışsa, sepet sayısı 0
+            }*/
 
             var basketCount =  _userDbFunctions.GetNumberOfProductInBasket(userId);
             return Json(basketCount);
@@ -172,8 +195,11 @@ namespace OnShop.Controllers
         public async Task<IActionResult> RemoveProductFromBasket(int ProductId,int CompanyId)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
-
-
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
             var result = await _userDbFunctions.RemoveProductFromBasketDB(ProductId, CompanyId, userId);
 
             return RedirectToAction("UserBasket");
@@ -184,6 +210,11 @@ namespace OnShop.Controllers
         public async Task<IActionResult> UpdateBasketProductQuantity(int ProductId, int CompanyId, int Quantity)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
             var result = await _userDbFunctions.UpdateBasketProductQuantityDB(ProductId, CompanyId, userId, Quantity);
                                                                       
             return RedirectToAction("UserBasket");
@@ -193,7 +224,16 @@ namespace OnShop.Controllers
         public async Task<IActionResult> UserProfile()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
             var userModel = await _userDbFunctions.GetUserProfile(userId);
+
+
+
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
 
             var productviewModel = new ProductViewModel
             {
@@ -201,16 +241,71 @@ namespace OnShop.Controllers
                 User = null,
                 Product = null,
                 ProductReviews = null,
-                Categories = null,
+                Categories = categories,
                 GuestHomeView = null,
                 BasketProducts = null,
                 DeletedProducts = null,
                 userModel = userModel,
             };
+            
 
             return View(productviewModel);
 
         }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        [HttpPost]
+        public async Task<IActionResult> AddCard(string CardNumber, string CardHolderName, string ExpirationDate, string CVV)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+            var userModel = await _userDbFunctions.AddCard(userId, CardNumber, CardHolderName, ExpirationDate, CVV);
+
+            return RedirectToAction("UserProfile");
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        [HttpPost]
+        public async Task<IActionResult> BuyProducts(decimal TotalPrice,int CardId)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+
+            var result = await _userDbFunctions.BuyProducts(userId, TotalPrice, CardId);
+
+            return RedirectToAction("UserBasket");
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        [HttpPost]
+        public async Task<IActionResult> AddReview(int ProductId, int Rating, string Review)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+
+            var productId = await _userDbFunctions.AddReview(userId, ProductId, Rating, Review);
+
+            Console.WriteLine("iddd:" + productId);
+            return RedirectToAction("ProductDetails", new { ProductId = productId });
+        }
+
+
 
     }
 }
