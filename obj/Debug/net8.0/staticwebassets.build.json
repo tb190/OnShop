@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/SFgzvT7EIV/so7kuBf53dSl//OeMBMEmGxHW4IQ16o=",
+  "Hash": "eVbpkku/1xqC+Sp1NlmYqsVjP984mh+o0SvBtr9DMSg=",
   "Source": "OnShop",
   "BasePath": "_content/OnShop",
   "Mode": "Default",
@@ -1174,6 +1174,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Pictures\\bg.png"
+    },
+    {
+      "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\card.png",
+      "SourceId": "OnShop",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\",
+      "BasePath": "_content/OnShop",
+      "RelativePath": "Pictures/card.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Pictures\\card.png"
     },
     {
       "Identity": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\1be99c6c-0641-4472-b567-9a41af07078a.jpg",

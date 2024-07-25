@@ -61,6 +61,10 @@
       "PackagePath": "staticwebassets\\Pictures\\bg.png"
     },
     {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\card.png",
+      "PackagePath": "staticwebassets\\Pictures\\card.png"
+    },
+    {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logo.png",
       "PackagePath": "staticwebassets\\Pictures\\logo.png"
     },

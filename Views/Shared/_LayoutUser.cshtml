@@ -57,11 +57,11 @@
         </nav>
 
 
-        <!-- Category bar !!!!! kategoriye g�re �r�nleri g�stercen -->
+        <!--  Category and Type Dropdowns -->
         <div class="container">
             <div class="category-bar">
                 <ul class="nav justify-content-center">
-                    <a class="nav-link category-navlink" href="#" id="category-All" data-categoryid="All">
+                    <a class="nav-link category-navlink" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="" asp-route-type="" id="category-All" data-categoryid="">
                         All
                     </a>
                     @if (Model.Categories != null && Model.Categories.Count > 0)
@@ -69,7 +69,7 @@
                     @foreach (var category in Model.Categories)
                         {
                     <li class="nav-item" id="category-@category.CategoryId" data-categoryid="@category.CategoryId">
-                        <a class="nav-link category-navlink" href="#" id="category-@category.CategoryId" data-categoryid="@category.CategoryId">
+                        <a class="nav-link category-navlink" id="category-@category.CategoryId" data-categoryid="@category.CategoryId" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="">
                             @category.CategoryName
                         </a>
                         <div class="types-list" id="types-list-@category.CategoryId">
@@ -82,10 +82,9 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                             {
                                         <li>
-                                            <a class="nav-link" href="#" id="category-@category.Types[j]" data-categoryid="@category.Types[j]">
+                                            <div class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j]" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.Types[j]" asp-route-type="">
                                                 @category.Types[j]
-
-                                            </a>
+                                            </div>
                                         </li>
 
                                             }
@@ -99,10 +98,10 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                                     {
                                         <li>
-                                            <a class="nav-link" href="#" id="category-@category.Types[j]" data-categoryid="@category.Types[j]">
+                                            <div class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j] " asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.Types[j]" asp-route-type="">
                                                 @category.Types[j]
 
-                                            </a>
+                                            </div>
                                         </li>
                                                     }
                                     </ul>
@@ -130,15 +129,54 @@
         </div>
 
 
+
+
         <!-- Main content -->
-            <main role="main" style="margin-left: 100px; margin-right: 100px; margin-top: 20px;">
-                @RenderBody()
-            </main>
+        <main role="main" style="margin-left: 100px; margin-right: 100px; margin-top: 20px;">
+            @RenderBody()
+        </main>
     </div>
 
 
     <script>
+        // ------------------------------ cateogry or type or all ---------------------------------------------------
+       /* $(document).ready(function () {
+            // Function to handle the AJAX request
+            function fetchProducts(category, type) {
+                $.ajax({
+                    url: '@Url.Action("GetProductsByCategoryAndType", "User")',
+                    type: 'POST',
+                    data: {
+                        category: category,
+                        type: type
+                    }
+                });
+            }
 
+            // Handle category clicks
+            $('.category-navlink').click(function (e) {
+                e.preventDefault();
+                var categoryId = $(this).data('categoryid');
+                fetchProducts(categoryId, null); // Fetch products by category
+            });
+
+            // Handle type clicks
+            $('.types-list .nav-link').click(function (e) {
+                e.preventDefault();
+                var categoryId = $(this).closest('.types-list').attr('id').replace('types-list-', '');
+                var type = $(this).data('categoryid');
+                fetchProducts(categoryId, type); // Fetch products by category and type
+            });
+
+            // Optionally, you might want to handle the "All" button to show all products
+            $('#category-All').click(function (e) {
+                e.preventDefault();
+                fetchProducts(null, null); // Fetch all products
+            });
+        });
+        */
+
+        // ---------------------------------------------------------------------------------
         $(document).ready(function () {
             $.getJSON('@Url.Action("GetBasketCount", "User")', function (data) {
                 if (data > 0) {
@@ -149,6 +187,7 @@
             });
         });
 
+        // ---------------------------------------------------------------------------------
 
         $(document).ready(function () {
             // Hide all type lists initially
@@ -258,6 +297,7 @@
                 color: #29353c;
                 font-size: 14px;
                 font-family: 'Montserrat', cursive;
+                cursor: pointer;
             }
 
             .category-bar .category-navlink:hover {

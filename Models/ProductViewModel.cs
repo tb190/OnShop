@@ -16,5 +16,9 @@ namespace OnShop.Models
         public List<ProductModel> DeletedProducts { get; set; }
 
         public UserModel userModel { get; set; }
+        public List<CompanyModel> AllCompanies { get; set; }
+
+        public List<ProductModel> AllProducts { get; set; }
+
     }
 }

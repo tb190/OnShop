@@ -40,6 +40,8 @@ namespace OnShop.Controllers
 
             var sortedProducts = products.OrderByDescending(p => p.Clicked).ToList();
 
+            var companies = await _userDbFunctions.GetAllCompanies();
+
             var productviewModel = new ProductViewModel
             {
                 Company = null,
@@ -52,7 +54,8 @@ namespace OnShop.Controllers
                     Categories = categories,
                     Products = products,
                     MostClickedProducts = sortedProducts
-                }
+                },
+                AllCompanies = companies
             };
 
             return View("UserHome", productviewModel);
@@ -301,9 +304,44 @@ namespace OnShop.Controllers
 
             var productId = await _userDbFunctions.AddReview(userId, ProductId, Rating, Review);
 
-            Console.WriteLine("iddd:" + productId);
             return RedirectToAction("ProductDetails", new { ProductId = productId });
         }
+        // --------------------------------------------------------------------------------------------------------------------------
+        [HttpPost]
+        public async Task<IActionResult> GetCompanyproducts(int CompanyId)
+        {
+            Console.WriteLine(CompanyId);
+            return RedirectToAction("UserHome");
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        [HttpGet]
+        public async Task<IActionResult> GetProductsByCategoryAndType(string category, string type)
+        {
+            try
+            {
+                Console.WriteLine("category: " + category + "  type: " + type);
+
+                var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+                var CategoryName = categories.FirstOrDefault(c => c.CategoryId.ToString() == category)?.CategoryName ?? "All";
+                var Allproducts = await _userDbFunctions.GetProductsByCategoryAndType(CategoryName, type);
+
+                var productviewModel = new ProductViewModel
+                {
+                    Categories = categories,
+                    AllProducts = Allproducts,
+                };
+
+                Console.WriteLine(productviewModel.AllProducts.Count);
+                return View(productviewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
 
 
 

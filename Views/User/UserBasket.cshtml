@@ -71,7 +71,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="card-holder">
-                                                                <strong>Card Holder:</strong> @card.CardHolderName
+                                                                <strong> @card.CardHolderName</strong>
                                                             </div>
 
                                                         </div>
@@ -441,33 +441,30 @@
         }
 
         /* Style for individual credit cards */
+        /* Style for individual credit cards */
         .credit-card {
-            width: 370px; /* Adjust the width as needed */
-            height: 220px; /* Adjust the height as needed */
+            width: 347px; /* Adjust the width as needed */
+            height: 217px; /* Adjust the height as needed */
             border: 1px solid #ddd;
-            border-radius: 10px;
+            border-radius: 14px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            margin-right: 15px; /* Add some space between cards */
+            flex-shrink: 0; /* Prevent cards from shrinking */
             position: relative;
             transform-style: preserve-3d;
             transition: transform 1s; /* Süreyi burada ayarlayın */
         }
-
-            /* Styling for selected card */
-            .credit-card.selected {
-                border: 2px solid #007bff;
-                box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
-            }
-
             /* Styling for hovering effect */
             .credit-card:hover {
                 transform: rotateY(180deg);
-
             }
 
         /* Optional scrollbar styling for Webkit browsers */
         .credit-cards-container::-webkit-scrollbar {
-            height: 2px; /* Adjust scrollbar height */
+            height: 5px; /* Adjust scrollbar height */
         }
 
         .credit-cards-container::-webkit-scrollbar-thumb {
@@ -492,8 +489,15 @@
 
         /* Card Front Design */
         .card-front {
-            background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
-            color: #333;
+            /* Arka plan rengi ya da gradienti tanımlayabilirsiniz */
+            background: #fff;
+            /* Arka plan görüntüsü */
+            background-image: url('/Pictures/card.png');
+            background-size: contain; /* Görüntüyü içeri sığdır */
+            background-repeat: no-repeat; /* Tekrar etmesini engelle */
+            background-position: center; /* Görüntüyü ortalayın */
+            /* Kenar boşlukları veya dolgu için padding veya border kullanabilirsiniz */
+            /* Diğer stil özellikleri */
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -502,8 +506,9 @@
 
         /* Card Back Design */
         .card-back {
-            background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
-            color: #333;
+            /*background: linear-gradient(135deg, #7f8c8d, #bdc3c7);*/
+            background-color: #000;
+            color: #eeeeee;
             transform: rotateY(180deg);
             display: flex;
             align-items: center;
@@ -522,13 +527,22 @@
         /* Group card number and expiration together */
         .card-number-expiration {
             display: flex;
+            color: #fff;
             flex-direction: column;
             margin-bottom: 10px;
         }
 
-        .card-number,
+        .card-number {
+            padding-top: 20px;
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+
+
         .card-expiration,
         .card-holder {
+            color: #fff;
             font-size: 0.9em;
             margin-bottom: 5px;
         }
@@ -544,6 +558,8 @@
         .card-radio {
             display: none;
         }
+
+
 
 
 

@@ -1,0 +1,54 @@
+@model OnShop.Models.ProductViewModel
+@{
+    ViewData["Title"] = "User All Products";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/OnShop.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>@ViewData["Title"]</h1>
+
+        <div class="row">
+            @if (Model.AllProducts != null && Model.AllProducts.Any())
+            {
+                foreach (var product in Model.AllProducts)
+                {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="@product.Photos.FirstOrDefault()" class="card-img-top" alt="@product.ProductName" />
+                    <div class="card-body">
+                        <h5 class="card-title">@product.ProductName</h5>
+                        <p class="card-text">
+                            <strong>Category:</strong> @product.Category<br />
+                            <strong>Type:</strong> @product.Type<br />
+                            <strong>Price:</strong> @product.Price.ToString("C")<br />
+                            <strong>Stock:</strong> @product.Stock<br />
+                            <strong>Description:</strong> @product.Description
+                        </p>
+                        <a href="#" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+                }
+            }
+            else
+            {
+            <p>No products found.</p>
+            }
+        </div>
+    </div>
+</body>
+</html>
