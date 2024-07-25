@@ -22,5 +22,6 @@ namespace OnShop.Models
 
         public LoginViewModel CompanyDetails { get; set; }
 
+        public bool IsFollowing { get; set; }
     }
 }

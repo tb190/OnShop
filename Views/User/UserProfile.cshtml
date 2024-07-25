@@ -28,24 +28,22 @@
 
 
 
-        <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;"> User Profile</h1>
+        <h1 style="padding-bottom: 10px; display:flex; font-size:20px;"> User Profile</h1>
 
         <!-- user profile -->
-        <div class="card" style="display: flex; flex-direction: row; position: relative;">
-
+        <div class="card profile-card">
             <!-- Profile Picture and Button Wrapper -->
             <div class="profile-picture-wrapper">
                 <div class="profile-picture">
                     @Model.userModel.Name[0]@Model.userModel.SurName[0]
                 </div>
-
             </div>
 
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title">@Model.userModel.Name @Model.userModel.SurName</h5>
                     <a asp-area="" asp-controller="Login" asp-action="LogOut">
-                        <span class="las la-sign-out-alt" style="color:#333; fill:none; font-size:1.5rem "></span>
+                        <span class="las la-sign-out-alt" style="color:#333; font-size:1.5rem;"></span>
                     </a>
                 </div>
 
@@ -56,14 +54,16 @@
                 <p class="card-text"><i class="las la-birthday-cake" style="margin-right:5px;"></i><strong>Birth Date:</strong> @Model.userModel.BirthDate.ToShortDateString()</p>
                 <p class="card-text"><i class="las la-calendar-day" style="margin-right:5px;"></i><strong>Account Created:</strong> @Model.userModel.CreatedAt.ToShortDateString()</p>
             </div>
-
         </div>
 
 
-        <!-- CreditCards -->
-        <div class="CreditCards-container" style="margin-top:40px;">
 
-            <div class="header-container" style="border-bottom: 1px solid #8f8f8f;  display: flex; align-items: center; justify-content: space-between; font-size: 20px;">
+
+
+        <!-- CreditCards -->
+        <div class="CreditCards-container" style="margin-top:70px;">
+
+            <div class="header-container" style=" display: flex; align-items: center; justify-content: space-between; font-size: 20px;">
                 <h1>Credit Cards</h1>
                 <div class="button-container" style="display: flex; justify-content: flex-end;">
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#reviewModal" style="width: 200px; max-width: 300px; margin-bottom:17px;">Add Card</button>
@@ -90,7 +90,7 @@
                                             <div class="card-expiration">Expiry: @card.ExpirationDate</div>
                                         </div>
                                         <div class="card-holder">
-                                            <strong>@card.CardHolderName </strong> 
+                                            <strong>@card.CardHolderName </strong>
                                         </div>
                                     </div>
                                 </div>
@@ -151,8 +151,8 @@
 
 
         <!-- Reviews -->
-        <div class="reviews-container" style="margin-top:40px;">
-            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;">Product Reviews</h1>
+        <div class="reviews-container" style="margin-top:70px;">
+            <h1 style=" padding-bottom: 17px; display:flex; font-size:20px;">Product Reviews</h1>
             @if (Model.userModel.ProductReviews == null || !Model.userModel.ProductReviews.Any())
             {
             <p>No reviews available.</p>
@@ -160,7 +160,7 @@
             else
             {
             <div class="reviews-part">
-                @foreach (var review in Model.userModel.ProductReviews)
+                @foreach (var review in Model.userModel.ProductReviews.OrderByDescending(r => r.CreatedAt))
                 {
                 <div class="review-item">
 
@@ -193,20 +193,29 @@
 
 
 
-
         <!-- FollowedCompanies -->
-        <div class="companies-container" style="margin-top:40px;">
-            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;"> Followed Companies</h1>
+        <div class="companies-container" style="margin-top:70px;">
+            <h1 style=" padding-bottom: 17px; display:flex; font-size:20px;">Followed Companies</h1>
             @if (Model.userModel.FollowedCompanies == null || !Model.userModel.FollowedCompanies.Any())
-               {
+            {
             <p>No companies available.</p>
-               }
-               else{
-            @foreach (var company in Model.userModel.FollowedCompanies)
-                    {
-            <li class="list-group-item">@company.CompanyName</li>
-                    }
-               }
+            }
+            else
+            {
+            <div class="companies-list" style="display: flex; overflow-x: auto; gap: 20px;">
+                @foreach (var company in Model.userModel.FollowedCompanies)
+            {
+                string lastPart = System.IO.Path.GetFileName(company.BannerUrl);
+                <a class="company-card" style="flex: 0 0 200px; position: relative; overflow: hidden;" asp-area="" asp-controller="User" asp-action="CompanyDetails" asp-route-companyId="@company.CompanyId">
+                    <div class="company-banner" style="background-image: url('@Url.Content("~/Pictures/CompanyBanners/" + lastPart)'); background-size: cover; background-position: center; width: 200px; height: 100px; border-radius: 8px;">
+                        <div class="company-info" style="position: absolute; bottom: 0; left: 0; right: 0; padding: 10px; background: rgba(0, 0, 0, 0.5); color: white;">
+                            <span>@company.CompanyName</span>
+                        </div>
+                    </div>
+                </a>
+            }
+            </div>
+    }
         </div>
 
 
@@ -214,8 +223,8 @@
 
 
         <!-- PurchasedProducts -->
-        <div class="PurchasedProducts-container" style="margin-top:40px;">
-            <h1 style="border-bottom:1px solid #8f8f8f; padding-bottom: 17px; display:flex; font-size:20px;">Purchased Products</h1>
+        <div class="PurchasedProducts-container" style="margin-top:70px;">
+            <h1 style=" padding-bottom: 17px; display:flex; font-size:20px;">Purchased Products</h1>
             @if (Model.userModel.PurchasedProducts == null || !Model.userModel.PurchasedProducts.Any())
                {
             <p>No purchased products available.</p>
@@ -228,8 +237,8 @@
                             <div>
                                 <div class="widget-header">
                                     <!--div class="widget-header-navigation">
-                                    <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
-                                </div-->
+                                        <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                    </div-->
                                 </div>
                             </div>
                             <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
@@ -319,44 +328,126 @@
 
         <style>
 
+            /* followed companies  */
+            .companies-container {
+                padding: 20px;
+                overflow-x: auto;
+            }
 
-            /* profile card */
-            .card {
+            .companies-list {
                 display: flex;
-                align-items: center; /* Center align items vertically */
-                margin-bottom: 20px;
-                justify-content: center; /* Horizontally center-align content */
+                gap: 20px;
+            }
+
+            .company-card {
+                flex: 0 0 200px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .company-banner {
+                background-size: cover;
+                background-position: center;
+                width: 300px;
+                height: 200px;
+                border-radius: 8px;
+                position: relative;
+            }
+
+            .company-info {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 10px;
+                background: rgba(0, 0, 0, 0.5);
+                color: white;
+                text-align: center;
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+            }
+
+
+
+            /* profile */
+            .profile-card {
+                display: flex;
+                flex-direction: row;
+                position: relative;
+                background: #f5f7fa;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .profile-picture-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-right: 20px;
             }
 
             .profile-picture {
-                margin-left: 50px;
                 width: 80px;
                 height: 80px;
+                background-color: #fff;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #f06, #f79);
-                color: white;
                 display: flex;
-                align-items: center;
                 justify-content: center;
-                font-size: 24px;
+                align-items: center;
+                font-size: 36px;
+                color: #555;
                 font-weight: bold;
-                margin-right: 20px; /* Space between picture and text */
             }
 
             .card-body {
-                flex: 1; /* Take up remaining space */
+                position: relative;
+                width: 100%;
+            }
+
+            .card-title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
             }
 
             .card-text {
-                display: flex;
-                align-items: center;
                 margin-bottom: 10px;
+                color: #555;
             }
 
-                .card-text i {
-                    color: #333;
-                    margin-right: 5px;
-                }
+            .profile-card::before {
+                content: '';
+                position: absolute;
+                top: -50px;
+                right: -50px;
+                width: 200px;
+                height: 200px;
+                background: rgba(173, 216, 230, 0.5);
+                border-radius: 50%;
+                z-index: 0;
+            }
+
+            .profile-card::after {
+                content: '';
+                position: absolute;
+                bottom: -50px;
+                left: -50px;
+                width: 300px;
+                height: 300px;
+                background: rgba(255, 182, 193, 0.5);
+                border-radius: 50%;
+                z-index: 0;
+            }
+
+            .profile-card .card-body, .profile-card .profile-picture-wrapper {
+                position: relative;
+                z-index: 1;
+            }
+
+
 
 
 
@@ -434,6 +525,7 @@
                 position: relative;
                 overflow: hidden;
             }
+
             .scroll-button {
                 position: absolute;
                 top: 50%;
@@ -453,6 +545,7 @@
             .right-button {
                 right: 0;
             }
+
             .credit-cards-container {
                 display: flex;
                 flex-direction: row; /* Align cards in a row */
@@ -479,10 +572,12 @@
                 position: relative;
                 transform-style: preserve-3d;
                 transition: transform 1s; /* Süreyi burada ayarlayın */
+                perspective: 1000px; /* Perspektif açısı */
             }
                 /* Styling for hovering effect */
                 .credit-card:hover {
-                    transform: rotateY(180deg);
+                    transform: rotateY(180deg); /* Y ekseni etrafında 180 derece döndür */
+                    transition: transform 1s ease-in-out; /* Geçişin hızı ve tarzı */
                 }
 
             /* Optional scrollbar styling for Webkit browsers */
@@ -520,7 +615,6 @@
                 background-repeat: no-repeat; /* Tekrar etmesini engelle */
                 background-position: center; /* Görüntüyü ortalayın */
                 /* Kenar boşlukları veya dolgu için padding veya border kullanabilirsiniz */
-               
                 /* Diğer stil özellikleri */
                 display: flex;
                 align-items: center;
@@ -561,7 +655,7 @@
                 color: #fff;
                 font-size: 0.9em;
             }
-            
+
 
 
             .card-expiration,
@@ -649,27 +743,24 @@
             .component-list.component-small-list {
                 display: flex;
                 flex-wrap: wrap;
+                overflow-y: hidden;
             }
 
                 .component-list.component-small-list .component-item {
                     width: 100%;
                     box-sizing: border-box;
-                    /*height: fit-content;*/
-                    height: 380px;
-                    background-image: linear-gradient(to right bottom, #f6f6f8, #f3f3f4, #f0f0f1, #ededed, #eaeaea);
-                    border-radius: 7px;
-                    /*margin: 20px auto;
-                padding: 20px;*/
-                    background-color: #fff;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                    border: 0.4px solid #eeeeee;
-                    overflow-y: hidden;
+                    height: 440px;
+                    border-radius: 8px; /* Modern köşeler */
+                    background: url('path/to/texture.png'), linear-gradient(135deg, #ffffff, #f0f0f0); /* Light texture with gradient */
+                    background-blend-mode: overlay; /* Blends the texture with the gradient */
+                    border: 1px solid #ccc; /* Light border for definition */
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow */
                 }
 
 
+
             .component-list .widget-container:not(.no-padding).extended-container {
-                /* padding: 20px 0px 0px 0px;*/
+                padding: 30px 0px 0px 0px;
                 border-radius: 8px;
                 border: 0px;
                 background-size: cover;
@@ -729,6 +820,7 @@
                     position: relative;
                     min-height: 100px;
                     max-height: 440px;
+                    margin-bottom: 20px;
                     overflow: hidden;
                 }
 
@@ -756,7 +848,6 @@
                         position: absolute;
                         top: 50%;
                         margin-top: -21px;
-                        cursor: pointer;
                         transition: all 400ms;
                         background-position: center;
                         background-repeat: no-repeat;
@@ -814,91 +905,74 @@
                 -ms-overflow-style: none;
                 margin: 0 auto;
                 padding: 0 10px;
-                gap: 16px;
+                gap: 17px;
             }
 
-            .component-list .widget-container:not(.no-padding).extended-container .widget-product {
-                margin: 1px 16px 1px 1px;
-            }
 
+
+            /* Widget Product */
             .widget-product {
                 margin: 0 0 20px 0 !important;
                 transition: box-shadow 0.2s linear;
-                cursor: pointer;
                 overflow: hidden;
-                box-sizing: border-box;
-                width: 200px !important;
-                height: 340px !important;
-                border-radius: 8px !important;
-                box-shadow: none !important;
                 flex: 0 0 auto;
+                box-sizing: border-box;
+                position: relative;
+                border: 1px solid #d3d3d3;
+                border-radius: 8px;
+                overflow: hidden;
+                transition: box-shadow 0.3s;
+                height: 340px;
+                width: 200px !important;
                 background-color: #fff;
             }
 
                 .widget-product:hover {
-                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
                 }
 
             /* Image Container */
-            .widget-gw-widget .widget-product .image-container {
+            .image-container {
+                height: 200px; /* İstenilen yüksekliği ayarlayın */
                 overflow: hidden;
                 position: relative;
-                height: 60%;
-                margin-bottom: 10px;
             }
 
-            .component-list .widget-container:not(.no-padding) .widget-product .image-container .p-card-img {
-                max-height: 100%;
-                max-width: 100%;
-                width: auto;
-                object-fit: contain;
-                margin-left: 20px;
-                margin-right: 20px;
-            }
-
-            .widget-gw-widget .widget-product .product-stamps {
-                display: flex;
-                flex-direction: column;
-                left: 0;
-                top: 0;
-                position: absolute;
-                width: 100%;
-                height: 100%;
-            }
-
-
-                .widget-gw-widget .widget-product .product-stamps .custom-stamp-box-wrapper {
-                    position: relative;
+                .image-container img {
+                    width: 100%;
                     height: 100%;
+                    object-fit: cover; /* Görüntünün kaplanması için */
+                    border-bottom: 1px solid #e0e0e0; /* Görüntünün altına sınır ekler */
                 }
 
+            /* Product Details */
+            .product-details {
+                padding: 10px;
+                color: #333;
+            }
 
-
-            .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge {
+            /* Stock Badge */
+            .stock-badge {
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                background-color: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 5px;
+                border-radius: 50%;
+                font-size: 12px;
+                text-align: center;
+                width: 30px;
+                height: 30px;
                 display: flex;
-                flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                background: linear-gradient(270.43deg, #29353c 0%, #3c5759 100%);
-                position: absolute;
-                width: 100% !important;
-                height: 20px;
-                bottom: 0;
             }
 
-            fieldset, img {
-                border: 0;
-                vertical-align: middle;
+            .stock-text {
+                display: block;
             }
 
-            .widget-gw-widget .widget-product .image-container .pr-rc-top-ranking-badge .top-ranking-text {
-                color: #ffffff;
-                margin-left: 5px;
-                font-size: 11px;
-                font-family: source_sans_proregular, sans-serif;
-                font-style: normal;
-                font-weight: 600;
-            }
 
             /* Description */
             .product-info-area {
@@ -915,14 +989,14 @@
                 text-decoration: none;
             }
 
-            .widget-gw-widget .widget-product .product-info-area .brand {
+            .product-info-area .brand {
                 font-weight: bold;
                 font-size: 15px;
                 color: #29353c;
             }
 
 
-            .widget-gw-widget .product-slider .product-info-area .name {
+            .product-info-area .name {
                 font-size: 12px;
                 color: #333;
                 margin: 2px 0;
@@ -976,155 +1050,248 @@
                 color: #333;
                 font-weight: 600;
             }
+            /* Tüm bağlantılar (anchor) için genel bir stil */
+            a {
+                text-decoration: none;
+            }
 
-
-
-            /* Favorite Button */
-            .fvrt-btn-wrppr {
+            /* Kalp Simgesi */
+            .btn-like {
+                width: 35px;
+                height: 35px;
                 position: absolute;
-                right: 10px;
                 top: 10px;
+                right: 10px;
                 cursor: pointer;
+                z-index: 10;
+                background: rgba(255, 255, 255, 0.7);
+                border-radius: 50%;
+                padding: 5px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             }
 
-            .fa-regular {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 27px;
-                height: 27px;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
-                border: solid 1px #f0f0f0;
-                background: #ffffff;
-                box-sizing: border-box;
-                border-radius: 100%;
-                font-size: 14px;
-            }
-
-                .fa-regular:hover {
-                    color: #73a1b2; /* Favori butonu �zerine gelindi�inde renk */
+                .btn-like i {
+                    font-size: 16px;
+                    transition: color 0.3s;
                 }
 
-            .form-control.is-invalid {
-                border-color: #dc3545;
-                padding-right: calc(1.5em + .75rem);
+                .btn-like.not-favorited i {
+                    color: #ccc; /* Grey color for not favorited */
+                }
+
+                .btn-like.favorited i {
+                    color: #ff4081; /* Red color for favorited */
+                }
+
+
+
+
+            /* Description */
+            .product-info-area {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 100%;
+                margin-left: 10px;
             }
 
-            .form-text.text-danger {
-                color: #dc3545;
+            .product-name-wrapper {
+                flex: 1;
+                overflow: hidden;
+                text-decoration: none;
             }
+
+            .product-info-area .brand {
+                font-weight: bold;
+                font-size: 15px;
+                color: #29353c;
+            }
+
+
+            .product-info-area .name {
+                font-size: 12px;
+                color: #333;
+                margin: 2px 0;
+                white-space: normal;
+                overflow: visible;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+
+
+
+
+            /* Ratings */
+            .product-info-area .ratings-container {
+                display: flex;
+                min-height: 15px;
+                align-items: center;
+                margin-top: 2px;
+                text-decoration: none;
+            }
+
+                .product-info-area .ratings-container .ratings-score {
+                    font-family: source_sans_proregular, sans-serif;
+                    font-size: 15px;
+                    font-weight: 400;
+                    line-height: 15px;
+                    padding: 0 2px 0 0;
+                    text-decoration: none;
+                    color: #333;
+                }
+
+            /* Price */
+
+            .description .price-container {
+                display: flex;
+                align-items: center;
+                height: 20px;
+                color: #333;
+            }
+
+                .description .price-container .prices {
+                    display: flex;
+                    align-items: center;
+                    height: 20px;
+                    line-height: 20px;
+                    color: #333;
+                }
+
+            .description div.price-box {
+                color: #333;
+                font-weight: 600;
+            }
+
         </style>
 
-        <script>
-            // --------------------------------- Scroll Cards ---------------------------------
-            function scrollCards(direction) {
-                const container = document.querySelector('.credit-cards-container');
-                const scrollAmount = 300; // Kartların kaydırılacak mesafesi
-                container.scrollBy({
-                    left: direction * scrollAmount,
-                    behavior: 'smooth'
-                });
+<script>
+    // --------------------------------- Scroll Cards ---------------------------------
+    function scrollCards(direction) {
+        const container = document.querySelector('.credit-cards-container');
+        const scrollAmount = 300; // Kartların kaydırılacak mesafesi
+        container.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+
+    $(document).ready(function () {
+        var isRotating = false;
+
+        $(".credit-card").hover(function () {
+            if (!isRotating) {
+                isRotating = true;
+                $(this).addClass("rotating");
             }
+        }, function () {
+            // Fare kartın üzerinden çekildiğinde
+        });
 
-            // --------------------------------- Card CVV ---------------------------------
-            function formatCVV(input) {
-                let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
-                let errorElement = document.getElementById('cvvError');
+        $(".credit-card").on("transitionend", function () {
+            isRotating = false;
+        });
+    });
 
-                // Limit value to 3 digits
-                if (value.length > 3) {
-                    value = value.substring(0, 3);
-                }
+    // --------------------------------- Card CVV ---------------------------------
+    function formatCVV(input) {
+        let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
+        let errorElement = document.getElementById('cvvError');
 
-                // Update the input field with formatted value
-                input.value = value;
+        // Limit value to 3 digits
+        if (value.length > 3) {
+            value = value.substring(0, 3);
+        }
 
-                // Validate CVV (must be exactly 3 digits)
-                if (value.length < 3) {
-                    errorElement.textContent = 'CVV must be exactly 3 digits.';
-                    input.classList.add('is-invalid');
-                } else {
-                    errorElement.textContent = '';
-                    input.classList.remove('is-invalid');
-                }
+        // Update the input field with formatted value
+        input.value = value;
+
+        // Validate CVV (must be exactly 3 digits)
+        if (value.length < 3) {
+            errorElement.textContent = 'CVV must be exactly 3 digits.';
+            input.classList.add('is-invalid');
+        } else {
+            errorElement.textContent = '';
+            input.classList.remove('is-invalid');
+        }
+    }
+    // --------------------------------- Card Exp ---------------------------------
+    function formatExpirationDate(input) {
+        let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
+        let formattedValue = '';
+        let errorElement = document.getElementById('expirationDateError');
+
+        // Limit value to 4 digits
+        if (value.length > 4) {
+            value = value.substring(0, 4);
+        }
+
+        // Insert a slash between month and year
+        if (value.length > 2) {
+            formattedValue = value.substring(0, 2) + '/' + value.substring(2);
+        } else {
+            formattedValue = value;
+        }
+
+        // Validate month (MM) part
+        if (value.length >= 2) {
+            let month = parseInt(value.substring(0, 2), 10);
+            if (month < 1 || month > 12) {
+                errorElement.textContent = 'Month must be between 01 and 12.';
+                input.classList.add('is-invalid');
+            } else {
+                errorElement.textContent = '';
+                input.classList.remove('is-invalid');
             }
-            // --------------------------------- Card Exp ---------------------------------
-            function formatExpirationDate(input) {
-                let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
-                let formattedValue = '';
-                let errorElement = document.getElementById('expirationDateError');
+        }
 
-                // Limit value to 4 digits
-                if (value.length > 4) {
-                    value = value.substring(0, 4);
-                }
+        // Update the input field with formatted value
+        input.value = formattedValue;
+    }
+    // --------------------------------- Card Number ---------------------------------
+    function formatCardNumber(input) {
+        let value = input.value.replace(/\s+/g, ''); // Remove existing spaces
+        let formattedValue = '';
 
-                // Insert a slash between month and year
-                if (value.length > 2) {
-                    formattedValue = value.substring(0, 2) + '/' + value.substring(2);
-                } else {
-                    formattedValue = value;
-                }
+        // Limit value to 16 digits
+        if (value.length > 16) {
+            value = value.substring(0, 16);
+        }
 
-                // Validate month (MM) part
-                if (value.length >= 2) {
-                    let month = parseInt(value.substring(0, 2), 10);
-                    if (month < 1 || month > 12) {
-                        errorElement.textContent = 'Month must be between 01 and 12.';
-                        input.classList.add('is-invalid');
-                    } else {
-                        errorElement.textContent = '';
-                        input.classList.remove('is-invalid');
-                    }
-                }
-
-                // Update the input field with formatted value
-                input.value = formattedValue;
+        // Insert a space every 4 digits
+        for (let i = 0; i < value.length; i += 4) {
+            if (i > 0) {
+                formattedValue += ' ';
             }
-            // --------------------------------- Card Number ---------------------------------
-            function formatCardNumber(input) {
-                let value = input.value.replace(/\s+/g, ''); // Remove existing spaces
-                let formattedValue = '';
+            formattedValue += value.substring(i, i + 4);
+        }
 
-                // Limit value to 16 digits
-                if (value.length > 16) {
-                    value = value.substring(0, 16);
-                }
+        // Update the input field with formatted value
+        input.value = formattedValue;
+    }
+    // --------------------------------- Carousel ---------------------------------
+    $(document).ready(function () {
+        $('.carousel').carousel({
+            interval: false // Disable automatic cycling
+        });
+    });
 
-                // Insert a space every 4 digits
-                for (let i = 0; i < value.length; i += 4) {
-                    if (i > 0) {
-                        formattedValue += ' ';
-                    }
-                    formattedValue += value.substring(i, i + 4);
-                }
+    // --------------------------------- Open or Close Modal ---------------------------------
 
-                // Update the input field with formatted value
-                input.value = formattedValue;
-            }
-            // --------------------------------- Carousel ---------------------------------
-            $(document).ready(function () {
-                $('.carousel').carousel({
-                    interval: false // Disable automatic cycling
-                });
-            });
+    $(document).ready(function () {
+        $('.btn[data-toggle="modal"]').on('click', function () {
+            var targetModal = $(this).data('target');
+            $(targetModal).modal('show');
+        });
+    });
+    $(document).ready(function () {
+        $(document).on('click', '[data-dismiss="modal"]', function () {
+            var targetModal = $(this).closest('.modal');
+            $(targetModal).modal('hide');
+        });
+    });
 
-            // --------------------------------- Open or Close Modal ---------------------------------
-
-            $(document).ready(function () {
-                $('.btn[data-toggle="modal"]').on('click', function () {
-                    var targetModal = $(this).data('target');
-                    $(targetModal).modal('show');
-                });
-            });
-            $(document).ready(function () {
-                $(document).on('click', '[data-dismiss="modal"]', function () {
-                    var targetModal = $(this).closest('.modal');
-                    $(targetModal).modal('hide');
-                });
-            });
-
-        </script>
+</script>
 
 </body>
 </html>

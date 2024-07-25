@@ -145,12 +145,14 @@ namespace OnShop
                     }
 
                 }
+                await connection.CloseAsync();
                 return false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to register company: {ex.Message}");
                 return false;
+                await connection.CloseAsync();
                 throw;
             }
 
@@ -299,7 +301,7 @@ namespace OnShop
                     Status,
                     CreatedAt
                 FROM Products
-                WHERE ProductId = @ProductId";
+                WHERE ProductId = @ProductId and status = 'Online'";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -511,12 +513,13 @@ namespace OnShop
                     ProductReviews = reviews
                 };
 
+                await connection.CloseAsync();
                 return productViewModel;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Error: " + ex.Message);
-                connection.Close();
+                await connection.CloseAsync();
                 throw;
             }
         }
@@ -600,6 +603,7 @@ namespace OnShop
                 connection.Close();
             }
 
+            connection.Close();
             return productCount;
         }
 
@@ -637,7 +641,7 @@ namespace OnShop
                     string queryProducts = @"
                         SELECT *
                         FROM Products
-                        WHERE ProductId = @ProductId";
+                        WHERE ProductId = @ProductId and status = 'Online'";
 
                     using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                     {
@@ -709,6 +713,7 @@ namespace OnShop
                 throw;
             }
 
+            connection.Close();
             return products;
         }
         // --------------------------------------------------------------------------------------------------------------------------
@@ -744,7 +749,7 @@ namespace OnShop
                     string queryProducts = @"
                         SELECT *
                         FROM Products
-                        WHERE ProductId = @ProductId";
+                        WHERE ProductId = @ProductId and status = 'Online'";
 
                     using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                     {
@@ -801,7 +806,7 @@ namespace OnShop
                 connection.Close();
                 throw;
             }
-
+            connection.Close();
             return products;
         }
 
@@ -914,6 +919,7 @@ namespace OnShop
 
 
         // --------------------------------------------------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------------------------------------------------
         public async Task<UserModel> GetUserProfile(int? userId)
         {
             var user = new UserModel();
@@ -989,7 +995,7 @@ namespace OnShop
                     string queryProduct = @"
                                   SELECT ProductId, Rating, Favorites, CompanyID, Stock, Price, ProductName, Description, Category, Status, CreatedAt, Clicked, Sold
                                   FROM Products
-                                  WHERE ProductId = @ProductId";
+                                  WHERE ProductId = @ProductId and status = 'Online'";
 
                     var product = new ProductModel();
 
@@ -1046,6 +1052,8 @@ namespace OnShop
                 FROM FollowedCompanies
                 WHERE UserId = @UserId";
 
+
+                var companyIds = new List<int>();
                 user.FollowedCompanies = new List<CompanyModel>();
 
                 using (SqlCommand cmd = new SqlCommand(queryFollowedCompanies, connection))
@@ -1054,53 +1062,53 @@ namespace OnShop
 
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        var companyIds = new List<int>();
+                        
 
                         while (await reader.ReadAsync())
                         {
                             companyIds.Add(reader.GetInt32(reader.GetOrdinal("CompanyId")));
                         }
+                    }
+                }
+                // Fetch company details for each followed company
+                foreach (var companyId in companyIds)
+                {
+                    var company = new CompanyModel();
+                    string queryCompany = @"
+                    SELECT CompanyId, Score, UserId, CompanyName, ContactName, Description, Address, PhoneNumber, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin, CreatedAt, BirthDate
+                    FROM Companies
+                    WHERE CompanyId = @CompanyId";
 
-                        // Fetch company details for each followed company
-                        foreach (var companyId in companyIds)
+                    using (SqlCommand companyCmd = new SqlCommand(queryCompany, connection))
+                    {
+                        companyCmd.Parameters.AddWithValue("@CompanyId", companyId);
+
+                        using (SqlDataReader companyReader = await companyCmd.ExecuteReaderAsync())
                         {
-                            var company = new CompanyModel();
-                            string queryCompany = @"
-                            SELECT CompanyId, Score, UserId, CompanyName, ContactName, Description, Address, PhoneNumber, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin, CreatedAt, BirthDate
-                            FROM Companies
-                            WHERE CompanyId = @CompanyId";
-
-                            using (SqlCommand companyCmd = new SqlCommand(queryCompany, connection))
+                            if (await companyReader.ReadAsync())
                             {
-                                companyCmd.Parameters.AddWithValue("@CompanyId", companyId);
-
-                                using (SqlDataReader companyReader = await companyCmd.ExecuteReaderAsync())
-                                {
-                                    if (await companyReader.ReadAsync())
-                                    {
-                                        company.CompanyId = companyReader.GetInt32(companyReader.GetOrdinal("CompanyId"));
-                                        company.Score = companyReader.GetInt32(companyReader.GetOrdinal("Score"));
-                                        company.UserID = companyReader.GetInt32(companyReader.GetOrdinal("UserId"));
-                                        company.CompanyName = companyReader.GetString(companyReader.GetOrdinal("CompanyName"));
-                                        company.ContactName = companyReader.GetString(companyReader.GetOrdinal("ContactName"));
-                                        company.CompanyDescription = companyReader.GetString(companyReader.GetOrdinal("Description"));
-                                        company.CompanyAddress = companyReader.GetString(companyReader.GetOrdinal("Address"));
-                                        company.CompanyPhoneNumber = companyReader.GetString(companyReader.GetOrdinal("PhoneNumber"));
-                                        company.Email = companyReader.GetString(companyReader.GetOrdinal("Email"));
-                                        company.LogoUrl = companyReader.GetString(companyReader.GetOrdinal("LogoUrl"));
-                                        company.BannerUrl = companyReader.GetString(companyReader.GetOrdinal("BannerUrl"));
-                                        company.taxIDNumber = companyReader.GetString(companyReader.GetOrdinal("TaxIDNumber"));
-                                        company.IBAN = companyReader.GetString(companyReader.GetOrdinal("IBAN"));
-                                        company.isValidatedbyAdmin = companyReader.GetBoolean(companyReader.GetOrdinal("IsValidatedByAdmin"));
-                                        company.CreatedAt = companyReader.GetDateTime(companyReader.GetOrdinal("CreatedAt"));
-                                        company.BirthDate = companyReader.GetDateTime(companyReader.GetOrdinal("BirthDate"));
-                                    }
-                                }
+                                company.CompanyId = companyReader.GetInt32(companyReader.GetOrdinal("CompanyId"));
+                                company.Score = companyReader.GetInt32(companyReader.GetOrdinal("Score"));
+                                company.UserID = companyReader.GetInt32(companyReader.GetOrdinal("UserId"));
+                                company.CompanyName = companyReader.GetString(companyReader.GetOrdinal("CompanyName"));
+                                company.ContactName = companyReader.GetString(companyReader.GetOrdinal("ContactName"));
+                                company.CompanyDescription = companyReader.GetString(companyReader.GetOrdinal("Description"));
+                                company.CompanyAddress = companyReader.GetString(companyReader.GetOrdinal("Address"));
+                                company.CompanyPhoneNumber = companyReader.GetString(companyReader.GetOrdinal("PhoneNumber"));
+                                company.Email = companyReader.GetString(companyReader.GetOrdinal("Email"));
+                                company.LogoUrl = companyReader.GetString(companyReader.GetOrdinal("LogoUrl"));
+                                company.BannerUrl = companyReader.GetString(companyReader.GetOrdinal("BannerUrl"));
+                                company.taxIDNumber = companyReader.GetString(companyReader.GetOrdinal("TaxIDNumber"));
+                                company.IBAN = companyReader.GetString(companyReader.GetOrdinal("IBAN"));
+                                company.isValidatedbyAdmin = companyReader.GetBoolean(companyReader.GetOrdinal("IsValidatedByAdmin"));
+                                company.CreatedAt = companyReader.GetDateTime(companyReader.GetOrdinal("CreatedAt"));
+                                company.BirthDate = companyReader.GetDateTime(companyReader.GetOrdinal("BirthDate"));
                             }
-
-                            user.FollowedCompanies.Add(company);
                         }
                     }
+
+                    user.FollowedCompanies.Add(company);
+                        
                 }
                 //-------------------------------------------------------------------------------------------------
                 // Fetch credit cards
@@ -1162,7 +1170,7 @@ namespace OnShop
                     string queryProducts = @"
                      SELECT *
                      FROM Products
-                     WHERE ProductId = @ProductId";
+                     WHERE ProductId = @ProductId and status = 'Online'";
 
                     using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                     {
@@ -1239,7 +1247,7 @@ namespace OnShop
                     string queryProducts_ = @"
                      SELECT *
                      FROM Products
-                     WHERE ProductId = @ProductId";
+                     WHERE ProductId = @ProductId and status = 'Online'";
 
                     using (SqlCommand cmd = new SqlCommand(queryProducts_, connection))
                     {
@@ -1300,6 +1308,11 @@ namespace OnShop
 
             return user;
         }
+
+
+
+
+
 
 
         // --------------------------------------------------------------------------------------------------------------------------
@@ -1392,6 +1405,12 @@ namespace OnShop
                 SET Stock = Stock - @Quantity
                 WHERE ProductId = @ProductId";
 
+                    // Sold update query
+                    string updateSoldQuery = @"
+                UPDATE Products
+                SET Sold = Sold - @Quantity
+                WHERE ProductId = @ProductId";
+
                     foreach (var product in productsInBasket)
                     {
                         // Check if the product is already purchased
@@ -1417,11 +1436,17 @@ namespace OnShop
                             // Update stock for the product
                             using (SqlCommand updateStockCommand = new SqlCommand(updateStockQuery, connection, transaction))
                             {
-
-                                Console.WriteLine("id: "+ product.ProductId + "  count: "+ product.Count);
                                 updateStockCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
                                 updateStockCommand.Parameters.AddWithValue("@Quantity", product.Count);
                                 updateStockCommand.ExecuteNonQuery();
+                            }
+
+                            // Update sold for the product
+                            using (SqlCommand updateSoldCommand = new SqlCommand(updateSoldQuery, connection, transaction))
+                            {
+                                updateSoldCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
+                                updateSoldCommand.Parameters.AddWithValue("@Quantity", product.Count);
+                                updateSoldCommand.ExecuteNonQuery();
                             }
                         }
                     }
@@ -1456,7 +1481,7 @@ namespace OnShop
         {
             string insertReviewQuery = @"
             INSERT INTO Reviews (ProductId, CompanyId, UserId, Rating, Review)
-            VALUES (@ProductId, (SELECT CompanyId FROM Products WHERE ProductId = @ProductId), @UserId, @Rating, @Review)";
+            VALUES (@ProductId, (SELECT CompanyId FROM Products WHERE ProductId = @ProductId and status = 'Online'), @UserId, @Rating, @Review)";
             // Ortalama puanı hesaplayan SQL komutu
             string query = @"
                           UPDATE Products
@@ -1494,6 +1519,7 @@ namespace OnShop
 
                         // Commit transaction
                         transaction.Commit();
+                        connection.Close();
                         return productId;
                     }
                     catch (Exception ex)
@@ -1501,6 +1527,7 @@ namespace OnShop
                         // Rollback transaction on error
                         transaction.Rollback();
                         Console.WriteLine($"Error: {ex.Message}");
+                        connection.Close();
                         return productId;
                     }
                 }
@@ -1509,6 +1536,7 @@ namespace OnShop
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
+                connection.Close();
                 return productId;
             }
         }
@@ -1566,7 +1594,7 @@ namespace OnShop
             {
                 await connection.CloseAsync();
             }
-
+            connection.Close();
             return allCompanies;
         }
 
@@ -1584,7 +1612,7 @@ namespace OnShop
                 var queryProducts = @"
                     SELECT * FROM Products
                     WHERE (@Category IS NULL OR Category = @Category)
-                        AND (@Type IS NULL OR Type = @Type)";
+                        AND (@Type IS NULL OR Type = @Type) and status = 'Online'";
 
                 using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                 {
@@ -1719,7 +1747,7 @@ namespace OnShop
 
                 var queryProducts = @"
                     SELECT * FROM Products
-                    WHERE CompanyId = @CompanyId";
+                    WHERE CompanyId = @CompanyId and status = 'Online'";
 
                 using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                 {
@@ -1773,19 +1801,400 @@ namespace OnShop
                 }
 
                 companyInfos.AllProducts = products;
-                return companyInfos;
                 await connection.CloseAsync();
+                return companyInfos;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to retrieve companies with users: {ex.Message}");
                 throw;
             }
-
+            connection.Close();
             return companyInfos;
         }
 
 
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> FollowCompany(int? userId, int companyId)
+        {
+            if (userId == null)
+                return false;
+
+            try
+            {
+                await connection.OpenAsync();
+
+                var query = "INSERT INTO FollowedCompanies (UserId, CompanyId, CreatedAt) VALUES (@UserId, @CompanyId, GETDATE())";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@CompanyId", companyId);
+
+                    var result = await command.ExecuteNonQueryAsync();
+                    await connection.CloseAsync(); // Bağlantıyı kapat
+                    return result > 0; // Eğer etkilenen satır sayısı 0'dan büyükse işlem başarılı
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync(); // Bağlantıyı kapat
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> IsUserFollowingCompany(int? userId, int companyId)
+        {
+            try
+            {
+                await connection.OpenAsync();
+                var query = "SELECT COUNT(*) FROM FollowedCompanies WHERE UserId = @UserId AND CompanyId = @CompanyId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@CompanyId", companyId);
+
+                    var result = (int)await command.ExecuteScalarAsync();
+                    await connection.CloseAsync(); // Bağlantıyı kapat
+                    return result > 0; // Eğer etkilenen satır sayısı 0'dan büyükse işlem başarılı
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Hata yönetimi
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync(); // Bağlantıyı kapat
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> UnFollowCompany(int? userId, int companyId)
+        {
+            if (userId == null)
+                return false;
+
+            try
+            {
+                await connection.OpenAsync();
+
+                var query = "DELETE FROM FollowedCompanies WHERE UserId = @UserId AND CompanyId = @CompanyId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@CompanyId", companyId);
+
+                    var result = await command.ExecuteNonQueryAsync();
+                    await connection.CloseAsync(); // Bağlantıyı kapat
+                    return result > 0; // Eğer etkilenen satır sayısı 0'dan büyükse işlem başarılı
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync(); // Bağlantıyı kapat
+            }
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> LikeProduct(int? userId, int productId)
+        {
+
+            try
+            {
+                await connection.OpenAsync();
+
+                // Favori sayısını artır
+                var updateQuery = "UPDATE Products SET Favorites = Favorites + 1 WHERE ProductId = @ProductId";
+                using (var command = new SqlCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    var updateResult = await command.ExecuteNonQueryAsync();
+                    if (updateResult == 0)
+                        return false; // Favori sayısını artırırken sorun olduysa işlem başarısız
+                }
+
+
+                // Favori ürünler tablosuna ekle
+                var insertQuery = "INSERT INTO FavoritedProducts (UserId, ProductId, FavoritedDate) VALUES (@UserId, @ProductId, GETDATE())";
+                using (var command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    var insertResult = await command.ExecuteNonQueryAsync();
+                    if (insertResult == 0)
+                        return false; // Veritabanına ekleme sırasında sorun olduysa işlem başarısız
+                }
+                await connection.CloseAsync();
+                return true; // Her iki işlem de başarılıysa işlem başarılı
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync(); // Bağlantıyı kapat
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> UnLikeProduct(int? userId, int productId)
+        {
+
+            try
+            {
+                await connection.OpenAsync();
+
+                // Favori sayısını artır
+                var updateQuery = "UPDATE Products SET Favorites = Favorites - 1 WHERE ProductId = @ProductId";
+                using (var command = new SqlCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    var updateResult = await command.ExecuteNonQueryAsync();
+                    if (updateResult == 0)
+                        return false; // Favori sayısını artırırken sorun olduysa işlem başarısız
+                }
+
+
+                // Favori ürünler tablosuna ekle
+                var deleteQuery = "DELETE FROM FavoritedProducts WHERE UserId = @UserId AND ProductId = @ProductId";
+                using (var command = new SqlCommand(deleteQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    var deleteResult = await command.ExecuteNonQueryAsync();
+                    if (deleteResult == 0)
+                        return false; // Favori ürünler tablosundan silme sırasında sorun olduysa işlem başarısız
+                }
+                await connection.CloseAsync();
+                return true; // Her iki işlem de başarılıysa işlem başarılı
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync(); // Bağlantıyı kapat
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> IsUserFavoritedProduct(int? userId, int productId)
+        {
+            try
+            {
+                await connection.OpenAsync();
+                var query = "SELECT COUNT(*) FROM FavoritedProducts WHERE UserId = @UserId AND ProductId = @ProductId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@ProductId", productId);
+
+                    var result = (int)await command.ExecuteScalarAsync();
+                    return result > 0; // Eğer etkilenen satır sayısı 0'dan büyükse işlem başarılı
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync(); // Bağlantıyı kapat
+            }
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<List<ProductModel>> GetFavoritedProducts(int? userId)
+        {
+            var products = new List<ProductModel>();
+            var productIds = new List<int>();
+
+            try
+            {
+                await connection.OpenAsync();
+                string queryProductIds = @"
+                    SELECT ProductId
+                    FROM FavoritedProducts
+                    WHERE UserId = @UserId";
+
+                using (SqlCommand cmd = new SqlCommand(queryProductIds, connection))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            productIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                for (int i = 0; i < productIds.Count; i++)
+                {
+                    var product = new ProductModel();
+                    string queryProducts = @"
+                        SELECT *
+                        FROM Products
+                        WHERE ProductId = @ProductId and status = 'Online'";
+
+                    using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@ProductId", productIds[i]);
+
+                        using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await detailsReader.ReadAsync())
+                            {
+                                product.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                                product.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                                product.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                                product.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                                product.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                                product.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                                product.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                                product.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                                product.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                                product.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                                product.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                                product.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                                product.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
+                            }
+                        }
+                    }
+
+                  
+          
+
+                    product.Photos = new List<string>();
+                    string queryPhotos = @"
+                        SELECT PhotoURL
+                        FROM Photos
+                        WHERE ProductId = @ProductId";
+
+                    using (var command = new SqlCommand(queryPhotos, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", productIds[i]);
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                product.Photos.Add(reader.GetString(reader.GetOrdinal("PhotoURL")));
+                            }
+                        }
+                    }
+
+                    products.Add(product);
+                }
+
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                connection.Close();
+                throw;
+            }
+
+            connection.Close();
+            return products;
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<List<ProductModel>> GetAllProducts()
+        {
+            var products = new List<ProductModel>();
+
+            try
+            {
+                await connection.OpenAsync();
+
+                var queryProducts = @"
+                    SELECT * FROM Products
+                    WHERE status = 'Online'";
+
+                using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                {
+                    using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await detailsReader.ReadAsync())
+                        {
+                            var product_ = new ProductModel();
+                            product_.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                            product_.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                            product_.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                            product_.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                            product_.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                            product_.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                            product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                            product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                            product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                            product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                            product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                            product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                            product_.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
+                            product_.Photos = new List<string>();
+
+
+                            products.Add(product_);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < products.Count; i++)
+                {
+                    string queryPhotos_ = @"
+                                            SELECT PhotoURL
+                                            FROM Photos
+                                            WHERE ProductId = @ProductId";
+
+                    using (var command = new SqlCommand(queryPhotos_, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", products[i].ProductId);
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                products[i].Photos.Add(reader.GetString(reader.GetOrdinal("PhotoURL")));
+                            }
+                        }
+                    }
+                }
+                connection.Close();
+                return products;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                connection.Close();
+                return products; // Optionally return an empty list on error
+            }
+        }
 
     }
 }

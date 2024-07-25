@@ -25,17 +25,35 @@
 <body>
     <div class="container mt-4">
         <div class="company-info-section">
-            <div class="company-banner" style="background-image:url('@bannerImageUrl');">
-                <div class="company-info-overlay">
-                    <div class="company-info-content">
-                        <img class="company-logo" src="@Model.Company.LogoUrl" alt="Company Logo">
-                        <div class="company-details">
-                            <h2>@Model.Company.CompanyName</h2>
-                            <p><strong>Contact:</strong> @Model.Company.ContactName</p>
-                            <p><strong>Address:</strong> @Model.Company.CompanyAddress</p>
-                            <p><strong>Phone:</strong> @Model.Company.CompanyPhoneNumber</p>
-                            <p><strong>Email:</strong> @Model.Company.Email</p>
-                            <p><strong>Description:</strong> @Model.Company.CompanyDescription</p>
+            <div class="company-info-section">
+                <div class="company-banner" style="background-image:url('@bannerImageUrl');">
+                    <div class="company-info-overlay">
+                        <div class="company-info-content">
+                            
+                            <img class="company-logo" src="@Model.Company.LogoUrl" alt="Company Logo">
+                            <div class="company-details">
+                                <h2>@Model.Company.CompanyName</h2>
+                                <p><strong>Contact:</strong> @Model.Company.ContactName</p>
+                                <p><strong>Address:</strong> @Model.Company.CompanyAddress</p>
+                                <p><strong>Phone:</strong> @Model.Company.CompanyPhoneNumber</p>
+                                <p><strong>Email:</strong> @Model.Company.Email</p>
+                                <p><strong>Description:</strong> @Model.Company.CompanyDescription</p>
+                            </div>
+                            <!-- Follow/Unfollow Button -->
+                                @if (Model.IsFollowing)
+                                    {
+                                            <a class="follow-button-container" asp-area="" asp-controller="User" asp-action="UnfollowCompany" asp-route-CompanyId="@Model.Company.CompanyId">
+                                                <button class="btn-follow">Unfollow</button>
+                                            </a>
+                                    }
+                                    else
+                                    {
+                                            <a class="follow-button-container" asp-area="" asp-controller="User" asp-action="FollowCompany" asp-route-CompanyId="@Model.Company.CompanyId">
+                                                <button class="btn-follow">Follow</button>
+                                            </a>
+                                    }
+
+
                         </div>
                     </div>
                 </div>
@@ -66,7 +84,8 @@
                                 <div class="widget-product" title="@product.ProductName">
                                     <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                         <div class="image-container">
-                                            <img class="p-card-img" src="@product.Photos.FirstOrDefault()">
+                                            <img class="p-card-img" src="@product.Photos.FirstOrDefault()"> 
+                                      
                                         </div>
                                         <div class="product-details">
                                             <div class="product-info-area">
@@ -107,9 +126,6 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <div class="fvrt-btn-wrppr">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </div>
                                     <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
                                 </div>
                             }
@@ -210,6 +226,27 @@
                     margin: 0 0 10px;
                 }
 
+
+
+            /* Follow Button */
+            .follow-button-container {
+                margin-top: 20px;
+            }
+
+            .btn-follow {
+                background-color: #eee; /* Butonun arka plan rengi */
+                color: #000; /* Yazı rengi */
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .btn-follow:hover {
+                    background-color: #ccc; /* Hover rengi */
+                }
             /* --------------------------- article için ---------------------------- */
             a {
                 text-decoration: none;
@@ -543,31 +580,36 @@
 
 
 
-            /* Favorite Button */
-            .fvrt-btn-wrppr {
+            /* Kalp Simgesi */
+            .btn-like {
+                width: 37px;
+                height: 35px;
                 position: absolute;
-                right: 10px;
                 top: 10px;
+                right: 10px;
                 cursor: pointer;
+                z-index: 10;
+                background: rgba(255, 255, 255, 0.7);
+                border-radius: 50%;
+                padding: 5px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             }
 
-            .fa-regular {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 27px;
-                height: 27px;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
-                border: solid 1px #f0f0f0;
-                background: #ffffff;
-                box-sizing: border-box;
-                border-radius: 100%;
-                font-size: 14px;
-            }
-
-                .fa-regular:hover {
-                    color: #73a1b2; /* Favori butonu �zerine gelindi�inde renk */
+                .btn-like i {
+                    font-size: 16px;
+                    transition: color 0.3s;
                 }
+
+                .btn-like.not-favorited i {
+                    color: #ccc; /* Grey color for not favorited */
+                }
+
+                .btn-like.favorited i {
+                    color: #ff4081; /* Red color for favorited */
+                }
+
+
+
         </style>
 </body>
 </html>

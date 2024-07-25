@@ -39,7 +39,7 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav" style="display: flex; align-items: center;">
                         <li class="nav-item" style=" margin-left: 15px; display: flex; flex-direction: row;">
-                            <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Login">
+                            <a class="nav-link" asp-area="" asp-controller="User" asp-action="FavoritedProducts">
                                 <span class="lar la-heart" style="font-size: 22px;"></span>
                             </a>
                             <a class="nav-link" asp-area="" asp-controller="User" asp-action="UserBasket" style="position: relative;">
@@ -61,7 +61,7 @@
         <div class="container">
             <div class="category-bar">
                 <ul class="nav justify-content-center">
-                    <a class="nav-link category-navlink" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="" asp-route-type="" id="category-All" data-categoryid="">
+                    <a class="nav-link category-navlink" asp-area="" asp-controller="User" asp-action="AllProducts" id="category-All" data-categoryid="">
                         All
                     </a>
                     @if (Model.Categories != null && Model.Categories.Count > 0)

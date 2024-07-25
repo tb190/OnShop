@@ -1,6 +1,6 @@
 @model OnShop.Models.ProductViewModel
 @{
-    ViewData["Title"] = "Company Details";
+    ViewData["Title"] = "Favori Products";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 <!DOCTYPE html>
@@ -19,13 +19,7 @@
 <body>
 
     <!-- All Products -->
-    <h3 class="mb-4">
-        @ViewBag.Category
-        @if (!string.IsNullOrEmpty(ViewBag.Type))
-    {
-        <span> - @ViewBag.Type</span>
-    }
-    </h3>
+    <h3 class="mb-4">Your Favorites</h3>
     <div class="container mt-3">
         @if (Model.AllProducts != null && Model.AllProducts.Any())
     {
@@ -117,11 +111,11 @@
 
     <style>
         h3.mb-4 {
-            font-size: 22px; /* BaÅŸlÄ±k font boyutu */
-            font-weight: bold; /* KalÄ±n yazÄ± tipi */
-            color: #333; /* BaÅŸlÄ±k rengi */
-            margin-bottom: 20px; /* Alt boÅŸluk */
-            padding: 10px 0; /* Ãœst ve alt padding */
+            font-size: 22px; /* Baþlýk font boyutu */
+            font-weight: bold; /* Kalýn yazý tipi */
+            color: #333; /* Baþlýk rengi */
+            margin-bottom: 20px; /* Alt boþluk */
+            padding: 10px 0; /* Üst ve alt padding */
             text-align: center; /* Ortadan hizalama */
         }
 
@@ -141,7 +135,7 @@
 
         /* Image Container */
         .image-container {
-            height: 200px; /* Ä°stenilen yÃ¼ksekliÄŸi ayarlayÄ±n */
+            height: 200px; /* Ýstenilen yüksekliði ayarlayýn */
             overflow: hidden;
             position: relative;
         }
@@ -149,8 +143,8 @@
             .image-container img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover; /* GÃ¶rÃ¼ntÃ¼nÃ¼n kaplanmasÄ± iÃ§in */
-                border-bottom: 1px solid #e0e0e0; /* GÃ¶rÃ¼ntÃ¼nÃ¼n altÄ±na sÄ±nÄ±r ekler */
+                object-fit: cover; /* Görüntünün kaplanmasý için */
+                border-bottom: 1px solid #e0e0e0; /* Görüntünün altýna sýnýr ekler */
             }
 
         /* Product Details */
@@ -257,7 +251,7 @@
             color: #333;
             font-weight: 600;
         }
-        /* TÃ¼m baÄŸlantÄ±lar (anchor) iÃ§in genel bir stil */
+        /* Tüm baðlantýlar (anchor) için genel bir stil */
         a {
             text-decoration: none;
         }

@@ -66,8 +66,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRWZW5kb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Casper/Desktop/OnShop/Views/User/AllProducts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxBbGxQcm9kdWN0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Casper/Desktop/OnShop/Views/User/CompanyDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDb21wYW55RGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Casper/Desktop/OnShop/Views/User/FavoritedProducts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxGYXZvcml0ZWRQcm9kdWN0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Casper/Desktop/OnShop/Views/User/GetProductsByCategoryAndType.cshtml]

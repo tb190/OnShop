@@ -20,6 +20,8 @@ namespace OnShop.Models
 
         public DateTime CreatedAt { get; set; }
 
+        public bool IsFavorited { get; set; }
+
         public ICollection<int> ProductReviewsID { get; set; }
         public ICollection<string> ProductReviews { get; set; }
         public ICollection<string> Photos { get; set; }
