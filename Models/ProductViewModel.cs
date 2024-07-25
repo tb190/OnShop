@@ -20,5 +20,7 @@ namespace OnShop.Models
 
         public List<ProductModel> AllProducts { get; set; }
 
+        public LoginViewModel CompanyDetails { get; set; }
+
     }
 }

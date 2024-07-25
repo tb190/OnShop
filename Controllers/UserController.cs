@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text.Json;
+
 
 namespace OnShop.Controllers
 {
@@ -283,10 +285,13 @@ namespace OnShop.Controllers
                 return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
             }
 
+            //List<BasketProductModel> BasketProducts = await _userDbFunctions.GetUserBasketProducts(userId);
 
             var result = await _userDbFunctions.BuyProducts(userId, TotalPrice, CardId);
 
+
             return RedirectToAction("UserBasket");
+            
         }
 
 
@@ -320,11 +325,15 @@ namespace OnShop.Controllers
         {
             try
             {
-                Console.WriteLine("category: " + category + "  type: " + type);
+                
 
                 var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
                 var CategoryName = categories.FirstOrDefault(c => c.CategoryId.ToString() == category)?.CategoryName ?? "All";
                 var Allproducts = await _userDbFunctions.GetProductsByCategoryAndType(CategoryName, type);
+
+                Console.WriteLine("category: " + CategoryName + "  type: " + type);
+
+                Console.WriteLine("categoryyy: " + Allproducts[0].Category+ "  type: "+ Allproducts[0].Type);
 
                 var productviewModel = new ProductViewModel
                 {
@@ -342,7 +351,21 @@ namespace OnShop.Controllers
             }
         }
 
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> CompanyDetails(int companyId)
+        {
+            // CompanyDetails metodunu çağır ve dönen ProductViewModel'i al
+            var companyInfos = await _userDbFunctions.CompanyDetails(companyId);
 
+            // Kategorileri al
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+
+            companyInfos.Categories = categories;
+
+
+            // Görüntüleme için view'e gönder
+            return View(companyInfos);
+        }
 
 
     }

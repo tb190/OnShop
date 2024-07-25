@@ -1,9 +1,14 @@
 ﻿@model OnShop.Models.ProductViewModel
 @{
-    ViewData["Title"] = "User Home";
+    ViewData["Title"] = "Company Details";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
-}
 
+    // Extract the file name from the BannerUrl
+    var bannerFileName = System.IO.Path.GetFileName(Model.Company.BannerUrl);
+
+    // Construct the URL for the background image
+    var bannerImageUrl = Url.Content("~/Pictures/CompanyBanners/" + bannerFileName);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,270 +23,194 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-
-
-    <div class="component-list component-small-list" style="overflow-y: hidden; overflow-x: hidden;">
-        <article class="component-item widget-width">
-            <div class="widget-container extended-container">
-                <div class="widget-gw-widget">
-                    <div>
-                        <div class="widget-header">
-                            <h4 style="font-size:20px;">Populer Products</h4>
-                            <div class="widget-header-navigation">
-                                <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
-                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
-                        <div class="arrow-container" data-arrow="left">
-                            <button class="arrow-button" id="prevBtn">
-                            </button>
-                        </div>
-
-                        <div class="styles-module_slider__o0fqa" id="product-slider">
-                            @for (int index = 0; index < Model.GuestHomeView.MostClickedProducts.Count; index++)
-                                    {
-                                        var product = Model.GuestHomeView.MostClickedProducts[index];
-                            <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
-                                    <div class="image-container">
-                                        <img class="p-card-img" src="@product.Photos.FirstOrDefault()">
-                                        <div class="product-stamps">
-                                            <!-- Stok Bilgisi -->
-                                            @if (product.Stock > 0)
-                                             {
-                                            <div class="stock-badge">
-                                                <span class="stock-text">@product.Stock</span>
-                                            </div>
-                                             }
-                                            @if (index < 3 && Model.GuestHomeView.MostClickedProducts.Contains(product))
-                                                        {
-                                            <div class="pr-rc-top-ranking-badge">
-                                                <img alt="en iyi s�ralama rozeti" src="https://cdn.dsmcdn.com/web/production/category-top-ranking-icon.svg" width="8" height="12">
-                                                <span class="top-ranking-text">@((index + 1)). Most Viewed</span>
-                                            </div>
-                                                        }
-                                        </div>
-                                    </div>
-                                    <div class="product-details">
-                                        <div class="product-info-area">
-                                            <div class="product-name-wrapper" style="text-decoration:none;">
-                                                <span class="brand">@product.ProductName</span>
-                                                @{
-                                                                    var description = @product.Description;
-                                                                    var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
-                                                }
-
-                                                <span class="name">@firstSentence</span>
-                                            </div>
-                                            <div class="ratings-container">
-                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
-                                                <div class="ratings">
-                                                    <span class="rating">
-                                                        @for (int i = 0; i < 5; i++)
-                                                                        {
-                                                                            if (i < product.Rating)
-                                                                            {
-                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
-                                                                            }
-                                                                            else
-                                                                            {
-                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
-                                                                            }
-                                                                        }
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="price-container">
-                                                <div class="prices">
-                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
-
-                                                </div>
-                                            </div>
-                                            <div class="badges"></div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <div class="fvrt-btn-wrppr">
-                                    <i class="fa-regular fa-heart"></i>
-                                </div>
-                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
-                               
-                            </div>
-                                    }
-                        </div>
-
-
-
-                        <div class="arrow-container" data-arrow="right">
-                            <button class="arrow-button" id="nextBtn">
-                            </button>
+    <div class="container mt-4">
+        <div class="company-info-section">
+            <div class="company-banner" style="background-image:url('@bannerImageUrl');">
+                <div class="company-info-overlay">
+                    <div class="company-info-content">
+                        <img class="company-logo" src="@Model.Company.LogoUrl" alt="Company Logo">
+                        <div class="company-details">
+                            <h2>@Model.Company.CompanyName</h2>
+                            <p><strong>Contact:</strong> @Model.Company.ContactName</p>
+                            <p><strong>Address:</strong> @Model.Company.CompanyAddress</p>
+                            <p><strong>Phone:</strong> @Model.Company.CompanyPhoneNumber</p>
+                            <p><strong>Email:</strong> @Model.Company.Email</p>
+                            <p><strong>Description:</strong> @Model.Company.CompanyDescription</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </article>
+        </div>
 
 
-
-
-        <div class="component-list component-small-list">
-            <article class="component-item widget-width" style="margin-top:30px; height:735px; overflow-y: auto; overflow-x: hidden;">
+        <div class="component-list component-small-list" style="overflow-y: hidden; overflow-x: hidden;">
+            <article class="component-item widget-width">
                 <div class="widget-container extended-container">
                     <div class="widget-gw-widget">
-                        <div class="widget-header" style="width:1500px;">
-                            <h4 style="font-size:20px;">All Companies</h4>
+                        <div>
+                            <div class="widget-header">
+                                <h4 style="font-size:20px;">Company Products</h4>
+                            </div>
                         </div>
+                        <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                        <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                            <div class="arrow-container" data-arrow="left">
+                                <button class="arrow-button" id="prevBtn">
+                                </button>
+                            </div>
 
-                        <div class="company-slider">
-                            <div class="company-wrapper">
-                                @foreach (var company in Model.AllCompanies)
+                            <div class="styles-module_slider__o0fqa" id="product-slider">
+                                @for (int index = 0; index < Model.AllProducts.Count; index++)
                             {
-                                // Extract the last part of the URL
-                                string lastPart = System.IO.Path.GetFileName(company.BannerUrl);
-
-
-                                <a class="company-card" style="background-image: url('@Url.Content("~/Pictures/CompanyBanners/" + lastPart)'); "  asp-area="" asp-controller="User" asp-action="CompanyDetails" asp-route-companyId="@company.CompanyId">
-                                    <div class="company-overlay">
-                                        <div class="company-info">
-                                            <h5>@company.CompanyName <i class="fas fa-star"></i> @company.Score</h5>
-                                            <p>
-                                                @{
-                                            var description = company.CompanyDescription;
-                                            var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
-                                                }
-
-                                                <span class="name">@firstSentence</span>
-                                            </p>
+                                var product = Model.AllProducts[index];
+                                <div class="widget-product" title="@product.ProductName">
+                                    <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                        <div class="image-container">
+                                            <img class="p-card-img" src="@product.Photos.FirstOrDefault()">
                                         </div>
+                                        <div class="product-details">
+                                            <div class="product-info-area">
+                                                <div class="product-name-wrapper" style="text-decoration:none;">
+                                                    <span class="brand">@product.ProductName</span>
+                                                    @{
+                                                            var description = @product.Description;
+                                                            var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
+                                                    }
+
+                                                    <span class="name">@firstSentence</span>
+                                                </div>
+                                                <div class="ratings-container">
+                                                    <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                    <div class="ratings">
+                                                        <span class="rating">
+                                                            @for (int i = 0; i < 5; i++)
+                                                                {
+                                                                    if (i < product.Rating)
+                                                                    {
+                                                            <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                            <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                                                    }
+                                                                }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="price-container">
+                                                    <div class="prices">
+                                                        <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="badges"></div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="fvrt-btn-wrppr">
+                                        <i class="fa-regular fa-heart"></i>
                                     </div>
-                                </a>
+                                    <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                                </div>
                             }
+                            </div>
+
+
+
+                            <div class="arrow-container" data-arrow="right">
+                                <button class="arrow-button" id="nextBtn">
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </article>
         </div>
-</div>
+    </div>
 
-
-
-
-
-        <script>
-            // --------------------------------- Company Click ---------------------------------
-            function handleCardClick(companyId) {
-                 $.ajax({
-                     url: '@Url.Action("CompanyDetails", "User")',
-                     type: 'POST',
-                     data: {companyId: companyId }
-                 });
-
-            }
-            // --------------------------------- Slider ---------------------------------
-            document.addEventListener('DOMContentLoaded', () => {
-                const slider = document.querySelector('.styles-module_slider__o0fqa'); // Slider'ı seçin
-                const prevBtn = document.getElementById('prevBtn');
-                const nextBtn = document.getElementById('nextBtn');
-
-                const updateButtons = () => {
-                    const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
-                    const scrollLeft = slider.scrollLeft;
-
-                    prevBtn.style.display = scrollLeft > 0 ? 'block' : 'none';
-                    nextBtn.style.display = scrollLeft < maxScrollLeft ? 'block' : 'none';
-                };
-
-                prevBtn.addEventListener('click', () => {
-                    slider.scrollBy({ left: -200, behavior: 'smooth' });
-                    setTimeout(updateButtons, 300);
-                });
-
-                nextBtn.addEventListener('click', () => {
-                    slider.scrollBy({ left: 200, behavior: 'smooth' });
-                    setTimeout(updateButtons, 300);
-                });
-
-                // İlk yükleme ve scroll sırasında butonları güncelleyin
-                updateButtons();
-                slider.addEventListener('scroll', updateButtons);
-            });
-
-        
-
-        </script>
         <style>
-
-
-
-            /* ------------  company -------------- */
-            .company-slider {
-                overflow-x: hidden; /* Allow horizontal scrolling */
-                overflow-y: auto; /* Hide vertical overflow */
-                display: flex;
-                flex-direction: column;
-            }
-
-            .company-wrapper {
-                overflow-y: auto; /* Hide vertical overflow */
-                display: flex;
-                flex-wrap: wrap; /* Wrap items to the next row */
-                width: 100%; /* Ensure the wrapper takes full width */
-            }
-
-            .company-card {
-                cursor: pointer;
+            .company-info-section {
                 position: relative;
-                width: calc(29% - 20px); /* Adjust width for 3 items per row with gap */
-                height: 200px; /* Adjust height as needed */
+                margin-bottom: 20px;
+            }
+
+            .company-banner {
+                position: relative;
                 background-size: cover;
                 background-position: center;
-                border-radius: 8px;
-                margin-bottom: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                overflow: hidden;
-                display: block;
+                height: 400px; /* Adjust as needed */
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                color: #fff; /* Ensure text is readable */
             }
 
-            .company-overlay {
+            .company-info-overlay {
                 position: absolute;
+                top: 0;
+                right: 0;
                 bottom: 0;
                 left: 0;
-                right: 0;
-                background: rgba(0, 0, 0, 0.3); /* Dark overlay for text readability */
-                color: white;
-                padding: 10px;
-                backdrop-filter: blur(5px); /* Apply blur effect */
+                background: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
+                backdrop-filter: blur(4px); /* Apply blur effect */
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+            .company-info-content {
+                max-width: 50%; /* Adjust width as needed */
+                background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent background */
+                padding: 20px;
+                border-radius: 8px; /* Rounded corners */
+                color: #fff; /* Text color for readability */
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                justify-content: center;
+                position: relative;
             }
 
-            .company-info {
-                max-height: 100px; /* Adjust height as needed */
-                overflow: hidden; /* Hide overflow */
+            .company-logo {
+                position: absolute;
+                top: -50px; /* Adjust positioning as needed */
+                left: 20px;
+                width: 100px; /* Adjust size as needed */
+                height: 100px;
+                border-radius: 50%;
+                border: 5px solid #fff; /* Border for emphasis */
             }
 
-                .company-info h5 {
-                    margin: 0;
-                    font-size: 18px;
+            .company-details {
+                margin-top: 60px; /* Adjust margin to fit the logo */
+            }
+
+            .product-list-section {
+                margin-top: 20px;
+            }
+
+            .product-card {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                overflow: hidden;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .product-image img {
+                width: 100%;
+                height: auto;
+            }
+
+            .product-info {
+                padding: 10px;
+            }
+
+                .product-info h4 {
+                    margin: 0 0 10px;
                 }
 
-                .company-info p {
-                    margin: 5px 0;
-                    font-size: 14px;
-                }
-
-                .company-info i.fas.fa-star {
-                    color: gold; /* Adjust color as needed */
-                    font-size: 16px; /* Adjust icon size as needed */
-                }
-
-            /* Tüm bağlantılar (anchor) için genel bir stil */
+            /* --------------------------- article için ---------------------------- */
             a {
                 text-decoration: none;
             }
@@ -639,30 +568,6 @@
                 .fa-regular:hover {
                     color: #73a1b2; /* Favori butonu �zerine gelindi�inde renk */
                 }
-
-            .stock-badge {
-                position: absolute;
-                top: 2px;
-                left: 2px;
-                background-color: rgba(0, 0, 0, 0.7);
-                color: white;
-                padding: 5px;
-                border-radius: 50%;
-                font-size: 12px;
-                text-align: center;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .stock-text {
-                display: block;
-            }
         </style>
-
-
-
 </body>
 </html>

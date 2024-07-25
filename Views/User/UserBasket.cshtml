@@ -25,7 +25,7 @@
                 <span style="font-size: 18px; font-weight: bold; margin-left: 10px;">@Model.TotalPrice.ToString("C")</span>
             </div>
 
-         
+
 
             <div class="button-container" style="display: flex; justify-content: flex-end;">
                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#reviewModal" style="width: 200px; max-width: 300px; margin-bottom:30px; margin-top:-35px;">Purchase Products</button>
@@ -89,10 +89,11 @@
                                     </div>
 
                                     <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
+                               
 
                                     <!-- Confirmation Button -->
                                     <div class="button-container">
-                                        <button type="submit" class="btn btn-outline-secondary" style="margin-top:10px;">Confirm</button>
+                                        <button type="submit" class="btn btn-outline-secondary" style="margin-top:10px;" onclick="submitForm()">Confirm</button>
                                     </div>
                                 </form>
                     }
@@ -103,132 +104,136 @@
             </div>
 
 
-        </div>
 
-        @foreach (var product in Model.BasketProducts)
+
+
+        </div>
+    </div>
+
+    @foreach (var product in Model.BasketProducts)
         {
             var carouselId = "carousel" + product.ProductId; // Each product should have a unique ID
             var quantityInputId = "quantityInput" + product.ProductId;
             var hiddenQuantityId = "hiddenQuantity" + product.ProductId;
             var formId = "quantityForm" + product.ProductId;
 
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card h-100 flex-row">
-                    <div id="@carouselId" class="carousel slide" data-ride="carousel" style="width: 200px;">
-                        <ol class="carousel-indicators">
-                            @if (product.Photos != null)
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card h-100 flex-row">
+                <div id="@carouselId" class="carousel slide" data-ride="carousel" style="width: 200px;">
+                    <ol class="carousel-indicators">
+                        @if (product.Photos != null)
                                 {
                                     for (int i = 0; i < product.Photos.Count; i++)
                                     {
-                            <li data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+                        <li data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
                                     }
                                 }
-                        </ol>
-                        <div class="carousel-inner">
-                            @if (product.Photos != null)
+                    </ol>
+                    <div class="carousel-inner">
+                        @if (product.Photos != null)
                                 {
                                     for (int i = 0; i < product.Photos.Count; i++)
                                     {
-                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img class="d-block w-100" src="@product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style="height: 280px; object-fit: cover;">
-                            </div>
-                                    }
-                                }
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img class="d-block w-100" src="@product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style="height: 280px; object-fit: cover;">
                         </div>
-                        <a class="carousel-control-prev" href="#@carouselId" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#@carouselId" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a>
+                                    }
+                                }
                     </div>
+                    <a class="carousel-control-prev" href="#@carouselId" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#@carouselId" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div>
 
-                    <div class="card-body" onclick="window.location.href='@Url.Action("ProductDetails", "User", new { ProductId = product.ProductId })'" style="cursor: pointer;">
-                        <div class="details-container" style="display: flex; align-items: center;">
-                            <div class="details" style="flex: 1;">
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="card-title">@product.ProductName</h5>
-                                    <!-- Çöp Kutusu -->
-                                    <a asp-area="" asp-controller="User" asp-action="RemoveProductFromBasket" asp-route-ProductId="@product.ProductId" asp-route-CompanyId="@product.CompanyID" class="btn btn-like no-outline" style="font-size: 21px; margin-left: 15px;" onclick="event.stopPropagation();">
-                                        <i class="las la-trash-alt"></i>
-                                    </a>
-                                </div>
+                <div class="card-body" onclick="window.location.href='@Url.Action("ProductDetails", "User", new { ProductId = product.ProductId })'" style="cursor: pointer;">
+                    <div class="details-container" style="display: flex; align-items: center;">
+                        <div class="details" style="flex: 1;">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">@product.ProductName</h5>
+                                <!-- Çöp Kutusu -->
+                                <a asp-area="" asp-controller="User" asp-action="RemoveProductFromBasket" asp-route-ProductId="@product.ProductId" asp-route-CompanyId="@product.CompanyID" class="btn btn-like no-outline" style="font-size: 21px; margin-left: 15px;" onclick="event.stopPropagation();">
+                                    <i class="las la-trash-alt"></i>
+                                </a>
+                            </div>
 
-                                <p class="card-text">
-                                    @{
+                            <p class="card-text">
+                                @{
                                             var description = @product.Description;
                                             var firstSentence = description.Contains(".") ? description.Substring(0, description.IndexOf(".") + 1) : description;
-                                    }
-                                    <span class="name">@firstSentence</span>
-                                </p>
-                                <p class="card-text"><strong>Category:</strong> @product.Category</p>
-                                <p class="card-text"><strong>Price:</strong> @product.Price.ToString("C")</p>
-                                <p class="card-text">
-                                    <strong>Rating:</strong>
-                                    <span class="rating">
-                                        @for (int i = 0; i < 5; i++)
+                                }
+                                <span class="name">@firstSentence</span>
+                            </p>
+                            <p class="card-text"><strong>Category:</strong> @product.Category</p>
+                            <p class="card-text"><strong>Price:</strong> @product.Price.ToString("C")</p>
+                            <p class="card-text">
+                                <strong>Rating:</strong>
+                                <span class="rating">
+                                    @for (int i = 0; i < 5; i++)
                                             {
                                                 if (i < product.Rating)
                                                 {
-                                        <i class="las la-star" style="color: gold; font-size: 14px;"></i>
+                                    <i class="las la-star" style="color: gold; font-size: 14px;"></i>
                                                 }
                                                 else
                                                 {
-                                        <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
+                                    <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
                                                 }
                                             }
-                                    </span>
-                                    <span>@product.Rating</span>
-                                </p>
+                                </span>
+                                <span>@product.Rating</span>
+                            </p>
 
-                                <!-- Count bilgisi ve butonlar -->
-                                <div class="quantity-container" style="display: flex; align-items: center;">
-                                    <form asp-area="" asp-controller="User" asp-action="UpdateBasketProductQuantity" asp-method="post" id="@formId" style="display: none;">
-                                        <input type="hidden" name="ProductId" value="@product.ProductId" />
-                                        <input type="hidden" name="CompanyId" value="@product.CompanyID" />
-                                        <input type="hidden" name="Quantity" id="@hiddenQuantityId" value="@product.Count" />
-                                    </form>
+                            <!-- Count bilgisi ve butonlar -->
+                            <div class="quantity-container" style="display: flex; align-items: center;">
+                                <form asp-area="" asp-controller="User" asp-action="UpdateBasketProductQuantity" asp-method="post" id="@formId" style="display: none;">
+                                    <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                    <input type="hidden" name="CompanyId" value="@product.CompanyID" />
+                                    <input type="hidden" name="Quantity" id="@hiddenQuantityId" value="@product.Count" />
+                                </form>
 
-                                    <p class="card-text" style="margin-right: 10px; margin-top: 10px;"><strong>Count:</strong></p>
-                                    <button type="button" class="quantity-btn" onclick="changeQuantity(-1, event, '@quantityInputId', '@hiddenQuantityId', '@formId')" style="margin-right:5px;">-</button>
-                                    <input class="quantityInput" type="number" id="@quantityInputId" value="@product.Count" min="1" style="width: 50px; text-align: center; cursor:pointer;" readonly />
-                                    <button type="button" class="quantity-btn" onclick="changeQuantity(1, event, '@quantityInputId', '@hiddenQuantityId', '@formId')" style="margin-left:5px;">+</button>
-                                </div>
+                                <p class="card-text" style="margin-right: 10px; margin-top: 10px;"><strong>Count:</strong></p>
+                                <button type="button" class="quantity-btn" onclick="changeQuantity(-1, event, '@quantityInputId', '@hiddenQuantityId', '@formId')" style="margin-right:5px;">-</button>
+                                <input class="quantityInput" type="number" id="@quantityInputId" value="@product.Count" min="1" style="width: 50px; text-align: center; cursor:pointer;" readonly />
+                                <button type="button" class="quantity-btn" onclick="changeQuantity(1, event, '@quantityInputId', '@hiddenQuantityId', '@formId')" style="margin-left:5px;">+</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
         }
 
 
 
-        <!-- Previously Added -->
-        <div class="component-list component-small-list" style="overflow-x:auto">
-            <article class="component-item widget-width">
-                <div class="widget-container extended-container">
-                    <div class="widget-gw-widget">
-                        <div>
-                            <div class="widget-header">
-                                <h4 style="font-size:20px; margin-top:-20px;">Previously Added</h4>
-                                <!--div class="widget-header-navigation">
-                                    <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
-                                </div-->
-                            </div>
+    <!-- Previously Added -->
+    <div class="component-list component-small-list" style="overflow-x:auto">
+        <article class="component-item widget-width">
+            <div class="widget-container extended-container">
+                <div class="widget-gw-widget">
+                    <div>
+                        <div class="widget-header">
+                            <h4 style="font-size:20px; margin-top:-20px;">Previously Added</h4>
+                            <!--div class="widget-header-navigation">
+                                <a href="#">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                            </div-->
                         </div>
-                        <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
-                        <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
-                            <div class="arrow-container" data-arrow="left">
-                                <button class="arrow-button" id="prevBtn">
-                                </button>
-                            </div>
+                    </div>
+                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                        <div class="arrow-container" data-arrow="left">
+                            <button class="arrow-button" id="prevBtn">
+                            </button>
+                        </div>
 
-                            <div class="styles-module_slider__o0fqa" id="product-slider">
-                                @{
+                        <div class="styles-module_slider__o0fqa" id="product-slider">
+                            @{
                                     // Initialize count based on the number of deleted products
                                     var count = 0;
                                     if (Model.DeletedProducts.Count < 10)
@@ -239,74 +244,182 @@
                                     {
                                         count = 10;
                                     }
-                                }
+                            }
 
-                                @for (int index = 0; index < count; index++)
+                            @for (int index = 0; index < count; index++)
                                 {
                                  var product = Model.DeletedProducts[index];
-                                <div class="widget-product" title="@product.ProductName">
-                                    <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
-                                        <div class="image-container">
-                                            <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+                            <div class="widget-product" title="@product.ProductName">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                    <div class="image-container">
+                                        <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
-                                        </div>
-                                        <div class="product-details">
-                                            <div class="product-info-area">
-                                                <div class="product-name-wrapper" style="text-decoration:none;">
-                                                    <span class="brand">@product.ProductName</span>
-                                                    @{
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-info-area">
+                                            <div class="product-name-wrapper" style="text-decoration:none;">
+                                                <span class="brand">@product.ProductName</span>
+                                                @{
                                                              var Description_ = @product.Description;
                                                              var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
-                                                    }
+                                                }
 
-                                                    <span class="name">@firstSentence_</span>
-                                                </div>
-                                                <div class="ratings-container">
-                                                    <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
-                                                    <div class="ratings">
-                                                        <span class="rating">
-                                                            @for (int i = 0; i < 5; i++)
+                                                <span class="name">@firstSentence_</span>
+                                            </div>
+                                            <div class="ratings-container">
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings">
+                                                    <span class="rating">
+                                                        @for (int i = 0; i < 5; i++)
                                                                  {
                                                                      if (i < product.Rating)
                                                                      {
-                                                            <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
                                                                      }
                                                                      else
                                                                      {
-                                                            <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
                                                                      }
                                                                  }
-                                                        </span>
-                                                    </div>
+                                                    </span>
                                                 </div>
-                                                <div class="price-container">
-                                                    <div class="prices">
-                                                        <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
-
-                                                    </div>
-                                                </div>
-                                                <div class="badges"></div>
                                             </div>
+                                            <div class="price-container">
+                                                <div class="prices">
+                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                </div>
+                                            </div>
+                                            <div class="badges"></div>
                                         </div>
-                                    </a>
-                                    <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
-                                </div>
+                                    </div>
+                                </a>
+                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                            </div>
                              }
-                            </div>
-                            <div class="arrow-container" data-arrow="right">
-                                <button class="arrow-button" id="nextBtn">
-                                </button>
-                            </div>
+                        </div>
+                        <div class="arrow-container" data-arrow="right">
+                            <button class="arrow-button" id="nextBtn">
+                            </button>
                         </div>
                     </div>
                 </div>
-            </article>
-        </div>
+            </div>
+        </article>
+    </div>
 
 
 
     </div>
+    <script>
 
+
+        // --------------------------------- submitForm ---------------------------------
+    function submitForm() {
+        const basketProducts = @Html.Raw(Json.Serialize(Model.BasketProducts)); // Model'den basketProducts al
+        const totalPrice = @Model.TotalPrice;
+        const cardId = $("input[name='CardId']:checked").val(); // Seçili kart ID'sini al
+
+        // AJAX isteği yap
+        $.ajax({
+            url: '@Url.Action("BuyProducts", "User")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                basketProducts: basketProducts,
+                totalPrice: totalPrice,
+                cardId: cardId
+            }),
+        });
+    }
+
+     // --------------------------------- selectCard ---------------------------------
+     function selectCard(label) {
+         // Remove 'selected' class from all cards
+         document.querySelectorAll('.credit-card').forEach(function (card) {
+             card.classList.remove('selected');
+         });
+
+         // Add 'selected' class to clicked card
+         label.querySelector('.credit-card').classList.add('selected');
+
+         // Check the radio button
+         label.querySelector('.card-radio').checked = true;
+     }
+     // --------------------------------- Change Quantity ---------------------------------
+     function changeQuantity(amount, event, quantityInputId, hiddenQuantityId, formId) {
+         event.stopPropagation(); // Propagasyonu durdurur
+
+         var quantityInput = document.getElementById(quantityInputId);
+         var currentQuantity = parseInt(quantityInput.value);
+
+         // Yeni miktarı hesapla
+         var newQuantity = currentQuantity + amount;
+         if (newQuantity < 1) newQuantity = 1; // Minimum değer 1
+
+         quantityInput.value = newQuantity;
+
+         // Formu güncelle
+         document.getElementById(hiddenQuantityId).value = newQuantity;
+
+         // Formu gönder
+         document.getElementById(formId).submit();
+     }
+
+     // --------------------------------- Carousel ---------------------------------
+     $(document).ready(function () {
+         $('.carousel').carousel({
+             interval: false // Disable automatic cycling
+         });
+     });
+
+     // --------------------------------- Open or Close Modal ---------------------------------
+     $(document).ready(function () {
+         $('.btn[data-toggle="modal"]').on('click', function () {
+             var targetModal = $(this).data('target');
+             $(targetModal).modal('show');
+         });
+     });
+
+     $(document).ready(function () {
+         $(document).on('click', '[data-dismiss="modal"]', function () {
+             var targetModal = $(this).closest('.modal');
+             $(targetModal).modal('hide');
+         });
+     });
+
+     // --------------------------------- All or Online ---------------------------------
+     $(document).ready(function () {
+         // Handle showing only online products
+         $('.btn-outline-secondary[data-status="online"]').on('click', function () {
+             window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
+         });
+
+         // Handle showing all products
+         $('.btn-outline-secondary[data-status="all"]').on('click', function () {
+             window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
+         });
+     });
+
+     // --------------------------------- Search ---------------------------------
+     $(document).ready(function () {
+         // Handle search functionality
+         $('#button-search').on('click', function () {
+             var searchString = $('#searchInput').val().toLowerCase().trim();
+
+             // Redirect to the action with updated search string
+             window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?searchString=' + searchString;
+         });
+
+         // Optionally, handle search on Enter key press
+         $('#searchInput').keypress(function (e) {
+             if (e.which === 13) { // 13 is the Enter key code
+                 $('#button-search').click();
+             }
+         });
+     });
+
+    </script>
     <style>
 
         a {
@@ -460,6 +573,14 @@
             /* Styling for hovering effect */
             .credit-card:hover {
                 transform: rotateY(180deg);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            }
+
+
+            /* Selected card styling */
+            .credit-card.selected {
+                border: 3px solid #007bff; /* Highlight color for selected card */
+                box-shadow: 0 0px 10px rgba(0, 0, 0, 0.4); /* Optional: Enhanced shadow for selected card */
             }
 
         /* Optional scrollbar styling for Webkit browsers */
@@ -929,93 +1050,6 @@
             }
     </style>
 
-    <script>
 
-        // --------------------------------- selectCard ---------------------------------
-        function selectCard(label) {
-            // Remove 'selected' class from all cards
-            document.querySelectorAll('.credit-card').forEach(function (card) {
-                card.classList.remove('selected');
-            });
-
-            // Add 'selected' class to clicked card
-            label.querySelector('.credit-card').classList.add('selected');
-
-            // Check the radio button
-            label.querySelector('.card-radio').checked = true;
-        }
-        // --------------------------------- Change Quantity ---------------------------------
-        function changeQuantity(amount, event, quantityInputId, hiddenQuantityId, formId) {
-            event.stopPropagation(); // Propagasyonu durdurur
-
-            var quantityInput = document.getElementById(quantityInputId);
-            var currentQuantity = parseInt(quantityInput.value);
-
-            // Yeni miktarı hesapla
-            var newQuantity = currentQuantity + amount;
-            if (newQuantity < 1) newQuantity = 1; // Minimum değer 1
-
-            quantityInput.value = newQuantity;
-
-            // Formu güncelle
-            document.getElementById(hiddenQuantityId).value = newQuantity;
-
-            // Formu gönder
-            document.getElementById(formId).submit();
-        }
-
-        // --------------------------------- Carousel ---------------------------------
-        $(document).ready(function () {
-            $('.carousel').carousel({
-                interval: false // Disable automatic cycling
-            });
-        });
-
-        // --------------------------------- Open or Close Modal ---------------------------------
-        $(document).ready(function () {
-            $('.btn[data-toggle="modal"]').on('click', function () {
-                var targetModal = $(this).data('target');
-                $(targetModal).modal('show');
-            });
-        });
-
-        $(document).ready(function () {
-            $(document).on('click', '[data-dismiss="modal"]', function () {
-                var targetModal = $(this).closest('.modal');
-                $(targetModal).modal('hide');
-            });
-        });
-
-        // --------------------------------- All or Online ---------------------------------
-        $(document).ready(function () {
-            // Handle showing only online products
-            $('.btn-outline-secondary[data-status="online"]').on('click', function () {
-                window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
-            });
-
-            // Handle showing all products
-            $('.btn-outline-secondary[data-status="all"]').on('click', function () {
-                window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
-            });
-        });
-
-        // --------------------------------- Search ---------------------------------
-        $(document).ready(function () {
-            // Handle search functionality
-            $('#button-search').on('click', function () {
-                var searchString = $('#searchInput').val().toLowerCase().trim();
-
-                // Redirect to the action with updated search string
-                window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?searchString=' + searchString;
-            });
-
-            // Optionally, handle search on Enter key press
-            $('#searchInput').keypress(function (e) {
-                if (e.which === 13) { // 13 is the Enter key code
-                    $('#button-search').click();
-                }
-            });
-        });
-    </script>
 </body>
 </html>
