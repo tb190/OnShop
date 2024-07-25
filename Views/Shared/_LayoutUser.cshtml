@@ -82,9 +82,9 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                             {
                                         <li>
-                                            <div class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j]" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.Types[j]" asp-route-type="">
+                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j]" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
                                                 @category.Types[j]
-                                            </div>
+                                            </a>
                                         </li>
 
                                             }
@@ -98,10 +98,10 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                                     {
                                         <li>
-                                            <div class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j] " asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.Types[j]" asp-route-type="">
+                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j] " asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
                                                 @category.Types[j]
 
-                                            </div>
+                                            </a>
                                         </li>
                                                     }
                                     </ul>
