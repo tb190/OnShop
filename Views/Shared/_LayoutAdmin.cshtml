@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap">
 </head>
-<body  style="overflow:hidden">
+<body style="max-height: 500px; overflow-y:hidden;">
     <div class="container-fluid">
         <div class="row flex-nowrap">
 
@@ -29,18 +29,28 @@
 
                 <div class="sidebar-main mt-2">
                     <ul class="nav flex-column">
-                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorHome" ? "active" : "")">
+                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminHome" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminHome">
                                 <span class="las la-chalkboard"></span>
                                 <span class="nav-text">DashBoard</span>
                             </a>
                         </li>
-                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorCustomers" ? "active" : "")">
+
+                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminCompanies" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminCompanies" asp-route-page="1" asp-route-statusFilter="validated" asp-route-searchString="">
                                 <span class="las la-briefcase"></span>
                                 <span class="nav-text">Companies</span>
                             </a>
-                        </li>              
+                        </li>
+
+                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminUsers" ? "active" : "")">
+                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminUsers">
+                                <span class="las la-users"></span>
+                                <span class="nav-text">Users</span>
+                            </a>
+                        </li>
+
+
                     </ul>
                 </div>
 
@@ -72,6 +82,11 @@
 
         </div>
     </div>
+
+
+
+
+
 
     <style>
         .sidebar {

@@ -20,7 +20,7 @@ namespace OnShop.Models
 
         public List<ProductModel> AllProducts { get; set; }
 
-        public LoginViewModel CompanyDetails { get; set; }
+        public AdminViewModel CompanyDetails { get; set; }
 
         public bool IsFollowing { get; set; }
     }

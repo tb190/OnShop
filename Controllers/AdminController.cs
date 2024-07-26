@@ -36,7 +36,7 @@ namespace OnShop.Controllers
             try
             {
                 // Tüm þirket ve kullanýcý bilgilerini al
-                List<LoginViewModel> companiesWithUsers = await _adminDbFunctions.GetAllCompaniesWithUsers();
+                List<AdminViewModel> companiesWithUsers = await _adminDbFunctions.GetAllCompaniesWithUsers();
 
                 
                 var unvalidatedCount = companiesWithUsers.Count(c => !c.Company.isValidatedbyAdmin);
@@ -83,7 +83,7 @@ namespace OnShop.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Failed to retrieve companies: " + ex.Message;
-                return View(new List<LoginViewModel>()); // Hata durumunda boþ bir liste gönder
+                return View(new List<AdminViewModel>()); // Hata durumunda boþ bir liste gönder
             }
         }
 
@@ -101,5 +101,40 @@ namespace OnShop.Controllers
                 return RedirectToAction("AdminCompanies", new { page, searchString, validationFilter });
             }
         }
+
+
+
+        // -----------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> AdminUsers()
+        {
+            try
+            {
+
+                AdminViewModel AdminViewModel = await _adminDbFunctions.GetAllUsers();
+
+                return View(AdminViewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to retrieve companies: " + ex.Message;
+                return View(new AdminViewModel()); // Hata durumunda boþ bir liste gönder
+            }
+        }
+
+        // -----------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            
+
+            var result = await _adminDbFunctions.DeleteUser(userId);
+
+            return RedirectToAction("AdminUsers");
+            
+        }
+
+
+            
+
+
     }
 }

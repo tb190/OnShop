@@ -24,9 +24,9 @@ namespace OnShop
         }
 
         // --------------------------------------------------------------------------------------------------------------------------
-        public async Task<List<LoginViewModel>> GetAllCompaniesWithUsers()
+        public async Task<List<AdminViewModel>> GetAllCompaniesWithUsers()
         {
-            List<LoginViewModel> companiesWithUsers = new List<LoginViewModel>();
+            List<AdminViewModel> companiesWithUsers = new List<AdminViewModel>();
 
             string query = @"
                 SELECT c.CompanyId, c.Score, c.UserId, c.CompanyName, c.ContactName, c.Description, 
@@ -81,7 +81,7 @@ namespace OnShop
                                 CreatedAt = reader.GetDateTime(reader.GetOrdinal("UserCreatedAt"))
                             };
 
-                            companiesWithUsers.Add(new LoginViewModel
+                            companiesWithUsers.Add(new AdminViewModel
                             {
                                 Company = company,
                                 User = user
@@ -132,6 +132,93 @@ namespace OnShop
                 throw new Exception("An error occurred while toggling the validation status.", ex);
             }
         }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<AdminViewModel> GetAllUsers()
+        {
+            List<UserModel> AllUsers = new List<UserModel>();
+
+            AdminViewModel model = new AdminViewModel();
+
+            string query = @"
+                SELECT 
+                       u.UserId, u.UserName, u.UserSurName, u.PasswordHash, u.Email AS UserEmail, u.Role, 
+                       u.Address AS UserAddress, u.PhoneNumber AS UserPhoneNumber, u.Age, u.BirthDate AS UserBirthDate, u.CreatedAt AS UserCreatedAt
+                FROM Users u";
+
+            try
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {                           
+                            UserModel user = new UserModel
+                            {
+                                UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                Name = reader.GetString(reader.GetOrdinal("UserName")),
+                                SurName = reader.GetString(reader.GetOrdinal("UserSurName")),
+                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                Email = reader.GetString(reader.GetOrdinal("UserEmail")),
+                                Role = reader.GetString(reader.GetOrdinal("Role")),
+                                Address = reader.GetString(reader.GetOrdinal("UserAddress")),
+                                PhoneNumber = reader.GetString(reader.GetOrdinal("UserPhoneNumber")),
+                                Age = reader.GetInt32(reader.GetOrdinal("Age")),
+                                BirthDate = reader.GetDateTime(reader.GetOrdinal("UserBirthDate")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("UserCreatedAt"))
+                            };
+
+                            AllUsers.Add(user);
+                        }
+                    }
+                }
+                model.AllUsers = AllUsers;
+                await connection.CloseAsync();
+                return model;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to retrieve companies with users: {ex.Message}");
+                return model;
+                throw;
+            }
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> DeleteUser(int userId)
+        {
+            string query = "DELETE FROM Users WHERE UserId = @UserId";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@UserId", userId);
+
+            try
+            {
+                connection.Open();
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("User deleted successfully.");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("No user found with the provided UserId.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+            return false;
+        }
+
 
     }
 }

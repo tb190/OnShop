@@ -31,7 +31,7 @@ namespace OnShop.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterIndividual(LoginViewModel viewModel)
+        public async Task<IActionResult> RegisterIndividual(AdminViewModel viewModel)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace OnShop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterCompany(IFormFile LogoUrl, IFormFile BannerUrl, LoginViewModel viewModel)
+        public async Task<IActionResult> RegisterCompany(IFormFile LogoUrl, IFormFile BannerUrl, AdminViewModel viewModel)
         {
             try
             {
