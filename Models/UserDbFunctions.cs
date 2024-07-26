@@ -30,6 +30,8 @@ namespace OnShop
         {
             try
             {
+
+
                 string hashedPassword = HashPassword(user.PasswordHash);
 
                 string query = "INSERT INTO Users (UserName, UserSurName, Email, PasswordHash, Address, Age, PhoneNumber, Role, BirthDate) VALUES (@Name, @SurName, @Email, @PasswordHash, @Address, @Age, @PhoneNumber, @Role, @Birthdate)";
@@ -40,22 +42,8 @@ namespace OnShop
                     command.Parameters.AddWithValue("@Email", user.Email);
                     command.Parameters.AddWithValue("@PasswordHash", hashedPassword);
                     command.Parameters.AddWithValue("@Role", role);
-                    command.Parameters.AddWithValue("@Address", string.IsNullOrEmpty(user.Address) ? string.Empty : user.Address);
-                    command.Parameters.AddWithValue("@PhoneNumber", string.IsNullOrEmpty(user.PhoneNumber) ? string.Empty : user.PhoneNumber);
-
-                    /*
-                    // Birthdate kontrol�
-                    if (user.BirthDate < new DateTime(1753, 1, 1) || user.BirthDate > new DateTime(9999, 12, 31))
-                    {
-                        throw new ArgumentOutOfRangeException("BirthDate", "BirthDate must be between 1/1/1753 and 12/31/9999.");
-                    }
-                    command.Parameters.AddWithValue("@BirthDate", user.BirthDate);
-
-                    // Age hesaplamas�
-                    int age = DateTime.Today.Year - user.BirthDate.Year;
-                    command.Parameters.AddWithValue("@Age", age);
-
-                */
+                    command.Parameters.AddWithValue("@Address", user.Address);
+                    command.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
                     command.Parameters.AddWithValue("@BirthDate", DateTime.Now);
                     command.Parameters.AddWithValue("@Age", 0);
 
@@ -64,15 +52,14 @@ namespace OnShop
                     connection.Close();
                     return true;
                 }
-                return false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to register user: {ex.Message}");
                 return false;
-                throw;
             }
         }
+
 
         // --------------------------------------------------------------------------------------------------------------------------
         public async Task<bool> RegisterCompany(IFormFile LogoUrl, IFormFile BannerUrl, CompanyModel company, UserModel user)
@@ -244,6 +231,12 @@ namespace OnShop
         // --------------------------------------------------------------------------------------------------------------------------
         private string HashPassword(string password)
         {
+
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException(nameof(password), "Password cannot be null or empty.");
+            }
+
             using (var sha256 = SHA256.Create())
             {
                 byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));

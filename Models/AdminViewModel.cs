@@ -7,6 +7,7 @@ namespace OnShop.Models
         public string RegistrationType { get; set; } // To determine if it's an individual or company registration
 
 
-        public List<UserModel> AllUsers { get; set; } // Ensure this property is present
+        public List<UserModel> AllUsers { get; set; } 
+        public List<ProductModel> AllProducts { get; set; } 
     }
 }

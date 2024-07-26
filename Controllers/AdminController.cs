@@ -132,8 +132,28 @@ namespace OnShop.Controllers
             
         }
 
+        
+        // -----------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> AdminProducts()
+        {
+            try
+            {
+                var products = await _adminDbFunctions.GetAllProducts();
 
-            
+                AdminViewModel model = new AdminViewModel();
+
+                model.AllProducts = products;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to retrieve companies: " + ex.Message;
+                return View(new AdminViewModel()); // Hata durumunda boþ bir liste gönder
+            }
+        }
+
+
 
 
     }

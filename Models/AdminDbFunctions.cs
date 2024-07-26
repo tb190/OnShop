@@ -220,5 +220,111 @@ namespace OnShop
         }
 
 
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<List<ProductModel>> GetAllProducts()
+        {
+            var products = new List<ProductModel>();
+
+            try
+            {
+                await connection.OpenAsync();
+
+                var queryProducts = @"
+                    SELECT * FROM Products
+                    WHERE status = 'Online'";
+
+                using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                {
+                    using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await detailsReader.ReadAsync())
+                        {
+                            var product_ = new ProductModel();
+                            product_.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                            product_.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                            product_.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                            product_.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                            product_.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                            product_.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                            product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                            product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                            product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                            product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                            product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                            product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                            product_.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
+                            product_.Photos = new List<string>();
+
+
+                            products.Add(product_);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < products.Count; i++)
+                {
+                    string queryPhotos_ = @"
+                                            SELECT PhotoURL
+                                            FROM Photos
+                                            WHERE ProductId = @ProductId";
+
+                    using (var command = new SqlCommand(queryPhotos_, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", products[i].ProductId);
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                products[i].Photos.Add(reader.GetString(reader.GetOrdinal("PhotoURL")));
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < products.Count; i++)
+                {
+                    List<ProductReviewModel> reviews = new List<ProductReviewModel>();
+
+                    string query = @"
+                        SELECT ReviewId, ProductId,  CompanyId, Rating, Review, CreatedAt
+                        FROM Reviews
+                        WHERE ProductId = @ProductId";
+
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductId", products[i].ProductId);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                reviews.Add(new ProductReviewModel
+                                {
+                                    ReviewId = reader.GetInt32(0),
+                                    ProductId = reader.GetInt32(1),
+                                    CompanyId = reader.GetInt32(2),
+                                    Rating = reader.GetInt32(3),
+                                    Review = reader.GetString(4),
+                                    CreatedAt = reader.GetDateTime(5)
+                                });
+                            }
+                            
+                        }
+                    }
+                    products[i].ProductReviewsModel = reviews;
+                }
+
+                connection.Close();
+                return products;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                connection.Close();
+                return products; // Optionally return an empty list on error
+            }
+        }
+
+
     }
 }

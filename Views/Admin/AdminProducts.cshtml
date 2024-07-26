@@ -1,0 +1,358 @@
+﻿@model OnShop.Models.AdminViewModel
+@{
+    ViewData["Title"] = "OnShop Admin Home";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <!--link href="https://fonts.googleapis.com/css2?family=Thasadith&display=swap" rel="stylesheet"-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</head>
+<body>
+    <div class="">
+        <h3>All Products</h3>
+
+
+            <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search Products" aria-label="Search Products" aria-describedby="button-search">
+
+
+
+        <div class="row mt-4">
+            <div class="col table-responsive" style="max-width: 1880px; max-height:500px; overflow-y:auto;">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Photos</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Rating</th>
+                            <th>Favorites</th>
+                            <th>Created At</th>
+                            <th>Status</th>
+                            <th>Reviews</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model.AllProducts)
+                        {
+                            var carouselId = "carousel" + product.ProductId; // Each product should have a unique ID
+
+                        <tr class="product-row" data-status="@product.Status">
+                            <td>
+                                <div style="width: 4rem; height: 5rem; overflow: hidden;">
+                                    <div id="@carouselId" class="carousel slide" data-ride="carousel">
+                                        <ol class="carousel-indicators">
+                                            @if (product.Photos != null)
+                            {
+                                for (int i = 0; i < product.Photos.Count; i++)
+                                {
+                                            <li data-bs-target="#@carouselId" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+                                }
+                            }
+                                        </ol>
+                                        <div class="carousel-inner">
+                                            @if (product.Photos != null)
+                            {
+                                for (int i = 0; i < product.Photos.Count; i++)
+                                {
+                                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                <img class="d-block w-100" src="@product.Photos.ElementAt(i)" alt="Slide @(i + 1)" style=" border-radius: 5px;">
+                                            </div>
+                                }
+                            }
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@product.ProductName</td>
+                            <td class="description-cell">
+                                <span class="description-text">
+                                    @{
+                                    var description = @product.Description;
+                                    var shortDescription = description.Length > 100 ? description.Substring(0, 100) + "..." : description;
+                                    }
+                                    @shortDescription
+                                </span>
+                                <span class="toggle-description" data-product-id="@product.ProductId"></span>
+                            </td>
+
+                            <td>@product.Category</td>
+                            <td>@product.Price.ToString("C")</td>
+                            <td>@product.Stock</td>
+                            <td>
+                                <span class="rating">
+                                    @for (int i = 0; i < 5; i++)
+                    {
+                        if (i < product.Rating)
+                        {
+                                    <i class="las la-star" style="color: gold; font-size: 14px;"></i>
+                        }
+                        else
+                        {
+                                    <i class="las la-star" style="color: #ccc; font-size: 14px;"></i>
+                        }
+                    }
+                                </span>
+                                <span>@product.Rating</span>
+                            </td>
+                            <td>
+                                <span class="favorites">
+                                    <i class="las la-heart" style="color: red; font-size: 14px;"></i> @product.Favorites
+                                </span>
+                            </td>
+                            <td>@product.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td>
+                                @if (product.Status == "Online")
+                        {
+                                <span>Online</span>
+                                <span class="status-online"></span>
+                        }
+                        else
+                        {
+                                <span>Offline</span>
+                                <span class="status-offline"></span>
+                        }
+                            </td>
+                            <td>
+
+                                <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#reviewModal-@product.ProductId">
+                                    <i class="las la-comment-dots"></i>
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="reviewModal-@product.ProductId" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel-@product.ProductId" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="reviewModalLabel-@product.ProductId">Product Reviews</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @if (product.ProductReviewsModel != null && product.ProductReviewsModel.Any())
+                                                {
+                                                    foreach (var review in product.ProductReviewsModel)
+                                                    {
+                                                <div class="mb-2" style="border-bottom: 1px solid #e6e6e6">
+                                                    <span>@review.Review</span> <!-- Review content -->
+                                                </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                <div class="mb-2">
+                                                    <span>No Reviews</span>
+                                                </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <button type="button" class="btn btn-sm delete-btn" data-toggle="modal" data-target="#confirmDeleteModal-@product.ProductId">
+                                    <span class="las la-trash"></span>
+                                </button>
+
+
+                                <!-- Modal for delete confirmation >
+    <div class="modal fade" id="confirmDeleteModal-@product.ProductId" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel-@product.ProductId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span style="font-size: 20px;">Are you sure you want to delete product @product.ProductId?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form method="post" asp-area="" asp-controller="Admin" asp-action="DeleteUser">
+                        <input type="hidden" name="userId" value="@product.ProductId" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div-->
+                            </td>
+
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <script>
+        // --------------------------------- Carousel ---------------------------------
+    $(document).ready(function () {
+        $('.carousel').carousel({
+            interval: false // Otomatik dönmeyi devre dışı bırak
+        });
+    });
+
+    // --------------------------------- Open or Close Modal ---------------------------------
+
+    $(document).ready(function () {
+        $('.btn[data-toggle="modal"]').on('click', function () {
+            var targetModal = $(this).data('target');
+            $(targetModal).modal('show');
+        });
+    });
+    $(document).ready(function () {
+        $(document).on('click', '[data-dismiss="modal"]', function () {
+            var targetModal = $(this).closest('.modal');
+            $(targetModal).modal('hide');
+        });
+    });
+
+    // --------------------------------- All or Online ---------------------------------
+    $(document).ready(function () {
+        // Handle showing only online products
+        $('.btn-outline-secondary[data-status="online"]').on('click', function () {
+            window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
+        });
+
+        // Handle showing all products
+        $('.btn-outline-secondary[data-status="all"]').on('click', function () {
+            window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
+        });
+    });
+        // --------------------------------- Search ---------------------------------
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const productTableBody = document.getElementById('product-table-body');
+            const rows = productTableBody.getElementsByTagName('tr');
+
+            searchInput.addEventListener('input', function () {
+                const query = searchInput.value.toLowerCase();
+                Array.from(rows).forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    let match = false;
+                    for (let i = 1; i < cells.length; i++) { // Skip the first cell (Photos)
+                        if (cells[i].textContent.toLowerCase().includes(query)) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    row.style.display = match ? '' : 'none';
+                });
+            });
+        });
+
+    </script>
+
+
+
+    <style>
+        body {
+            background-color: #fefefe;
+            font-family: 'Montserrat', sans-serif;
+            font-family: "Arapey", serif;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            white-space: nowrap; /* Metni tek satırda tutar */
+        }
+
+            .table th:nth-child(7), .table td:nth-child(7) {
+                min-width: 120px; /* Rating hücresi için minimum genişlik belirleme */
+            }
+           
+
+        tr:nth-of-type(odd) {
+            background-color: rgba(0,0,0,.05);
+        }
+
+        tr:hover {
+            background-color: rgba(0,0,0,.075);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .modal-body {
+            max-height: 550px; /* Modal penceresinin y�ksekli�ini s�n�rlamak i�in */
+            overflow-y: auto; /* Kayd�rma �ubu�u eklemek i�in */
+        }
+
+        .close {
+            background: none; /* Remove any background */
+            border: none; /* Remove any border */
+            color: #000; /* Set text color, adjust as needed */
+            font-size: 1.5rem; /* Adjust size as needed */
+            line-height: 1; /* Align vertically */
+            cursor: pointer; /* Show pointer cursor on hover */
+        }
+
+            .close:focus {
+                outline: none; /* Remove the default outline */
+            }
+
+            .close span {
+                font-size: 1.5rem; /* Adjust size to fit the design */
+                display: block; /* Ensure it is displayed properly */
+            }
+
+        .status-online {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+        }
+
+        .status-offline {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: dimgrey;
+            border-radius: 50%;
+        }
+        .description-cell {
+            max-width: 200px; /* Maksimum genişlik */
+            max-height: 4em; /* Maksimum yükseklik */
+            overflow: hidden;
+            position: relative;
+        }
+
+            .description-cell .description-text {
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap; /* Tek satırda tutar */
+            }
+
+    </style>
+
+
+</body>
+</html>

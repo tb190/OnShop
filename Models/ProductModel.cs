@@ -24,6 +24,7 @@ namespace OnShop.Models
 
         public ICollection<int> ProductReviewsID { get; set; }
         public ICollection<string> ProductReviews { get; set; }
+        public ICollection<ProductReviewModel> ProductReviewsModel { get; set; }
         public ICollection<string> Photos { get; set; }
     }
 }

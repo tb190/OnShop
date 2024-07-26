@@ -131,37 +131,47 @@
 
 
 
+
         <!-- Main content -->
-        <main role="main" style="margin-left: 100px; margin-right: 100px; margin-top: 20px;">
+        <main role="main" style="margin-bottom: 250px; margin-left: 100px; margin-right: 100px; margin-top: 20px;">
             @RenderBody()
         </main>
 
 
 
+
+
         <!-- Footer -->
-        <footer>
+        <footer class="footer">
             <div class="container">
                 <div class="row">
                     <!-- Company Information -->
-                    <div class="col-md-6">
+                    <div class="col-md-6 footer-about">
                         <h5>OnShop</h5>
-                        <p>OnShop is your one-stop destination for the best products at unbeatable prices. We pride ourselves on quality and customer satisfaction.</p>
-                        <h6>Quick Links</h6>
-                        <ul>
-                            <li><a href="#" class="text-muted">Contact Us</a></li>
-                            <li><a href="#" class="text-muted">Employees</a></li>
+                        <p>Welcome to OnShop, your premier online marketplace for businesses of all sizes. Showcase and sell your diverse range of products with ease. Join us today and elevate your business with our comprehensive ecommerce solutions.</p>
+                        <ul class="footer-links">
+                            <li><a href="#"></a></li>
+                            <li><a href="#"></a></li>
                         </ul>
                     </div>
 
                     <!-- Contact Information -->
-                    <div class="col-md-6">
+                    <div class="col-md-6 footer-contact" style="padding-left: 120px;">
                         <h5>Contact Information</h5>
                         <ul>
-                            <li><i class="fas fa-envelope"></i> Email: <a href="mailto:tbyurtturk@gmail.com">tbyurtturk@gmail.com</a></li>
-                            <li><i class="fas fa-user"></i> Name: Tanay Bensu Yurttürk</li>
-                            <li><i class="fas fa-phone"></i> Phone: 0538 968 85 79</li>
-                            <li><i class="fas fa-map-marker-alt"></i> Address: Bahçelievler Mahallesi, Ata2 Sitesi, Mavi Çam Cd 25/9</li>
+                            <li><i class="fas fa-envelope"></i> <a href="mailto:tbyurtturk@gmail.com">tbyurtturk@gmail.com</a></li>
+                            <li><i class="fas fa-user"></i> Tanay Bensu Yurttürk</li>
+                            <li><i class="fas fa-phone"></i> 0538 968 85 79</li>
+                            <li><i class="fas fa-map-marker-alt"></i> Bahçelievler Mahallesi, Ata2 Sitesi, Mavi Çam Cd 25/9</li>
                         </ul>
+                        <!-- Social Media Icons -->
+                        <div class="footer-social-icons">
+                            <i class="fab fa-facebook-f"></i>
+                            <i class="fab fa-instagram"></i>
+                            <i class="fab fa-twitter"></i>
+                            <i class="fab fa-linkedin-in"></i>
+                            <i class="fab fa-google"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -366,59 +376,83 @@
             flex: 1;
         }
 
-        footer {
-            background-color: #f8f9fa;
-            padding: 20px 0;
-            border-top: 1px solid #ddd;
-            position: relative;
-            bottom: 0;
-            width: 100%;
+        .footer {
+            border-top: 1px solid #768a96;
+            padding: 40px 0;
+            padding-bottom: 1px;
+            color: #333;
+            font-family: 'Montserrat', sans-serif;
+            background-image: linear-gradient(to bottom, #f8f8f8, #f8f8f8, #f8f7f7, #f8f7f7, #f8f6f6, #f9f6f7, #f9f7f7, #faf7f8, #fbf9fa, #fcfbfc, #fdfdfe, #ffffff);
         }
 
-            footer h5 {
-                font-weight: bold;
-                color: #007bff;
-            }
-
-            footer h6 {
-                font-weight: bold;
-                margin-top: 10px;
-            }
-
-            footer p, footer li {
-                color: #6c757d;
-                font-size: 14px;
-            }
-
-            footer a {
-                color: #6c757d;
-                text-decoration: none;
-            }
-
-                footer a:hover {
-                    text-decoration: underline;
-                }
-
-            footer ul {
-                padding-left: 0;
-                list-style-type: none;
-            }
-
-            footer .col-md-6 {
+            .footer h5 {
+                font-size: 20px;
+                font-weight: 600;
+                color: #29353c;
                 margin-bottom: 20px;
             }
 
-                footer .col-md-6 ul {
-                    padding-left: 0;
+            .footer p {
+                font-size: 14px;
+                color: #29353c;
+                line-height: 1.6;
+            }
+
+            .footer a {
+                color: #768a96;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .footer a:hover {
+                    color: #29353c;
                 }
 
-                    footer .col-md-6 ul li {
-                        margin-bottom: 5px;
+            .footer ul {
+                list-style: none;
+                padding: 0;
+            }
+
+                .footer ul li {
+                    margin-bottom: 10px;
+                }
+
+            .footer .footer-links li {
+                margin-bottom: 5px;
+            }
+
+            .footer .footer-contact ul {
+                margin-bottom: 20px;
+            }
+
+                .footer .footer-contact ul li {
+                    display: flex;
+                    align-items: center;
+                }
+
+                    .footer .footer-contact ul li i {
+                        margin-right: 10px;
+                        font-size: 18px;
+                        color: #555;
                     }
 
-                        footer .col-md-6 ul li i {
-                            margin-right: 10px;
-                        }
+            .footer .footer-social-icons {
+                display: flex;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+                .footer .footer-social-icons i {
+                    font-size: 20px;
+                    color: #999;
+                    cursor: pointer;
+                    transition: color 0.3s ease;
+                }
+
+                    .footer .footer-social-icons i:hover {
+                        color: #29353c;
+                    }
+
     </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
