@@ -1,7 +1,8 @@
 @model OnShop.Models.ProductViewModel
 @{
     ViewData["Title"] = "All Products";
-    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    var userId = ViewBag.userId as string; // Assuming userId is a string; adjust type if necessary
+    Layout = string.IsNullOrEmpty(userId) ? "~/Views/Shared/_LayoutGuest.cshtml" : "~/Views/Shared/_LayoutUser.cshtml";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -111,11 +112,11 @@
 
     <style>
         h3.mb-4 {
-            font-size: 22px; /* Baþlýk font boyutu */
-            font-weight: bold; /* Kalýn yazý tipi */
-            color: #333; /* Baþlýk rengi */
-            margin-bottom: 20px; /* Alt boþluk */
-            padding: 10px 0; /* Üst ve alt padding */
+            font-size: 22px; /* Baï¿½lï¿½k font boyutu */
+            font-weight: bold; /* Kalï¿½n yazï¿½ tipi */
+            color: #333; /* Baï¿½lï¿½k rengi */
+            margin-bottom: 20px; /* Alt boï¿½luk */
+            padding: 10px 0; /* ï¿½st ve alt padding */
             text-align: center; /* Ortadan hizalama */
         }
 
@@ -135,7 +136,7 @@
 
         /* Image Container */
         .image-container {
-            height: 200px; /* Ýstenilen yüksekliði ayarlayýn */
+            height: 200px; /* ï¿½stenilen yï¿½ksekliï¿½i ayarlayï¿½n */
             overflow: hidden;
             position: relative;
         }
@@ -143,8 +144,8 @@
             .image-container img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover; /* Görüntünün kaplanmasý için */
-                border-bottom: 1px solid #e0e0e0; /* Görüntünün altýna sýnýr ekler */
+                object-fit: cover; /* Gï¿½rï¿½ntï¿½nï¿½n kaplanmasï¿½ iï¿½in */
+                border-bottom: 1px solid #e0e0e0; /* Gï¿½rï¿½ntï¿½nï¿½n altï¿½na sï¿½nï¿½r ekler */
             }
 
         /* Product Details */
@@ -251,7 +252,7 @@
             color: #333;
             font-weight: 600;
         }
-        /* Tüm baðlantýlar (anchor) için genel bir stil */
+        /* Tï¿½m baï¿½lantï¿½lar (anchor) iï¿½in genel bir stil */
         a {
             text-decoration: none;
         }

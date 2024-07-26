@@ -57,6 +57,14 @@
       "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\42afe602-e735-499c-a3fb-45d49958d58d.jpg"
     },
     {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\bestseller.png",
+      "PackagePath": "staticwebassets\\Pictures\\bestseller.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\bestseller1.png",
+      "PackagePath": "staticwebassets\\Pictures\\bestseller1.png"
+    },
+    {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\bg.png",
       "PackagePath": "staticwebassets\\Pictures\\bg.png"
     },
@@ -65,12 +73,24 @@
       "PackagePath": "staticwebassets\\Pictures\\card.png"
     },
     {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\card1.png",
+      "PackagePath": "staticwebassets\\Pictures\\card1.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\card3.png",
+      "PackagePath": "staticwebassets\\Pictures\\card3.png"
+    },
+    {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logo.png",
       "PackagePath": "staticwebassets\\Pictures\\logo.png"
     },
     {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\logoW.png",
       "PackagePath": "staticwebassets\\Pictures\\logoW.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\new.png",
+      "PackagePath": "staticwebassets\\Pictures\\new.png"
     },
     {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\profile.jpg",

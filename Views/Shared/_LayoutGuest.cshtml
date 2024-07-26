@@ -1,4 +1,4 @@
-@model OnShop.Models.GuestHomeViewModel
+@model OnShop.Models.ProductViewModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,13 +13,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap">
 </head>
-<body >
+<body>
     <div>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
                 <div><img src="~/Pictures/logo.png" style="margin-left:-5px; border-radius:50px; width:70px; height:70px;"></div>
 
-                <a class="navbar-brand  justify-content-flex-start" asp-area="" asp-controller="User" asp-action="UserHome" style="font-size: 2rem; color: #29353c; font-family: 'Sacramento', cursive;">OnShop</a>
+                <a class="navbar-brand  justify-content-flex-start" asp-area="" asp-controller="Guest" asp-action="GuestHome" style="font-size: 2rem; color: #29353c; font-family: 'Sacramento', cursive;">OnShop</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -46,19 +46,19 @@
             </div>
         </nav>
 
-        <!-- Category bar !!!!! kategoriye g�re �r�nleri g�stercen -->
+        <!--  Category and Type Dropdowns -->
         <div class="container">
             <div class="category-bar">
                 <ul class="nav justify-content-center">
-                    <a class="nav-link category-navlink" href="#" id="category-All" data-categoryid="All">
+                    <a class="nav-link category-navlink" asp-area="" asp-controller="User" asp-action="AllProducts" id="category-All" data-categoryid="">
                         All
                     </a>
                     @if (Model.Categories != null && Model.Categories.Count > 0)
                         {
                     @foreach (var category in Model.Categories)
                         {
-                    <li class="nav-item" id="category-@category.CategoryId"data-categoryid="@category.CategoryId" >
-                        <a class="nav-link category-navlink" href="#" id="category-@category.CategoryId" data-categoryid="@category.CategoryId">
+                    <li class="nav-item" id="category-@category.CategoryId" data-categoryid="@category.CategoryId">
+                        <a class="nav-link category-navlink" id="category-@category.CategoryId" data-categoryid="@category.CategoryId" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="">
                             @category.CategoryName
                         </a>
                         <div class="types-list" id="types-list-@category.CategoryId">
@@ -71,9 +71,8 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                             {
                                         <li>
-                                            <a class="nav-link" href="#" id="category-@category.Types[j]" data-categoryid="@category.Types[j]">
+                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j]" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
                                                 @category.Types[j]
-
                                             </a>
                                         </li>
 
@@ -88,7 +87,7 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                                     {
                                         <li>
-                                            <a class="nav-link" href="#" id="category-@category.Types[j]" data-categoryid="@category.Types[j]">
+                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j] " asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
                                                 @category.Types[j]
 
                                             </a>
@@ -119,14 +118,99 @@
         </div>
 
 
+
+
         <!-- Main content -->
-        <main role="main"  style="margin-left: 100px; margin-right: 100px; margin-top: 20px">
+        <main role="main" style="margin-left: 100px; margin-right: 100px; margin-top: 20px;">
             @RenderBody()
         </main>
+
+
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <!-- Company Information -->
+                    <div class="col-md-6">
+                        <h5>OnShop</h5>
+                        <p>OnShop is your one-stop destination for the best products at unbeatable prices. We pride ourselves on quality and customer satisfaction.</p>
+                        <h6>Quick Links</h6>
+                        <ul>
+                            <li><a href="#" class="text-muted">Contact Us</a></li>
+                            <li><a href="#" class="text-muted">Employees</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="col-md-6">
+                        <h5>Contact Information</h5>
+                        <ul>
+                            <li><i class="fas fa-envelope"></i> Email: <a href="mailto:tbyurtturk@gmail.com">tbyurtturk@gmail.com</a></li>
+                            <li><i class="fas fa-user"></i> Name: Tanay Bensu Yurttürk</li>
+                            <li><i class="fas fa-phone"></i> Phone: 0538 968 85 79</li>
+                            <li><i class="fas fa-map-marker-alt"></i> Address: Bahçelievler Mahallesi, Ata2 Sitesi, Mavi Çam Cd 25/9</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 
 
+
+
     <script>
+        // ------------------------------ cateogry or type or all ---------------------------------------------------
+       /* $(document).ready(function () {
+            // Function to handle the AJAX request
+            function fetchProducts(category, type) {
+                $.ajax({
+                    url: '@Url.Action("GetProductsByCategoryAndType", "User")',
+                    type: 'POST',
+                    data: {
+                        category: category,
+                        type: type
+                    }
+                });
+            }
+
+            // Handle category clicks
+            $('.category-navlink').click(function (e) {
+                e.preventDefault();
+                var categoryId = $(this).data('categoryid');
+                fetchProducts(categoryId, null); // Fetch products by category
+            });
+
+            // Handle type clicks
+            $('.types-list .nav-link').click(function (e) {
+                e.preventDefault();
+                var categoryId = $(this).closest('.types-list').attr('id').replace('types-list-', '');
+                var type = $(this).data('categoryid');
+                fetchProducts(categoryId, type); // Fetch products by category and type
+            });
+
+            // Optionally, you might want to handle the "All" button to show all products
+            $('#category-All').click(function (e) {
+                e.preventDefault();
+                fetchProducts(null, null); // Fetch all products
+            });
+        });
+        */
+
+        // ---------------------------------------------------------------------------------
+        $(document).ready(function () {
+            $.getJSON('@Url.Action("GetBasketCount", "User")', function (data) {
+                if (data > 0) {
+                    $('#basketCount').text(data).show();
+                } else {
+                    $('#basketCount').hide();
+                }
+            });
+        });
+
+        // ---------------------------------------------------------------------------------
+
         $(document).ready(function () {
             // Hide all type lists initially
             $('.types-list').hide();
@@ -175,19 +259,28 @@
                 var $this = $(this);
                 hoverTimeout = setTimeout(function () {
                     $this.stop(true, true).slideUp();
-                }, 200); // Hide after 200ms delay
+                }, 50); // Hide after 200ms delay
             });
         });
-
 
     </script>
 
 
     <style>
+
+        .badge {
+            font-size: 9px;
+            padding: 0.5em 0.65em;
+            border-radius: 50%;
+            color: #fff;
+            background-color: #dc3545; /* Red color */
+        }
+
         .no-outline:focus {
             outline: none; /* Mavi outline'u kaldır */
             box-shadow: none; /* Box shadow'u kaldır */
         }
+
         .navbar {
             background-color: #fff;
         }
@@ -198,23 +291,24 @@
             font-size: 0.7rem;
             padding-left: 1.4rem;
         }
+
         .navbar-nav .nav-item .nav-link {
             display: flex;
             align-items: center;
-            padding-left: 20px; 
+            padding-left: 20px;
         }
 
-            .nav-link span:first-child {
-                font-size: 0.9rem;
-                color: #29353c;
-                padding-right: 2px;
-            }
+        .nav-link span:first-child {
+            font-size: 0.9rem;
+            color: #29353c;
+            padding-right: 2px;
+        }
 
-            .nav-link .nav-text {
-                font-family: 'Montserrat';
-                font-size: 14px;
-                color: #29353c;
-            }
+        .nav-link .nav-text {
+            font-family: 'Montserrat';
+            font-size: 14px;
+            color: #29353c;
+        }
 
         .category-bar {
             background-color: #fff;
@@ -225,6 +319,7 @@
                 color: #29353c;
                 font-size: 14px;
                 font-family: 'Montserrat', cursive;
+                cursor: pointer;
             }
 
             .category-bar .category-navlink:hover {
@@ -247,6 +342,72 @@
             background-color: #fff;
             width: max-content;
         }
+
+
+
+        .All {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            border-top: 1px solid #ddd;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+            footer h5 {
+                font-weight: bold;
+                color: #007bff;
+            }
+
+            footer h6 {
+                font-weight: bold;
+                margin-top: 10px;
+            }
+
+            footer p, footer li {
+                color: #6c757d;
+                font-size: 14px;
+            }
+
+            footer a {
+                color: #6c757d;
+                text-decoration: none;
+            }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+            footer ul {
+                padding-left: 0;
+                list-style-type: none;
+            }
+
+            footer .col-md-6 {
+                margin-bottom: 20px;
+            }
+
+                footer .col-md-6 ul {
+                    padding-left: 0;
+                }
+
+                    footer .col-md-6 ul li {
+                        margin-bottom: 5px;
+                    }
+
+                        footer .col-md-6 ul li i {
+                            margin-right: 10px;
+                        }
     </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

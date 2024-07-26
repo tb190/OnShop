@@ -45,18 +45,21 @@ namespace OnShop.Controllers
 
                 var products = await _guestDbFunctions.GuestGetProducts();
 
-
-                var sortedProducts = products.OrderByDescending(p => p.Clicked).ToList();
-
-                var companies = await _userDbFunctions.GetAllCompanies();
-
-
                 foreach (var product in products)
                 {
                     product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
                 }
 
 
+                var clickedProducts = products.OrderByDescending(p => p.Clicked).ToList();
+                var favoritedSortedProducts = products.OrderByDescending(p => p.Favorites).ToList();
+                var recentProducts = products.OrderByDescending(p => p.CreatedAt).ToList();
+                var highStarProducts = products.OrderByDescending(p => p.Rating).ToList();
+                var lessStockProducts = products.OrderBy(p => p.Stock).ToList();
+                var bestsellerProducts = products.OrderByDescending(p => p.Sold).ToList();
+
+
+                var companies = await _userDbFunctions.GetAllCompanies();
 
                 var productviewModel = new ProductViewModel
                 {
@@ -69,7 +72,12 @@ namespace OnShop.Controllers
                     {
                         Categories = categories,
                         Products = products,
-                        MostClickedProducts = sortedProducts
+                        MostClickedProducts = clickedProducts,
+                        MostFavoritedProducts = favoritedSortedProducts,
+                        RecentProducts = recentProducts,
+                        HighStarProducts = highStarProducts,
+                        LessStockProducts = lessStockProducts,
+                        BestsellerProducts = bestsellerProducts,
                     },
                     AllCompanies = companies
                 };
@@ -89,34 +97,32 @@ namespace OnShop.Controllers
             try
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
-                if (userId == null)
-                {
-                    HttpContext.Session.Remove("UserId");
-                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
-                }
+                
 
 
                 var productViewModel = await _userDbFunctions.UserGetProductDetails(ProductId);
 
-                productViewModel.Product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, ProductId);
-
-
+              
                 var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
-
-                productViewModel.Categories = categories;
-
-                var otherproducts = await _guestDbFunctions.GuestGetProducts();
-
-
-                foreach (var product in otherproducts)
-                {
-                    product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
-                }
-
-                productViewModel.OtherProducts = otherproducts;
 
                 
 
+                var otherproducts = await _guestDbFunctions.GuestGetProducts();
+
+                if (userId != null)
+                {
+                    productViewModel.Product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, ProductId);
+                    foreach (var product in otherproducts)
+                    {
+                        product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
+                    }
+                }
+
+
+                productViewModel.OtherProducts = otherproducts;
+                productViewModel.Categories = categories;
+
+                ViewBag.userId = userId;
 
                 return View(productViewModel);
             }
@@ -357,20 +363,17 @@ namespace OnShop.Controllers
             try
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
-                if (userId == null)
-                {
-                    HttpContext.Session.Remove("UserId");
-                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
-                }
+                
 
                 var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
                 var CategoryName = categories.FirstOrDefault(c => c.CategoryId.ToString() == category)?.CategoryName ?? "All";
                 var Allproducts = await _userDbFunctions.GetProductsByCategoryAndType(CategoryName, type);
 
-               
-                foreach (var product in Allproducts)
-                {
-                    product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
+                if (userId != null) { 
+                    foreach (var product in Allproducts)
+                    {
+                        product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
+                    }
                 }
                 
                 
@@ -382,6 +385,7 @@ namespace OnShop.Controllers
 
                 ViewBag.Category = CategoryName;
                 ViewBag.Type = type;
+                ViewBag.userId = userId;
 
                 return View(productviewModel);
             }
@@ -396,19 +400,19 @@ namespace OnShop.Controllers
         public async Task<IActionResult> CompanyDetails(int companyId)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                HttpContext.Session.Remove("UserId");
-                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
-            }
+            
             // CompanyDetails metodunu çağır ve dönen ProductViewModel'i al
             var companyInfos = await _userDbFunctions.CompanyDetails(companyId);
             // Kategorileri al
             var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
-            var isFollowing = await _userDbFunctions.IsUserFollowingCompany(userId, companyId);
+
+            if (userId != null) { 
+                var isFollowing = await _userDbFunctions.IsUserFollowingCompany(userId, companyId);
+                companyInfos.IsFollowing = isFollowing;
+            }
 
             companyInfos.Categories = categories;
-            companyInfos.IsFollowing = isFollowing;
+            ViewBag.userId = userId;
 
             // Görüntüleme için view'e gönder
             return View(companyInfos);
@@ -541,25 +545,24 @@ namespace OnShop.Controllers
         public async Task<IActionResult> AllProducts()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                HttpContext.Session.Remove("UserId");
-                return RedirectToAction("Login", "Login");
-            }
 
             var AllProducts = await _userDbFunctions.GetAllProducts();
             var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
 
-            foreach (var product in AllProducts)
+            if (userId != null)
             {
-                product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
+                foreach (var product in AllProducts)
+                {
+                    product.IsFavorited = await _userDbFunctions.IsUserFavoritedProduct(userId, product.ProductId);
+                }
             }
-
+             
             var productviewModel = new ProductViewModel
             {
                 Categories = categories,
                 AllProducts = AllProducts,
             };
+            ViewBag.userId = userId;
             return View(productviewModel);
         }
     }

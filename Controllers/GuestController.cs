@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using OnShop.Models;
 using System.Diagnostics;
 using System;
@@ -17,32 +17,53 @@ namespace OnShop.Controllers
     {
 
         private readonly GuestDbFunctions _guestDbFunctions;
+        private readonly UserDbFunctions _userDbFunctions;
 
         public GuestController()
         {
             _guestDbFunctions = new GuestDbFunctions();
+            _userDbFunctions = new UserDbFunctions();
         }
 
         public async Task<IActionResult> GuestHome()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-
-
-            // Veritabanýndan kategorileri çek
+            // Veritabanï¿½ndan kategorileri ï¿½ek
             var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
 
-            List<ProductModel> products = await _guestDbFunctions.GuestGetProducts();
+            var products = await _guestDbFunctions.GuestGetProducts();
 
-            var sortedProducts = products.OrderByDescending(p => p.Clicked).ToList();
+            var clickedProducts = products.OrderByDescending(p => p.Clicked).ToList();
+            var favoritedSortedProducts = products.OrderByDescending(p => p.Favorites).ToList();
+            var recentProducts = products.OrderByDescending(p => p.CreatedAt).ToList();
+            var highStarProducts = products.OrderByDescending(p => p.Rating).ToList();
+            var lessStockProducts = products.OrderBy(p => p.Stock).ToList();
+            var bestsellerProducts = products.OrderByDescending(p => p.Sold).ToList();
 
-            var viewModel = new GuestHomeViewModel
+
+            var companies = await _userDbFunctions.GetAllCompanies();
+
+            var productviewModel = new ProductViewModel
             {
+                Company = null,
+                User = null,
+                Product = null,
+                ProductReviews = null,
                 Categories = categories,
-                Products = products,
-                MostClickedProducts = sortedProducts
+                GuestHomeView = new GuestHomeViewModel
+                {
+                    Categories = categories,
+                    Products = products,
+                    MostClickedProducts = clickedProducts,
+                    MostFavoritedProducts = favoritedSortedProducts,
+                    RecentProducts = recentProducts,
+                    HighStarProducts = highStarProducts,
+                    LessStockProducts = lessStockProducts,
+                    BestsellerProducts = bestsellerProducts,
+                },
+                AllCompanies = companies
             };
 
-            return View("GuestHome", viewModel);
+            return View("GuestHome", productviewModel);
         }
     }
 

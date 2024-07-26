@@ -21,16 +21,131 @@
 
 
     <div class="component-list component-small-list" style="overflow-y: hidden; overflow-x: hidden;">
-        <article class="component-item widget-width">
-            <div class="widget-container extended-container">
+
+
+
+
+        <!-- RecentProducts  -->
+        <article class="component-item widget-width" >
+            <div class="widget-container extended-container" >
+                <div class="widget-gw-widget">
+                    <div>
+                        <div class="widget-header">
+
+                            <div class="product-Populer" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <img src="/Pictures/new.png" style="width: 30px; height: auto; margin-right: 8px; margin-bottom: 5px;">
+                                <h4 style="font-size:20px;">New Arrivals</h4>
+                            </div>
+
+
+                            <div class="widget-header-navigation">
+                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                        <div class="arrow-container" data-arrow="left">
+                            <button class="arrow-button" id="prevBtn">
+                            </button>
+                        </div>
+
+                        <div class="styles-module_slider__o0fqa" id="product-slider">
+                            @for (int index = 0; index < Model.GuestHomeView.RecentProducts.Count; index++)
+                                    {
+                                        var product = Model.GuestHomeView.RecentProducts[index];
+                            <div class="widget-product" title="@product.ProductName">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                    <div class="image-container">
+                                        <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        <!-- Kalp Button -->
+                                        <a id="like-button"
+                                           class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
+                                           asp-area=""
+                                           asp-controller="User"
+                                           asp-action="ToggleFavoriteProduct"
+                                           asp-route-productId="@product.ProductId"
+                                           asp-route-returnUrl="@Context.Request.Path"
+                                           style="font-size:16px;">
+                                            <i class="las la-heart"></i>
+                                        </a>
+
+                                        <!-- Stok Bilgisi -->
+                                        @if (product.Stock > 0)
+{
+                                        <div class="stock-badge">
+                                            <span class="stock-text">@product.Stock</span>
+                                        </div>
+}
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-info-area">
+                                            <div class="product-name-wrapper" style="text-decoration:none;">
+                                                <span class="brand">@product.ProductName</span>
+                                                @{
+                                 var Description_ = @product.Description;
+                                 var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                }
+
+                                                <span class="name">@firstSentence_</span>
+                                            </div>
+                                            <div class="ratings-container">
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings">
+                                                    <span class="rating">
+                                                        @for (int i = 0; i < 5; i++)
+                                     {
+                                         if (i < product.Rating)
+                                         {
+                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                         else
+                                         {
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                     }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="price-container">
+                                                <div class="prices">
+                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                </div>
+                                            </div>
+                                            <div class="badges"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                            </div>
+                                    }
+                        </div>
+
+
+
+                        <div class="arrow-container" data-arrow="right">
+                            <button class="arrow-button" id="nextBtn">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+
+        <!-- MostClickedProducts  -->
+        <article class="component-item widget-width" style="margin-top: 50px;">
+            <div class="widget-container extended-container" >
                 <div class="widget-gw-widget">
                     <div>
                         <div class="widget-header">
 
 
-                            
+
                             <div class="product-Populer" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
-                                <i class="las la-eye" style="font-size: 20px;  margin-right: 7px; margin-bottom: 5px;"></i><h4 style="font-size:20px;">Populer Products</h4>
+                                <i class="las la-eye" style="font-size: 20px;  margin-right: 8px; margin-bottom: 5px;"></i><h4 style="font-size:20px;">Populer Products</h4>
                             </div>
 
 
@@ -131,10 +246,457 @@
         </article>
 
 
+        <!-- MostFavoritedProducts  -->
+        <article class="component-item widget-width" style="margin-top: 50px;">
+            <div class="widget-container extended-container" >
+                <div class="widget-gw-widget">
+                    <div>
+                        <div class="widget-header">
+
+                            <div class="product-Populer" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <i class="las la-heart" style="color: red; font-size: 20px; margin-right: 8px; margin-bottom: 6px;"></i><h4 style="font-size:20px;">Most Loved Products</h4>
+                            </div>
 
 
-        <div class="component-list component-small-list">
-            <article class="component-item widget-width" style="margin-top:30px; height:735px; overflow-y: auto; width: 1319px;">
+                            <div class="widget-header-navigation">
+                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                        <div class="arrow-container" data-arrow="left">
+                            <button class="arrow-button" id="prevBtn">
+                            </button>
+                        </div>
+
+                        <div class="styles-module_slider__o0fqa" id="product-slider">
+                            @for (int index = 0; index < Model.GuestHomeView.MostFavoritedProducts.Count; index++)
+                                    {
+                                        var product = Model.GuestHomeView.MostFavoritedProducts[index];
+                            <div class="widget-product" title="@product.ProductName">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                    <div class="image-container">
+                                        <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        <!-- Kalp Button -->
+                                        <a id="like-button"
+                                           class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
+                                           asp-area=""
+                                           asp-controller="User"
+                                           asp-action="ToggleFavoriteProduct"
+                                           asp-route-productId="@product.ProductId"
+                                           asp-route-returnUrl="@Context.Request.Path"
+                                           style="font-size:16px;">
+                                            <i class="las la-heart"></i>
+                                        </a>
+
+                                        <!-- Stok Bilgisi -->
+                                        @if (product.Stock > 0)
+{
+                                        <div class="stock-badge">
+                                            <span class="stock-text">@product.Stock</span>
+                                        </div>
+}
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-info-area">
+                                            <div class="product-name-wrapper" style="text-decoration:none;">
+                                                <span class="brand">@product.ProductName</span>
+                                                @{
+                                 var Description_ = @product.Description;
+                                 var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                }
+
+                                                <span class="name">@firstSentence_</span>
+                                            </div>
+                                            <div class="ratings-container">
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings">
+                                                    <span class="rating">
+                                                        @for (int i = 0; i < 5; i++)
+                                     {
+                                         if (i < product.Rating)
+                                         {
+                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                         else
+                                         {
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                     }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="price-container">
+                                                <div class="prices">
+                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                </div>
+                                            </div>
+                                            <div class="badges"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                            </div>
+                                    }
+                        </div>
+
+
+
+                        <div class="arrow-container" data-arrow="right">
+                            <button class="arrow-button" id="nextBtn">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+
+
+
+
+
+
+        <!-- HighStarProducts  -->
+        <article class="component-item widget-width" style="margin-top: 50px;">
+            <div class="widget-container extended-container">
+                <div class="widget-gw-widget">
+                    <div>
+                        <div class="widget-header">
+
+                            <div class="product-Populer" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <i class="las la-star" style="color: gold;  font-size: 20px; margin-right: 8px; margin-bottom: 5px; "></i><h4 style="font-size:20px;">Top Rated Products</h4>
+                            </div>
+
+
+                            <div class="widget-header-navigation">
+                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                        <div class="arrow-container" data-arrow="left">
+                            <button class="arrow-button" id="prevBtn">
+                            </button>
+                        </div>
+
+                        <div class="styles-module_slider__o0fqa" id="product-slider">
+                            @for (int index = 0; index < Model.GuestHomeView.HighStarProducts.Count; index++)
+                                    {
+                                        var product = Model.GuestHomeView.HighStarProducts[index];
+                            <div class="widget-product" title="@product.ProductName">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                    <div class="image-container">
+                                        <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        <!-- Kalp Button -->
+                                        <a id="like-button"
+                                           class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
+                                           asp-area=""
+                                           asp-controller="User"
+                                           asp-action="ToggleFavoriteProduct"
+                                           asp-route-productId="@product.ProductId"
+                                           asp-route-returnUrl="@Context.Request.Path"
+                                           style="font-size:16px;">
+                                            <i class="las la-heart"></i>
+                                        </a>
+
+                                        <!-- Stok Bilgisi -->
+                                        @if (product.Stock > 0)
+{
+                                        <div class="stock-badge">
+                                            <span class="stock-text">@product.Stock</span>
+                                        </div>
+}
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-info-area">
+                                            <div class="product-name-wrapper" style="text-decoration:none;">
+                                                <span class="brand">@product.ProductName</span>
+                                                @{
+                                 var Description_ = @product.Description;
+                                 var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                }
+
+                                                <span class="name">@firstSentence_</span>
+                                            </div>
+                                            <div class="ratings-container">
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings">
+                                                    <span class="rating">
+                                                        @for (int i = 0; i < 5; i++)
+                                     {
+                                         if (i < product.Rating)
+                                         {
+                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                         else
+                                         {
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                     }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="price-container">
+                                                <div class="prices">
+                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                </div>
+                                            </div>
+                                            <div class="badges"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                            </div>
+                                    }
+                        </div>
+
+
+
+                        <div class="arrow-container" data-arrow="right">
+                            <button class="arrow-button" id="nextBtn">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+
+
+
+        <!-- LessStockProducts  -->
+        <article class="component-item widget-width" style="margin-top: 50px;">
+            <div class="widget-container extended-container">
+                <div class="widget-gw-widget">
+                    <div>
+                        <div class="widget-header">
+
+                            <div class="product-Populer" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <i class="las la-box" style="font-size: 22px; margin-right: 7px; margin-top: 2px; margin-bottom: 2px;"></i> <h4 style="font-size:20px;">Limited Stock</h4>
+                            </div>
+
+
+                            <div class="widget-header-navigation">
+                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                        <div class="arrow-container" data-arrow="left">
+                            <button class="arrow-button" id="prevBtn">
+                            </button>
+                        </div>
+
+                        <div class="styles-module_slider__o0fqa" id="product-slider">
+                            @for (int index = 0; index < Model.GuestHomeView.LessStockProducts.Count; index++)
+                                    {
+                                        var product = Model.GuestHomeView.LessStockProducts[index];
+                            <div class="widget-product" title="@product.ProductName">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                    <div class="image-container">
+                                        <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        <!-- Kalp Button -->
+                                        <a id="like-button"
+                                           class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
+                                           asp-area=""
+                                           asp-controller="User"
+                                           asp-action="ToggleFavoriteProduct"
+                                           asp-route-productId="@product.ProductId"
+                                           asp-route-returnUrl="@Context.Request.Path"
+                                           style="font-size:16px;">
+                                            <i class="las la-heart"></i>
+                                        </a>
+
+                                        <!-- Stok Bilgisi -->
+                                        @if (product.Stock > 0)
+{
+                                        <div class="stock-badge">
+                                            <span class="stock-text">@product.Stock</span>
+                                        </div>
+}
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-info-area">
+                                            <div class="product-name-wrapper" style="text-decoration:none;">
+                                                <span class="brand">@product.ProductName</span>
+                                                @{
+                                 var Description_ = @product.Description;
+                                 var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                }
+
+                                                <span class="name">@firstSentence_</span>
+                                            </div>
+                                            <div class="ratings-container">
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings">
+                                                    <span class="rating">
+                                                        @for (int i = 0; i < 5; i++)
+                                     {
+                                         if (i < product.Rating)
+                                         {
+                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                         else
+                                         {
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                     }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="price-container">
+                                                <div class="prices">
+                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                </div>
+                                            </div>
+                                            <div class="badges"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                            </div>
+                                    }
+                        </div>
+
+
+
+                        <div class="arrow-container" data-arrow="right">
+                            <button class="arrow-button" id="nextBtn">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+
+
+
+
+
+        <!-- BestsellerProducts  -->
+        <article class="component-item widget-width" style="margin-top: 50px;">
+            <div class="widget-container extended-container">
+                <div class="widget-gw-widget">
+                    <div>
+                        <div class="widget-header">
+
+                            <div class="product-Populer" style="display: flex; align-items: center; margin-left: 5px; margin-bottom: 10px; ">
+                                <img src="/Pictures/bestseller1.png" style="width: 40px; height: auto; margin-right: 7px; margin-bottom: 5px;"><h4 style="font-size:20px;">Top Sellers</h4>
+                            </div>
+
+
+                            <div class="widget-header-navigation">
+                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-seen-tracker" data-tracker="seen:widget-gw-widget-2305414"></div>
+                    <div class="styles-module_sliderBase__swkx1 product-slider" data-ride="carousel">
+                        <div class="arrow-container" data-arrow="left">
+                            <button class="arrow-button" id="prevBtn">
+                            </button>
+                        </div>
+
+                        <div class="styles-module_slider__o0fqa" id="product-slider">
+                            @for (int index = 0; index < Model.GuestHomeView.BestsellerProducts.Count; index++)
+                                    {
+                                        var product = Model.GuestHomeView.BestsellerProducts[index];
+                            <div class="widget-product" title="@product.ProductName">
+                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                    <div class="image-container">
+                                        <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
+
+                                        <!-- Kalp Button -->
+                                        <a id="like-button"
+                                           class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
+                                           asp-area=""
+                                           asp-controller="User"
+                                           asp-action="ToggleFavoriteProduct"
+                                           asp-route-productId="@product.ProductId"
+                                           asp-route-returnUrl="@Context.Request.Path"
+                                           style="font-size:16px;">
+                                            <i class="las la-heart"></i>
+                                        </a>
+
+                                        <!-- Stok Bilgisi -->
+                                        @if (product.Stock > 0)
+{
+                                        <div class="stock-badge">
+                                            <span class="stock-text">@product.Stock</span>
+                                        </div>
+}
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-info-area">
+                                            <div class="product-name-wrapper" style="text-decoration:none;">
+                                                <span class="brand">@product.ProductName</span>
+                                                @{
+                                 var Description_ = @product.Description;
+                                 var firstSentence_ = Description_.Contains(".") ? Description_.Substring(0, Description_.IndexOf(".") + 1) : Description_;
+                                                }
+
+                                                <span class="name">@firstSentence_</span>
+                                            </div>
+                                            <div class="ratings-container">
+                                                <div class="ratings-score" style="font-size:12px; margin-top:4px; margin-right:5px;">@product.Rating</div>
+                                                <div class="ratings">
+                                                    <span class="rating">
+                                                        @for (int i = 0; i < 5; i++)
+                                     {
+                                         if (i < product.Rating)
+                                         {
+                                                        <i class="las la-star" style="color: gold; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                         else
+                                         {
+                                                        <i class="las la-star" style="color: #ccc; font-size: 14px; text-decoration: none;"></i>
+                                         }
+                                     }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="price-container">
+                                                <div class="prices">
+                                                    <div class="price-box"><span style="color:#333;">@product.Price.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</span></div>
+
+                                                </div>
+                                            </div>
+                                            <div class="badges"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="product-seen-tracker" data-tracker="seen:widget-gw-product-@product.ProductId" data-id="@product.ProductId" data-merchant-id="@product.CompanyID"></div>
+                            </div>
+                                    }
+                        </div>
+
+
+
+                        <div class="arrow-container" data-arrow="right">
+                            <button class="arrow-button" id="nextBtn">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+
+
+
+        <div class="component-list component-small-list" style="margin-top: 50px;">
+            <article class="component-item widget-width" style="margin-top: 30px; height: 735px; overflow-y: auto; overflow-x: hidden; width: 1319px;">
                 <div class="widget-container extended-container">
                     <div class="widget-gw-widget">
                         <div class="widget-header" style="width:1500px;">
@@ -149,7 +711,7 @@
                                 string lastPart = System.IO.Path.GetFileName(company.BannerUrl);
 
 
-                                <a class="company-card" style="background-image: url('@Url.Content("~/Pictures/CompanyBanners/" + lastPart)'); "  asp-area="" asp-controller="User" asp-action="CompanyDetails" asp-route-companyId="@company.CompanyId">
+                                <a class="company-card" style="background-image: url('@Url.Content("~/Pictures/CompanyBanners/" + lastPart)'); " asp-area="" asp-controller="User" asp-action="CompanyDetails" asp-route-companyId="@company.CompanyId">
                                     <div class="company-overlay">
                                         <div class="company-info">
                                             <h5>@company.CompanyName <i class="fas fa-star"></i> @company.Score</h5>
@@ -171,7 +733,7 @@
                 </div>
             </article>
         </div>
-</div>
+    </div>
 
 
 
@@ -301,7 +863,8 @@
                     box-sizing: border-box;
                     height: 440px;
                     border-radius: 8px; /* Modern köşeler */
-                    background: url('path/to/texture.png'), linear-gradient(135deg, #ffffff, #f0f0f0); /* Light texture with gradient */
+                    background-image: linear-gradient(to right bottom, #dadada, #e1e1e1, #e8e8e8, #efefef, #f6f6f6, #f6f6f6, #f6f6f6, #f6f6f6, #efefef, #e8e8e8, #e1e1e1, #dadada);
+                    /* background: url('path/to/texture.png'), linear-gradient(135deg, #ffffff, #f0f0f0); Light texture with gradient */
                     background-blend-mode: overlay; /* Blends the texture with the gradient */
                     border: 1px solid #ccc; /* Light border for definition */
                     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow */

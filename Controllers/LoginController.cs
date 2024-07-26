@@ -91,6 +91,12 @@ namespace OnShop.Controllers
 
                     HttpContext.Session.SetInt32("UserId", userId);
 
+                    if (userId == null)
+                    {
+                        HttpContext.Session.Remove("UserId");
+                        return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                    }
+
                     if (role == "Vendor") return RedirectToAction("VendorHome", "Vendor");
                     else if (role == "Admin") return RedirectToAction("AdminHome", "Admin");
                     return RedirectToAction("UserHome", "User");// Kullan�c� do�ruland�, ba�ar�l� bir �ekilde y�nlendirme
