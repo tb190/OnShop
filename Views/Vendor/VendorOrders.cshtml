@@ -225,39 +225,35 @@
             });
         });
 
-    // --------------------------------- All or Online ---------------------------------
-    $(document).ready(function () {
-        // Handle showing only online products
-        $('.btn-outline-secondary[data-status="online"]').on('click', function () {
-            window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=online';
-        });
-
-        // Handle showing all products
-        $('.btn-outline-secondary[data-status="all"]').on('click', function () {
-            window.location.href = '@Url.Action("VendorProducts", "Vendor")' + '?statusFilter=all';
-        });
-    });
-        // --------------------------------- Search ---------------------------------
+    // --------------------------------- Search ---------------------------------
+        // Filter table rows based on search input
+        // Sayfa yüklendikten sonra
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
-            const productTableBody = document.getElementById('product-table-body');
-            const rows = productTableBody.getElementsByTagName('tr');
+            const rows = document.querySelectorAll('.product-row'); // Ürün satırlarını seç
 
+            // Input alanına her yazıldığında çalışacak olan fonksiyon
             searchInput.addEventListener('input', function () {
-                const query = searchInput.value.toLowerCase();
-                Array.from(rows).forEach(row => {
+                const query = searchInput.value.toLowerCase(); // Kullanıcının arama sorgusu
+                rows.forEach(row => {
                     const cells = row.getElementsByTagName('td');
                     let match = false;
-                    for (let i = 1; i < cells.length; i++) { // Skip the first cell (Photos)
+
+                    // Tüm hücreleri kontrol et
+                    for (let i = 1; i < cells.length; i++) { // İlk hücreyi (ID veya fotoğraf) atla
                         if (cells[i].textContent.toLowerCase().includes(query)) {
                             match = true;
                             break;
                         }
                     }
+
+                    // Eşleşme varsa göster, yoksa gizle
                     row.style.display = match ? '' : 'none';
                 });
             });
         });
+
+
 
     </script>
 

@@ -1,8 +1,7 @@
 @model OnShop.Models.ProductViewModel
 @{
     ViewData["Title"] = "All Products";
-    var userId = ViewBag.userId as string; // Assuming userId is a string; adjust type if necessary
-    Layout = string.IsNullOrEmpty(userId) ? "~/Views/Shared/_LayoutGuest.cshtml" : "~/Views/Shared/_LayoutUser.cshtml";
+    Layout = Model.userId != 0 ? "~/Views/Shared/_LayoutUser.cshtml" : "~/Views/Shared/_LayoutGuest.cshtml";
 }
 <!DOCTYPE html>
 <html lang="en">

@@ -97,7 +97,11 @@ namespace OnShop.Controllers
             try
             {
                 int? userId = HttpContext.Session.GetInt32("UserId");
-                
+                if (userId == null)
+                {
+                    HttpContext.Session.Remove("UserId");
+                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                }
 
 
                 var productViewModel = await _userDbFunctions.UserGetProductDetails(ProductId);
@@ -122,7 +126,7 @@ namespace OnShop.Controllers
                 productViewModel.OtherProducts = otherproducts;
                 productViewModel.Categories = categories;
 
-                ViewBag.userId = userId;
+                productViewModel.userId = userId;
 
                 return View(productViewModel);
             }
@@ -385,7 +389,7 @@ namespace OnShop.Controllers
 
                 ViewBag.Category = CategoryName;
                 ViewBag.Type = type;
-                ViewBag.userId = userId;
+                productviewModel.userId = userId;
 
                 return View(productviewModel);
             }
@@ -412,7 +416,8 @@ namespace OnShop.Controllers
             }
 
             companyInfos.Categories = categories;
-            ViewBag.userId = userId;
+
+            companyInfos.userId = userId;
 
             // Görüntüleme için view'e gönder
             return View(companyInfos);
@@ -545,6 +550,11 @@ namespace OnShop.Controllers
         public async Task<IActionResult> AllProducts()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login");
+            }
 
             var AllProducts = await _userDbFunctions.GetAllProducts();
             var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
@@ -562,7 +572,7 @@ namespace OnShop.Controllers
                 Categories = categories,
                 AllProducts = AllProducts,
             };
-            ViewBag.userId = userId;
+            productviewModel.userId = userId;
             return View(productviewModel);
         }
     }

@@ -33,7 +33,7 @@
 
                 <div class="sidebar-main mt-2">
                     <ul class="nav flex-column">
-                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminHome" ? "active" : "")">
+                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminDashBoard" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminDashBoard">
                                 <span class="las la-chalkboard"></span>
                                 <span class="nav-text">DashBoard</span>
@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="vendor-info">
-                        <a asp-area="" asp-controller="Vendor" asp-action="VendorHome">
+                        <a asp-area="" asp-controller="Admin" asp-action="AdminHome">
                             <div class="vendor-details" style=" margin-left: 20px;">
                                 <p class="vendor-name">Tanay Bensu Yurttürk</p>
                                 <p class="vendor-company">OnShop Inc.</p>
@@ -97,7 +97,6 @@
             background-image: linear-gradient(to right bottom, #132745, #16496a, #196e8c, #2b95a9, #4ebdc0);
             padding-top: 20px;
             position: relative;
-            transition: all 0.3s ease;
         }
 
         .sidebar-closed {

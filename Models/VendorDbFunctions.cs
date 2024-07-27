@@ -617,6 +617,8 @@ namespace OnShop
             {
                 await connection.OpenAsync();
 
+               
+
                 string query1 = @"
                 SELECT CompanyId, Score, UserId, CompanyName, ContactName, Description, 
                     Address, PhoneNumber, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin, CreatedAt, BirthDate
@@ -701,5 +703,353 @@ namespace OnShop
             connection.Close();
 
         }
+
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<VendorViewModel> GetVendorDashBoard(int? userId)
+        {
+            VendorViewModel model = new VendorViewModel();
+
+            await connection.OpenAsync();
+
+            try
+            {
+
+                int CompanyId = 0;
+
+                string queryCompany = @"
+                                    SELECT CompanyId
+                                    FROM Companies
+                                    WHERE UserId = @UserId";
+
+                using (var commandCompany = new SqlCommand(queryCompany, connection))
+                {
+                    commandCompany.Parameters.AddWithValue("@UserId", userId);
+
+                    using (var readerCompany = await commandCompany.ExecuteReaderAsync())
+                    {
+                        if (await readerCompany.ReadAsync())
+                        {
+                            CompanyId = readerCompany.GetInt32(readerCompany.GetOrdinal("CompanyId"));
+                        }
+                    }
+                }
+
+
+
+
+                // Get All Users
+                List<UserModel> AllFollowers = new List<UserModel>();
+                string queryUsers = @"
+                    SELECT 
+                           u.UserId, u.UserName, u.UserSurName, u.PasswordHash, u.Email AS UserEmail, u.Role, 
+                           u.Address AS UserAddress, u.PhoneNumber AS UserPhoneNumber, u.Age, u.BirthDate AS UserBirthDate, u.CreatedAt AS UserCreatedAt
+                    FROM Users u join FollowedCompanies fc on u.UserId = fc.UserId where fc.CompanyId = @CompanyId";
+
+
+                using (SqlCommand commandUsers = new SqlCommand(queryUsers, connection))
+                {
+                    commandUsers.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader readerUsers = await commandUsers.ExecuteReaderAsync())
+                    {
+                        while (await readerUsers.ReadAsync())
+                        {
+                            UserModel user = new UserModel
+                            {
+                                UserId = readerUsers.GetInt32(readerUsers.GetOrdinal("UserId")),
+                                Name = readerUsers.GetString(readerUsers.GetOrdinal("UserName")),
+                                SurName = readerUsers.GetString(readerUsers.GetOrdinal("UserSurName")),
+                                PasswordHash = readerUsers.GetString(readerUsers.GetOrdinal("PasswordHash")),
+                                Email = readerUsers.GetString(readerUsers.GetOrdinal("UserEmail")),
+                                Role = readerUsers.GetString(readerUsers.GetOrdinal("Role")),
+                                Address = readerUsers.GetString(readerUsers.GetOrdinal("UserAddress")),
+                                PhoneNumber = readerUsers.GetString(readerUsers.GetOrdinal("UserPhoneNumber")),
+                                Age = readerUsers.GetInt32(readerUsers.GetOrdinal("Age")),
+                                BirthDate = readerUsers.GetDateTime(readerUsers.GetOrdinal("UserBirthDate")),
+                                CreatedAt = readerUsers.GetDateTime(readerUsers.GetOrdinal("UserCreatedAt"))
+                            };
+                            AllFollowers.Add(user);
+                        }
+                    }
+                }
+                model.AllFollowers = AllFollowers.OrderBy(p => p.CreatedAt).ToList();
+
+
+
+                // onnline productss
+                var products = new List<ProductModel>();
+
+                var queryProducts = @"
+                    SELECT * FROM Products
+                    WHERE status = 'Online' and CompanyID = @CompanyId";
+
+                using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                {
+                    cmd.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await detailsReader.ReadAsync())
+                        {
+                            var product_ = new ProductModel();
+                            product_.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                            product_.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                            product_.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                            product_.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                            product_.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                            product_.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                            product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                            product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                            product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                            product_.Type = detailsReader.GetString(detailsReader.GetOrdinal("Type"));
+                            product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                            product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                            product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                            product_.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
+                            product_.Photos = new List<string>();
+
+                            model.TotalSold += product_.Sold;
+                            model.TotalFavorites += product_.Favorites;
+                            model.TotalClicks += product_.Clicked;
+                            model.TotalRevenue += product_.Sold * product_.Price;
+                            products.Add(product_);
+                        }
+                    }
+                }
+
+                model.OnlineProducts = products;
+
+
+                // offline products
+                products = new List<ProductModel>();
+                queryProducts = @"
+                    SELECT * FROM Products
+                    WHERE status = 'Offline' and CompanyID = @CompanyId";
+
+                using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                {
+                    cmd.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await detailsReader.ReadAsync())
+                        {
+                            var product_ = new ProductModel();
+                            product_.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                            product_.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                            product_.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                            product_.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                            product_.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                            product_.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                            product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                            product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                            product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                            product_.Type = detailsReader.GetString(detailsReader.GetOrdinal("Type"));
+                            product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                            product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                            product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                            product_.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
+                            product_.Photos = new List<string>();
+
+                            model.TotalSold += product_.Sold;
+                            model.TotalFavorites += product_.Favorites;
+                            model.TotalClicks += product_.Clicked;
+                            model.TotalRevenue += product_.Sold * product_.Price;
+                            products.Add(product_);
+                        }
+                    }
+                }
+                model.OfflineProducts = products;
+
+                // all products
+                products = new List<ProductModel>();
+                queryProducts = @"
+                    SELECT * FROM Products
+                    WHERE CompanyID = @CompanyId";
+
+                using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
+                {
+                    cmd.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader detailsReader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await detailsReader.ReadAsync())
+                        {
+                            var product_ = new ProductModel();
+                            product_.ProductId = detailsReader.GetInt32(detailsReader.GetOrdinal("ProductId"));
+                            product_.Rating = detailsReader.GetInt32(detailsReader.GetOrdinal("Rating"));
+                            product_.Favorites = detailsReader.GetInt32(detailsReader.GetOrdinal("Favorites"));
+                            product_.CompanyID = detailsReader.GetInt32(detailsReader.GetOrdinal("CompanyID"));
+                            product_.Stock = detailsReader.GetInt32(detailsReader.GetOrdinal("Stock"));
+                            product_.Price = detailsReader.GetDecimal(detailsReader.GetOrdinal("Price"));
+                            product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
+                            product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
+                            product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                            product_.Type = detailsReader.GetString(detailsReader.GetOrdinal("Type"));
+                            product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
+                            product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
+                            product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
+                            product_.Sold = detailsReader.GetInt32(detailsReader.GetOrdinal("Sold"));
+                            product_.Photos = new List<string>();
+
+                            model.TotalSold += product_.Sold;
+                            model.TotalFavorites += product_.Favorites;
+                            model.TotalClicks += product_.Clicked;
+                            model.TotalRevenue += product_.Sold * product_.Price;
+                            products.Add(product_);
+                        }
+                    }
+                }
+                model.AllProducts = products;
+
+
+
+                // Kategori ve türlere göre ürün sayýsýný hesaplamak için bir sözlük
+                var categoryTypeCount = new Dictionary<string, Dictionary<string, int>>();
+
+
+                foreach (var product in model.AllProducts)
+                {
+                    // Eðer category veya type alaný null ya da boþ ise bu durumu loglayýn
+                    if (string.IsNullOrWhiteSpace(product.Category) || string.IsNullOrWhiteSpace(product.Type))
+                    {
+                        continue; // Null veya boþ deðerler için iþlemi atla
+                    }
+
+                    if (!categoryTypeCount.ContainsKey(product.Category))
+                    {
+                        categoryTypeCount[product.Category] = new Dictionary<string, int>();
+                    }
+
+                    if (!categoryTypeCount[product.Category].ContainsKey(product.Type))
+                    {
+                        categoryTypeCount[product.Category][product.Type] = 0;
+                    }
+                    categoryTypeCount[product.Category][product.Type]++;
+                }
+
+                // Sonuçlarý yazdýrma
+                foreach (var category in categoryTypeCount)
+                {
+                    Console.WriteLine($"Category: {category.Key}");
+                    foreach (var type in category.Value)
+                    {
+                        Console.WriteLine($" - Type: {type.Key}, Count: {type.Value}");
+                    }
+                }
+
+                model.categoryTypeCount = categoryTypeCount;
+
+                // Get All Products Reviews
+                List<ProductReviewModel> reviews = new List<ProductReviewModel>();
+
+                string queryReviews = @"
+                    SELECT ReviewId, ProductId,  CompanyId, Rating, Review, CreatedAt
+                    FROM Reviews WHERE CompanyId = @CompanyId;";
+
+                using (var commandReviews = new SqlCommand(queryReviews, connection))
+                {
+                    commandReviews.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader readerReviews = await commandReviews.ExecuteReaderAsync())
+                    {
+                        while (await readerReviews.ReadAsync())
+                        {
+                            reviews.Add(new ProductReviewModel
+                            {
+                                ReviewId = readerReviews.GetInt32(0),
+                                ProductId = readerReviews.GetInt32(1),
+                                CompanyId = readerReviews.GetInt32(2),
+                                Rating = readerReviews.GetInt32(3),
+                                Review = readerReviews.GetString(4),
+                                CreatedAt = readerReviews.GetDateTime(5)
+                            });
+                        }
+
+                    }
+                }
+                model.ProductsReviews = reviews;
+                model.TotalReviews = reviews.Count;
+
+
+
+              
+                // Get All PurchasedProducts
+                List<PurchasedProductModel> PurchasedProducts = new List<PurchasedProductModel>();
+                List<int> PurchasedProductsIds = new List<int>();
+
+                string queryPurchasedProductsId = @"
+                    SELECT ProductId
+                    FROM PurchasedProducts WHERE CompanyId = @CompanyId;";
+
+                using (SqlCommand cmdPR = new SqlCommand(queryPurchasedProductsId, connection))
+                {
+                    cmdPR.Parameters.AddWithValue("@CompanyId", CompanyId);
+                    using (SqlDataReader PRReader = await cmdPR.ExecuteReaderAsync())
+                    {
+                        while (await PRReader.ReadAsync())
+                        {
+                            int productId = PRReader.GetInt32(PRReader.GetOrdinal("ProductId"));
+                            PurchasedProductsIds.Add(productId);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < PurchasedProductsIds.Count; i++)
+                {
+                    string queryPurchasedProducts = @"
+                            SELECT p.*, pp.PurchasedDate
+                            FROM Products p
+                            JOIN PurchasedProducts pp ON p.ProductId = pp.ProductId
+                            WHERE pp.ProductId = @ProductId;";
+
+                    using (SqlCommand cmdPR = new SqlCommand(queryPurchasedProducts, connection))
+                    {
+                        cmdPR.Parameters.AddWithValue("@ProductId", PurchasedProductsIds[i]);
+
+                        using (SqlDataReader PRReader = await cmdPR.ExecuteReaderAsync())
+                        {
+                            while (await PRReader.ReadAsync())
+                            {
+                                var productPR = new PurchasedProductModel
+                                {
+                                    ProductId = PRReader.GetInt32(PRReader.GetOrdinal("ProductId")),
+                                    Rating = PRReader.GetInt32(PRReader.GetOrdinal("Rating")),
+                                    Favorites = PRReader.GetInt32(PRReader.GetOrdinal("Favorites")),
+                                    CompanyID = PRReader.GetInt32(PRReader.GetOrdinal("CompanyID")),
+                                    Stock = PRReader.GetInt32(PRReader.GetOrdinal("Stock")),
+                                    Price = PRReader.GetDecimal(PRReader.GetOrdinal("Price")),
+                                    ProductName = PRReader.GetString(PRReader.GetOrdinal("ProductName")),
+                                    Description = PRReader.GetString(PRReader.GetOrdinal("Description")),
+                                    Category = PRReader.GetString(PRReader.GetOrdinal("Category")),
+                                    Status = PRReader.GetString(PRReader.GetOrdinal("Status")),
+                                    CreatedAt = PRReader.GetDateTime(PRReader.GetOrdinal("CreatedAt")),
+                                    Clicked = PRReader.GetInt32(PRReader.GetOrdinal("Clicked")),
+                                    Sold = PRReader.GetInt32(PRReader.GetOrdinal("Sold")),
+                                    PurchasedDate = PRReader.GetDateTime(PRReader.GetOrdinal("PurchasedDate")),
+                                    Photos = new List<string>() // Photos listesine nasýl veri ekleneceði daha sonra belirlenmelidir
+                                };
+                                PurchasedProducts.Add(productPR);
+                            }
+                        }
+                    }
+                }
+                model.PurchasedProducts = PurchasedProducts.OrderBy(p => p.PurchasedDate).ToList();
+
+
+                await connection.CloseAsync();
+                return model;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to retrieve Dashboard: {ex.Message}");
+                await connection.CloseAsync();
+                return model;
+                throw;
+            }
+        }
+
+
+
+
+
+
     }
 }

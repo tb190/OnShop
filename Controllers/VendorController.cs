@@ -36,15 +36,19 @@ namespace OnShop.Controllers
         public async Task<IActionResult> VendorHome()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
-            VendorViewModel model = new VendorViewModel();
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
 
             vendor = await _vendorDbFunctions.GetVendor(userId);
-            model.VendorUserInfos = vendor.VendorUserInfos;
-            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
 
+            VendorViewModel modelDashboard = await _vendorDbFunctions.GetVendorDashBoard(userId);
+            modelDashboard.VendorUserInfos = vendor.VendorUserInfos;
+            modelDashboard.VendorCompanyInfos = vendor.VendorCompanyInfos;
 
-            Console.WriteLine("burda : "+ model.VendorUserInfos.Name+"   "+ model.VendorCompanyInfos.CompanyName);
-            return View(model);
+            return View(modelDashboard);
         }
 
         // -------------------------------------- Products Page --------------------------------------

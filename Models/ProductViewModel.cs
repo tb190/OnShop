@@ -2,6 +2,7 @@ namespace OnShop.Models
 {
     public class ProductViewModel
     {
+        public int? userId = 0;
         public decimal TotalPrice { get; set; }
         public CompanyModel Company { get; set; }
         public UserModel User { get; set; }

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model OnShop.Models.VendorViewModel
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -83,9 +84,9 @@
                     <div class="vendor-info">
                         <a asp-area="" asp-controller="Vendor" asp-action="VendorHome">
                             <div class="vendor-details" style=" margin-left: 20px;">
-                                <p class="vendor-name">Tanay Bensu Yurttürk</p>
-                                <p class="vendor-company">OnShop Inc.</p>
-                                <p class="vendor-position">Manager</p>
+                                <p class="vendor-name">@Model.VendorUserInfos.Name</p>
+                                <p class="vendor-company">@Model.VendorCompanyInfos.CompanyName</p>
+                                <p class="vendor-position">@Model.VendorUserInfos.Role</p>
                             </div>
                         </a>
                     </div>
@@ -109,7 +110,6 @@
             background-image: linear-gradient(315deg, #d3d3d3 0%, #57606f 74%);
             padding-top: 20px;
             position: relative;
-            transition: all 0.3s ease;
         }
 
         .sidebar-closed {
@@ -126,7 +126,7 @@
             margin-left: 60px;
         }
 
-       
+
         /* Toggle Button Styles */
         .btn-toggleSidebar {
             margin-left: 20px;
@@ -281,6 +281,16 @@
             border-top: 1px solid #ffffff;
             padding-bottom: 20px;
             margin-left: 10px;
+            height: 99px; /* Sabit bir yükseklik belirleyin */
+            overflow: hidden; /* Taşan içeriği gizler */
+            text-overflow: ellipsis; /* Taşan metinlerde üç nokta gösterir */
+        }
+
+        .vendor-details p {
+            white-space: wrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .vendor-info a {
@@ -294,7 +304,12 @@
         .vendor-details {
             display: flex;
             flex-direction: column;
+            flex: 1; /* Vendor details bölümünün kalan alanı kaplamasını sağlar */
+            min-width: 0; /* Flexbox ile taşma durumunu önlemek için */
+            bottom: 0;
         }
+
+            
 
         .vendor-name {
             font-weight: bold;
