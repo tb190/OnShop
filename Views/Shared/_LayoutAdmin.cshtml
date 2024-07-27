@@ -84,7 +84,7 @@
             </nav>
 
             <!-- Main content -->
-            <main role="main" id="mainContent" class="col-lg-10" style="margin-left:30px; margin-top:10px;">
+            <main role="main" id="mainContent" class="col-lg-10" style="margin-left:30px; margin-top:15px;">
                 @RenderBody()
             </main>
 
@@ -187,7 +187,7 @@
 
         .sidebar-closed .logout-button {
             display: block;
-            margin-top: 5px;
+            margin-top: 10px;
         }
 
 
@@ -201,13 +201,27 @@
         .sidebar-main {
             padding-top: 1rem;
             overflow-y: auto;
-            height: calc(92vh - 90px);
+            height: calc(87vh - 86px);
             margin-right:-12px;
         }
 
-        @@media (max-height: 800px) {
+        .sidebar-closed .sidebar-main {
+            padding-top: 1rem;
+            overflow-y: auto;
+            height: calc(89vh - 86px);
+            margin-right: -12px;
+        }
+
+        /* When sidebar is closed */
+        .sidebar-closed ~ #mainContent {
+            margin-left: 0;
+            width: 91%;
+        }
+
+
+        @@media (max-height: 600px) {
             .sidebar-main {
-                height: calc(85vh - 72px);
+                height: calc(87vh - 72px);
             }
         }
 
