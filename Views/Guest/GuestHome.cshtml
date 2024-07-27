@@ -776,6 +776,30 @@
             });
 
 
+        // --------------------------------- Search ---------------------------------
+        $(document).ready(function () {
+            // Arama işlevi
+            $('#searchInput').on('input', function () {
+                var query = $(this).val().toLowerCase();
+                filterProducts(query);
+            });
+
+            function filterProducts(query) {
+                // Ürünleri filtrele
+                $('.widget-product').each(function () {
+                    var productName = $(this).find('.product-name-wrapper .brand').text().toLowerCase();
+                    var description = $(this).find('.product-name-wrapper .name').text().toLowerCase();
+
+                    if (productName.includes(query) || description.includes(query)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+        });
+
+
 
     </script>
     <style>

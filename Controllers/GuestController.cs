@@ -9,10 +9,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnShop.Controllers
 {
-    
     public class GuestController : Controller
     {
 

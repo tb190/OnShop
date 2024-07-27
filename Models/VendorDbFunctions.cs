@@ -926,16 +926,6 @@ namespace OnShop
                     categoryTypeCount[product.Category][product.Type]++;
                 }
 
-                // Sonuçlarý yazdýrma
-                foreach (var category in categoryTypeCount)
-                {
-                    Console.WriteLine($"Category: {category.Key}");
-                    foreach (var type in category.Value)
-                    {
-                        Console.WriteLine($" - Type: {type.Key}, Count: {type.Value}");
-                    }
-                }
-
                 model.categoryTypeCount = categoryTypeCount;
 
                 // Get All Products Reviews

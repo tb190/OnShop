@@ -9,10 +9,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnShop.Controllers
 {
-
+    [Authorize(Policy = "AdminPolicy")]
     public class AdminController : Controller
     {
 
@@ -40,10 +41,7 @@ namespace OnShop.Controllers
 
                 
                 var unvalidatedCount = companiesWithUsers.Count(c => !c.Company.isValidatedbyAdmin);
-                companiesWithUsers[0].UnvalidatedCount = unvalidatedCount;
-
-
-               
+                companiesWithUsers[0].UnvalidatedCount = unvalidatedCount;              
 
                 var companiesWithUsersQuery = companiesWithUsers.AsQueryable();
 

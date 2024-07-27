@@ -12,11 +12,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace OnShop.Controllers
 {
-
+    [Authorize(Policy = "UserPolicy")]
     public class UserController : Controller
     {
 

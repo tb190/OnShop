@@ -20,10 +20,12 @@
 <body>
     <div class="">
         <h3>User Information</h3>
-        <div class="" style="max-height:600px; overflow-y:auto;">
+        <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search Products" aria-label="Search Products" aria-describedby="button-search">
+        
+        <div class="" style="max-height:600px; overflow-y:auto; margin-top:20px;">
             <table class="table table-bordered">
                 <thead class="thead-dark">
-                    <tr>
+                    <tr class="user-row">
                         <th scope="col">UserId</th>
                         <th scope="col">UserName</th>
                         <th scope="col">UserSurName</th>
@@ -52,7 +54,7 @@
                         <td>@user.Age</td>
                         <td>@user.BirthDate.ToShortDateString()</td>
                         <td>@user.CreatedAt.ToShortDateString()</td>
-                
+
                     </tr>
                         }
                     }
@@ -80,6 +82,32 @@
         $(document).on('click', '[data-dismiss="modal"]', function () {
             var targetModal = $(this).closest('.modal');
             $(targetModal).modal('hide');
+        });
+
+        // --------------------------------- Search ---------------------------------
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const rows = document.querySelectorAll('.user-row'); // Ürün satırlarını seç
+
+            // Input alanına her yazıldığında çalışacak olan fonksiyon
+            searchInput.addEventListener('input', function () {
+                const query = searchInput.value.toLowerCase(); // Kullanıcının arama sorgusu
+                rows.forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    let match = false;
+
+                    // Tüm hücreleri kontrol et
+                    for (let i = 1; i < cells.length; i++) { // İlk hücreyi (ID veya fotoğraf) atla
+                        if (cells[i].textContent.toLowerCase().includes(query)) {
+                            match = true;
+                            break;
+                        }
+                    }
+
+                    // Eşleşme varsa göster, yoksa gizle
+                    row.style.display = match ? '' : 'none';
+                });
+            });
         });
     </script>
 

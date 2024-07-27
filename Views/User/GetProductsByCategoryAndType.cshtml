@@ -113,7 +113,51 @@
     </div>
 
 
+    <script>
+        $(document).ready(function () {
+            var originalProducts = $('.widget-product').toArray();
 
+            // Save the original HTML structure for restoration
+            var $container = $('.row.row-cols-1.row-cols-md-6.g-4.p-2');
+            var originalHTML = $container.html();
+
+            $('#searchInput').on('input', function () {
+                var query = $(this).val().toLowerCase();
+                filterAndSortProducts(query);
+            });
+
+            function filterAndSortProducts(query) {
+                if (query === '') {
+                    // Restore original products when search input is empty
+                    $container.html(originalHTML); // Restore original HTML
+                } else {
+                    // Filter and sort products
+                    var matchedProducts = originalProducts.filter(function (product) {
+                        var productName = $(product).find('.product-name-wrapper .brand').text().toLowerCase();
+                        var description = $(product).find('.product-name-wrapper .name').text().toLowerCase();
+                        return productName.includes(query) || description.includes(query);
+                    });
+
+                    // Sort alphabetically (or apply any other sorting logic)
+                    matchedProducts.sort(function (a, b) {
+                        var nameA = $(a).find('.product-name-wrapper .brand').text().toLowerCase();
+                        var nameB = $(b).find('.product-name-wrapper .brand').text().toLowerCase();
+                        return nameA.localeCompare(nameB); // Alphabetical sorting
+                    });
+
+                    // Update the container with filtered and sorted products
+                    $container.empty();
+                    $(matchedProducts).each(function () {
+                        $container.append(this);
+                    });
+                }
+
+                // Optionally, force layout recalculation or apply layout fix
+                // For example, you could add a class to trigger CSS transitions or adjustments
+                $container.addClass('layout-updated'); // Add a class if needed
+            }
+        });
+    </script>
 
     <style>
         h3.mb-4 {

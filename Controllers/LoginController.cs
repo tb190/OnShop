@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnShop.Controllers
 {
@@ -96,9 +97,38 @@ namespace OnShop.Controllers
                         return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
                     }
 
-                    if (role == "Vendor") return RedirectToAction("VendorHome", "Vendor");
-                    else if (role == "Admin") return RedirectToAction("AdminDashBoard", "Admin");
-                    return RedirectToAction("UserHome", "User");// Kullan�c� do�ruland�, ba�ar�l� bir �ekilde y�nlendirme
+                    if (role == "Vendor") {
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Role, "Vendor")
+                        };
+
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                        return RedirectToAction("VendorHome", "Vendor"); 
+                    
+                    }
+                    else if (role == "Admin"){
+                        var claims = new List<Claim>
+                         {
+                             new Claim(ClaimTypes.Role, "Admin")
+                         };
+
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                        return RedirectToAction("AdminDashBoard", "Admin"); 
+                    }
+                    else
+                    {
+                        var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Role, "User")
+                    };
+
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                        return RedirectToAction("UserHome", "User");// Kullan�c� do�ruland�, ba�ar�l� bir �ekilde y�nlendirme
+                    }               
                 }
                 else
                 {
