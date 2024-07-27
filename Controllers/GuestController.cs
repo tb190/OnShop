@@ -19,11 +19,12 @@ namespace OnShop.Controllers
         private readonly GuestDbFunctions _guestDbFunctions;
         private readonly UserDbFunctions _userDbFunctions;
 
-        public GuestController()
+        public GuestController(GuestDbFunctions guestDbFunctions, UserDbFunctions userDbFunctions)
         {
-            _guestDbFunctions = new GuestDbFunctions();
-            _userDbFunctions = new UserDbFunctions();
+            _guestDbFunctions = guestDbFunctions;
+            _userDbFunctions = userDbFunctions;
         }
+
 
         public async Task<IActionResult> GuestHome()
         {

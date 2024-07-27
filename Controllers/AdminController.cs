@@ -19,9 +19,9 @@ namespace OnShop.Controllers
 
         private readonly AdminDbFunctions _adminDbFunctions;
 
-        public AdminController()
+        public AdminController(AdminDbFunctions adminDbFunctions)
         {
-            _adminDbFunctions = new AdminDbFunctions();
+            _adminDbFunctions = adminDbFunctions;
         }
 
         public IActionResult AdminHome()

@@ -17,14 +17,15 @@ namespace OnShop
     public class UserDbFunctions
     {
         private SqlConnection connection;
-        string connection_String;
 
-        public UserDbFunctions()
+        public UserDbFunctions(string connectionString)
         {
-            connection_String = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Casper\Documents\OnShopDB.mdf;Integrated Security=True;Connect Timeout=30";
-            connection = new SqlConnection(connection_String);
+            connection = new SqlConnection(connectionString);
         }
-
+        public void Dispose()
+        {
+            connection.Dispose();
+        }
         // --------------------------------------------------------------------------------------------------------------------------
         public async Task<bool> RegisterIndividual(UserModel user, string role)
         {

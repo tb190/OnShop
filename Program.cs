@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Hosting;
+using OnShop; // Ensure this matches your actual namespace
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,49 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+});
+
+
+
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddScoped<GuestDbFunctions>(provider =>
+    new GuestDbFunctions(connectionString)); // Register GuestDbFunctions
+builder.Services.AddScoped<UserDbFunctions>(provider =>
+    new UserDbFunctions(connectionString));  // Register UserDbFunctions
+builder.Services.AddScoped<AdminDbFunctions>(provider =>
+    new AdminDbFunctions(connectionString)); // Register AdminDbFunctions
+builder.Services.AddScoped<VendorDbFunctions>(provider =>
+    new VendorDbFunctions(connectionString));  // Register VendorDbFunctions
+
+
+
+builder.Services.AddSingleton<AdminDbFunctions>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new AdminDbFunctions(connectionString);
+});
+
+builder.Services.AddSingleton<GuestDbFunctions>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new GuestDbFunctions(connectionString);
+});
+
+builder.Services.AddSingleton<UserDbFunctions>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new UserDbFunctions(connectionString);
+});
+
+builder.Services.AddSingleton<VendorDbFunctions>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new VendorDbFunctions(connectionString);
 });
 
 

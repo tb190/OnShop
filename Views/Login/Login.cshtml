@@ -130,6 +130,14 @@
                                                 </div>
                                             </div>
 
+                                            @if (TempData["ErrorMessage"] != null)
+                                            {
+                                                <div class="alert alert-danger">
+                                                    @TempData["ErrorMessage"]
+                                                </div>
+                                            }
+
+
                                             <div class="button-container" style=" width: 100%; display: flex; justify-content: center; margin-top: 20px; ">
                                                 <button type="submit" class="btn-register" style="width:200px;">SIGN UP</button>
                                             </div>
@@ -195,6 +203,15 @@
                                                     <img id="bannerPreview" class="preview-image" src="" alt="Banner Preview" style="display: none;">
                                                 </div>
                                             </div>
+
+
+                                            @if (TempData["ErrorMessage"] != null)
+                                            {
+                                            <div class="alert alert-danger">
+                                                @TempData["ErrorMessage"]
+                                            </div>
+                                            }
+
                                             <div class="button-container" style=" width: 100%; display: flex; justify-content: center; margin-top: 20px; ">
                                                 <button type="submit" class="btn-register" style="width:200px;">SIGN UP</button>
                                             </div>

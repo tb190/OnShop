@@ -17,12 +17,14 @@ namespace OnShop
     {
         private SqlConnection connection;
 
-        public AdminDbFunctions()
+        public AdminDbFunctions(string connectionString)
         {
-            string connection_String = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Casper\Documents\OnShopDB.mdf;Integrated Security=True;Connect Timeout=30";
-            connection = new SqlConnection(connection_String);
+            connection = new SqlConnection(connectionString);
         }
-
+        public void Dispose()
+        {
+            connection.Dispose();
+        }
         // --------------------------------------------------------------------------------------------------------------------------
         public async Task<List<AdminViewModel>> GetAllCompaniesWithUsers()
         {

@@ -24,11 +24,13 @@ namespace OnShop.Controllers
         private readonly GuestDbFunctions _guestDbFunctions;
         private readonly UserDbFunctions _userDbFunctions;
 
-        public UserController()
+        // Inject dependencies via constructor
+        public UserController(GuestDbFunctions guestDbFunctions, UserDbFunctions userDbFunctions)
         {
-            _guestDbFunctions = new GuestDbFunctions();
-            _userDbFunctions = new UserDbFunctions();
+            _guestDbFunctions = guestDbFunctions;
+            _userDbFunctions = userDbFunctions;
         }
+
 
         // --------------------------------------------------------------------------------------------------------------------------
         public async Task<IActionResult> UserHome()

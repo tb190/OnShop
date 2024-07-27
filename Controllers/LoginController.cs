@@ -21,9 +21,9 @@ namespace OnShop.Controllers
 
         private readonly UserDbFunctions _userDbFunctions;
 
-        public LoginController()
+        public LoginController(UserDbFunctions userDbFunctions)
         {
-            _userDbFunctions = new UserDbFunctions();
+            _userDbFunctions = userDbFunctions;
         }
 
         public IActionResult Login()
@@ -36,6 +36,13 @@ namespace OnShop.Controllers
         {
             try
             {
+                int id = await _userDbFunctions.GetUserIdByEmail(viewModel.User.Email);
+                if (id != -1) // bu email alınmış
+                {
+                    TempData["ErrorMessage"] = "This email has already been registered!";
+                    return RedirectToAction("Login");
+                }
+
                 if (await _userDbFunctions.RegisterIndividual(viewModel.User, "User"))
                 {
                     return RedirectToAction("Login");
@@ -56,6 +63,13 @@ namespace OnShop.Controllers
         {
             try
             {
+                int id = await _userDbFunctions.GetUserIdByEmail(viewModel.User.Email);
+                if (id != -1) // bu email alınmış
+                {
+                    TempData["ErrorMessage"] = "This email has already been registered!";
+                    return RedirectToAction("Login");
+                }
+
                 if (await _userDbFunctions.RegisterCompany(LogoUrl, BannerUrl, viewModel.Company, viewModel.User))
                 {
                     return RedirectToAction("Login");
@@ -159,6 +173,8 @@ namespace OnShop.Controllers
                 return RedirectToAction("AdminHome", "Admin");
             }
         }
+
+
 
 
 

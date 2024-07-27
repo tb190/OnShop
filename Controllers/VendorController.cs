@@ -26,13 +26,14 @@ namespace OnShop.Controllers
 
 
 
-        public VendorController(ILogger<VendorController> logger)
+        public VendorController(ILogger<VendorController> logger, VendorDbFunctions vendorDbFunctions, GuestDbFunctions guestDbFunctions)
         {
-            _vendorDbFunctions = new VendorDbFunctions();
-            _guestDbFunctions = new GuestDbFunctions();
+            _vendorDbFunctions = vendorDbFunctions;
+            _guestDbFunctions = guestDbFunctions;
             _logger = logger;
 
         }
+
 
 
         public async Task<IActionResult> VendorHome()
