@@ -114,8 +114,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yXFZlbmRvckFkZE5ld1Byb2R1Y3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Casper/Desktop/OnShop/Views/Vendor/VendorCustomers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yXFZlbmRvckN1c3RvbWVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Casper/Desktop/OnShop/Views/Vendor/VendorFollowers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yXFZlbmRvckZvbGxvd2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Casper/Desktop/OnShop/Views/Vendor/VendorHome.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yXFZlbmRvckhvbWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Casper/Desktop/OnShop/Views/Vendor/VendorOrders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZG9yXFZlbmRvck9yZGVycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Casper/Desktop/OnShop/Views/Vendor/VendorProducts.cshtml]

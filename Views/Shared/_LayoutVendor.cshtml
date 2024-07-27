@@ -53,12 +53,20 @@
                             </a>
                         </li>
 
-                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorInvertory" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorInvertory">
+                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorOrders" ? "active" : "")">
+                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorOrders">
                                 <span class="las la-shopping-cart"></span>
                                 <span class="nav-text">Orders</span>
                             </a>
                         </li>
+
+                        <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Vendor" && ViewContext.RouteData.Values["Action"].ToString() == "VendorFollowers" ? "active" : "")">
+                            <a class="nav-link" asp-area="" asp-controller="Vendor" asp-action="VendorFollowers">
+                                <span class="las la-user-friends"></span>
+                                <span class="nav-text">Followers</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
 

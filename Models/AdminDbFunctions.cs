@@ -402,7 +402,7 @@ namespace OnShop
                         }
                     }
                 }
-                model.AllUsers = AllUsers.OrderBy(p => p.CreatedAt).ToList(); ;
+                model.AllUsers = AllUsers.OrderBy(p => p.CreatedAt).ToList(); 
 
                 // Get All Products
                 var products = new List<ProductModel>();

@@ -1,0 +1,134 @@
+﻿@model OnShop.Models.VendorViewModel
+@{
+    ViewData["Title"] = "OnShop Vendor Followers";
+    Layout = "~/Views/Shared/_LayoutVendor.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <!--link href="https://fonts.googleapis.com/css2?family=Thasadith&display=swap" rel="stylesheet"-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</head>
+<body>
+    <div class="">
+        <h3>User Information</h3>
+        <div class="" style="max-height:600px; overflow-y:auto;">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">UserId</th>
+                        <th scope="col">UserName</th>
+                        <th scope="col">UserSurName</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">PhoneNumber</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">BirthDate</th>
+                        <th scope="col">CreatedAt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.AllUsers != null && Model.AllFollowers.Any())
+                    {
+                        foreach (var user in Model.AllFollowers)
+                        {
+                    <tr>
+                        <td>@user.UserId</td>
+                        <td>@user.Name</td>
+                        <td>@user.SurName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Role</td>
+                        <td>@user.Address</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.Age</td>
+                        <td>@user.BirthDate.ToShortDateString()</td>
+                        <td>@user.CreatedAt.ToShortDateString()</td>
+                      
+                    </tr>
+                        }
+                    }
+                    else
+                    {
+                    <tr>
+                        <td colspan="11" class="text-center">No users found</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        // --------------------------------- Open or Close Modal ---------------------------------
+        $(document).ready(function () {
+            $('.btn[data-toggle="modal"]').on('click', function () {
+                var targetModal = $(this).data('target');
+                $(targetModal).modal('show');
+            });
+        });
+
+        $(document).on('click', '[data-dismiss="modal"]', function () {
+            var targetModal = $(this).closest('.modal');
+            $(targetModal).modal('hide');
+        });
+    </script>
+
+
+
+    <style>
+        body {
+            background-color: #fefefe;
+            font-family: 'Montserrat', sans-serif;
+            font-family: "Arapey", serif;
+        }
+
+        tr:nth-of-type(odd) {
+            background-color: rgba(0,0,0,.05);
+        }
+
+        tr:hover {
+            background-color: rgba(0,0,0,.075);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .modal-body {
+            max-height: 550px; /* Modal penceresinin y�ksekli�ini s�n�rlamak i�in */
+            overflow-y: auto; /* Kayd�rma �ubu�u eklemek i�in */
+        }
+
+        .close {
+            background: none; /* Remove any background */
+            border: none; /* Remove any border */
+            color: #000; /* Set text color, adjust as needed */
+            font-size: 1.5rem; /* Adjust size as needed */
+            line-height: 1; /* Align vertically */
+            cursor: pointer; /* Show pointer cursor on hover */
+        }
+
+            .close:focus {
+                outline: none; /* Remove the default outline */
+            }
+
+            .close span {
+                font-size: 1.5rem; /* Adjust size to fit the design */
+                display: block; /* Ensure it is displayed properly */
+            }
+    </style>
+
+
+</body>
+</html>

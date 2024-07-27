@@ -1,4 +1,5 @@
-@model ProductModel
+@using System.Text.Json
+@model OnShop.Models.VendorViewModel
 @{
     ViewData["Title"] = "Add New Product";
     Layout = "~/Views/Shared/_LayoutVendor.cshtml";
@@ -26,38 +27,51 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label asp-for="ProductName" style="font-size:12px;"></label>
-                        <input asp-for="ProductName" name="ProductName" class="form-control" required />
-                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                        <label asp-for="@Model.productModel.ProductName" style="font-size:12px;"></label>
+                        <input asp-for="@Model.productModel.ProductName" name="ProductName" class="form-control" required />
+                        <span asp-validation-for="@Model.productModel.ProductName" class="text-danger"></span>
                     </div>
                 </div>
+
+
                 <!-- Category -->
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label style="font-size:12px;">Select or Enter Category</label>
-                        <div class="input-group">
-                            <select asp-for="Category" name="Category" class="form-control" required>
-                                <option value="">Select Category</option>
-                                <!-- Render existing categories here -->
-                                <option value="Category1">Category 1</option>
-                                <option value="Category2">Category 2</option>
-                                <option value="Category3">Category 3</option>
-                            </select>
-                            <div class="input-group-append" style="padding-left:7px;">
-                                <button class="btn btn-outline-secondary" type="button" onclick="openAddCategoryModal()"><span class="fa-solid fa-plus"></span></button>
-                                <button class="btn btn-outline-secondary" type="button" onclick="openDeleteCategoryModal()"><span class="fa-solid fa-minus"></span></button>
-                            </div>
-                        </div>
-                        <span asp-validation-for="Category" class="text-danger"></span>
+                <div class="col-md-5 d-flex gap-4">
+
+                    <div class="form-group col-md-6" style="margin-left: 10px;">
+                        <label style="font-size:12px;">Select Category</label>
+                        <select id="categorySelect" name="Category" class="form-control" required>
+                            <option value="">Select Category</option>
+                            @foreach (var category in Model.AllCategoriesWithTypes)
+                            {
+                            <option value="@category.CategoryId">@category.CategoryName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="productModel.Category" class="text-danger"></span>
                     </div>
+
+
+                    <div class="col-md-6 form-group ml-3 " id="typeContainer" style="display: none;">
+                        <label style="font-size:12px;">Select Type</label>
+                        <select id="typeSelect" name="Type" class="form-control" required>
+                            <option value="">Select Type</option>
+                            <!-- Types will be populated based on selected category -->
+                        </select>
+                        <span asp-validation-for="productModel.Type" class="text-danger"></span>
+                    </div>
+
+
                 </div>
+
+
+
+
             </div>
 
             <!-- Description -->
             <div class="form-group">
-                <label asp-for="Description" style="font-size:12px;"></label>
-                <textarea name="Description" asp-for="Description" class="form-control" required></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="@Model.productModel.Description" style="font-size:12px;"></label>
+                <textarea name="Description" asp-for="@Model.productModel.Description" class="form-control" required></textarea>
+                <span asp-validation-for="@Model.productModel.Description" class="text-danger"></span>
             </div>
 
 
@@ -66,25 +80,25 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label style="font-size:12px;" asp-for="Price">Price <span id="priceValue"></span></label>
-                        <input asp-for="Price" name="Price" type="number" class="form-control" min="1" required />
-                        <span asp-validation-for="Price" class="text-danger"></span>
+                        <label style="font-size:12px;" asp-for="@Model.productModel.Price">Price <span id="priceValue"></span></label>
+                        <input asp-for="@Model.productModel.Price" name="Price" type="number" class="form-control" min="1" required />
+                        <span asp-validation-for="@Model.productModel.Price" class="text-danger"></span>
                     </div>
                 </div>
                 <!-- Stock -->
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label style="font-size:12px;" asp-for="Stock">Stock</label>
-                        <input asp-for="Stock" name="Stock" type="number" class="form-control" min="1" required />
-                        <span asp-validation-for="Stock" class="text-danger"></span>
+                        <label style="font-size:12px;" asp-for="@Model.productModel.Stock">Stock</label>
+                        <input asp-for="@Model.productModel.Stock" name="Stock" type="number" class="form-control" min="1" required />
+                        <span asp-validation-for="@Model.productModel.Stock" class="text-danger"></span>
                     </div>
                 </div>
             </div>
 
             <!-- Status -->
             <div class="form-group">
-                <label style="font-size:12px;" asp-for="Status"></label>
-                <select asp-for="Status" name="Status" class="form-control" required>
+                <label style="font-size:12px;" asp-for="@Model.productModel.Status"></label>
+                <select asp-for="@Model.productModel.Status" name="Status" class="form-control" required>
                     <option value="Online">Online</option>
                     <option value="Offline">Offline</option>
                 </select>
@@ -94,7 +108,7 @@
             <div class="form-group">
                 <input type="file" name="Photos" id="Photos" class="form-control-file" accept="image/*" multiple required />
                 <small class="form-text text-muted">Upload one or more images of the product.</small>
-                <span asp-validation-for="Photos" class="text-danger"></span>
+                <span asp-validation-for="@Model.productModel.Photos" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn btn-primary">Save</button>
@@ -102,7 +116,7 @@
     </div>
 
 
-    <!-- Add Category Modal -->
+    <!-- Add Category Modal>
     <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -129,44 +143,43 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Delete Category Modal -->
-        <div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form asp-area="" asp-controller="Vendor" asp-action="VendorDeleteCategories" method="post">
-                            <p>Select categories to delete:</p>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedCategories" value="1" id="category1">
-                                    <label class="form-check-label" for="category1">Category 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedCategories" value="2" id="category2">
-                                    <label class="form-check-label" for="category2">Category 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedCategories" value="3" id="category3">
-                                    <label class="form-check-label" for="category3">Category 3</label>
-                                </div>
+    </div -->
+    <!-- Delete Category Modal>
+    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form asp-area="" asp-controller="Vendor" asp-action="VendorDeleteCategories" method="post">
+                        <p>Select categories to delete:</p>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selectedCategories" value="1" id="category1">
+                                <label class="form-check-label" for="category1">Category 1</label>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selectedCategories" value="2" id="category2">
+                                <label class="form-check-label" for="category2">Category 2</label>
                             </div>
-                        </form>
-                    </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selectedCategories" value="3" id="category3">
+                                <label class="form-check-label" for="category3">Category 3</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div -->
 
     <style>
         .form-group {
@@ -199,6 +212,48 @@
     </style>
 
     <script>
+
+        // ---------------------------------- Category ------------------------------------------
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Script loaded");
+
+            var categorySelect = document.getElementById('categorySelect');
+
+            categorySelect.addEventListener('change', function () {
+                console.log("Category changed to:", categorySelect.value);
+                selectedCategoryId = categorySelect.value;
+
+
+                var allCategoriesWithTypes = @Html.Raw(JsonSerializer.Serialize(Model.AllCategoriesWithTypes));
+                console.log("allCategoriesWithTypes:", allCategoriesWithTypes);
+
+
+                typeSelect.innerHTML = '<option value="">Select Type</option>'; // Reset types
+
+                if (selectedCategoryId) {
+                    var selectedCategory = allCategoriesWithTypes.find(function (category) {
+                        return category.CategoryId == selectedCategoryId;
+                    });
+
+                    if (selectedCategory) {
+                        selectedCategory.Types.forEach(function (type) {
+                            var option = document.createElement('option');
+                            option.value = type;
+                            option.text = type;
+                            typeSelect.appendChild(option);
+                        });
+                        typeContainer.style.display = 'block';
+                    } else {
+                        typeContainer.style.display = 'none';
+                    }
+                } else {
+                    typeContainer.style.display = 'none';
+                }
+
+            });
+        });
+
+        // ----------------------------------------------------------------------------------------
         function toggleCategoryInput(selectElement) {
             var inputField = document.getElementsByName('CategoryNew')[0];
             inputField.style.display = selectElement.value === 'AddCategory' ? 'block' : 'none';

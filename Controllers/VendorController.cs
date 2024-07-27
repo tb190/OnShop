@@ -8,6 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 namespace OnShop.Controllers
 {
@@ -15,23 +19,47 @@ namespace OnShop.Controllers
     {
         private readonly ILogger<VendorController> _logger;
         private readonly VendorDbFunctions _vendorDbFunctions;
+        private readonly GuestDbFunctions _guestDbFunctions;
+        private VendorViewModel vendor;
+
 
 
         public VendorController(ILogger<VendorController> logger)
         {
             _vendorDbFunctions = new VendorDbFunctions();
+            _guestDbFunctions = new GuestDbFunctions();
             _logger = logger;
+
         }
 
-        public IActionResult VendorHome()
+
+        public async Task<IActionResult> VendorHome()
         {
-            return View();
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            VendorViewModel model = new VendorViewModel();
+
+            vendor = await _vendorDbFunctions.GetVendor(userId);
+            model.VendorUserInfos = vendor.VendorUserInfos;
+            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+
+
+            Console.WriteLine("burda : "+ model.VendorUserInfos.Name+"   "+ model.VendorCompanyInfos.CompanyName);
+            return View(model);
         }
 
         // -------------------------------------- Products Page --------------------------------------
-        public IActionResult VendorProducts(int page = 1, string searchString = "", string statusFilter = "")
+        public async Task<IActionResult> VendorProducts(int page = 1, string searchString = "", string statusFilter = "")
         {
-            List<ProductModel> products = _vendorDbFunctions.VendorGetProducts();
+
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+            List<ProductModel> products = await _vendorDbFunctions.VendorGetProducts(userId);
             
             var productsQuery = products.AsQueryable();
 
@@ -47,6 +75,11 @@ namespace OnShop.Controllers
             {
                 productsQuery = productsQuery.Where(p => p.Status.Equals("Online", StringComparison.OrdinalIgnoreCase));
             }
+            else if(!string.IsNullOrEmpty(statusFilter) && statusFilter.Equals("Offline", StringComparison.OrdinalIgnoreCase))
+            {
+                productsQuery = productsQuery.Where(p => p.Status.Equals("Offline", StringComparison.OrdinalIgnoreCase));
+            }
+
 
             const int pageSize = 5;
             int totalProducts = productsQuery.Count();
@@ -57,15 +90,37 @@ namespace OnShop.Controllers
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
             ViewBag.SearchString = searchString; // Pass searchString to keep it in the input field
 
+            VendorViewModel model = new VendorViewModel();
 
-            return View(paginatedProducts);
+            model.AllProducts = paginatedProducts;
+
+            vendor = await _vendorDbFunctions.GetVendor(userId);
+            model.VendorUserInfos = vendor.VendorUserInfos;
+            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+
+            return View(model);
         }
 
 
         [HttpGet]
-        public IActionResult VendorAddNewProduct()
+        public async Task<IActionResult> VendorAddNewProduct()
         {
-            return View();
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+            VendorViewModel model = new VendorViewModel();
+
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+            model.AllCategoriesWithTypes = categories;
+            vendor = await _vendorDbFunctions.GetVendor(userId);
+            model.VendorUserInfos = vendor.VendorUserInfos;
+            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+            return View(model);
         }
 
 
@@ -75,8 +130,17 @@ namespace OnShop.Controllers
             try
             {
                 if (Photos.Count > 0)
-                {              
-                    int productId = await _vendorDbFunctions.VendorAddProduct(model,Photos);
+                {
+                    int? userId = HttpContext.Session.GetInt32("UserId");
+
+                    if (userId == null)
+                    {
+                        HttpContext.Session.Remove("UserId");
+                        return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                    }
+
+
+                    int productId = await _vendorDbFunctions.VendorAddProduct(userId,model, Photos);
 
                     if (productId > 0)
                     {
@@ -106,6 +170,78 @@ namespace OnShop.Controllers
         public void VendorDeleteCategories()
         {
             Console.WriteLine("DeleteCategories");
+        }
+
+
+        // -------------------------------------- Order Page --------------------------------------
+        public async Task<IActionResult> VendorOrders()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+            List<ProductModel> products = await _vendorDbFunctions.GetAllProducts(userId);
+
+            VendorViewModel model = new VendorViewModel();
+
+            model.AllProducts = products;
+            vendor = await _vendorDbFunctions.GetVendor(userId);
+            model.VendorUserInfos = vendor.VendorUserInfos;
+            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+            return View(model);
+            
+        }
+
+
+        // -------------------------------------- Customers Page --------------------------------------
+        public async Task<IActionResult> VendorCustomers()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+            List<UserModel> users = await _vendorDbFunctions.GetAllUsers(userId);
+
+            VendorViewModel model = new VendorViewModel();
+
+            model.AllUsers = users;
+            vendor = await _vendorDbFunctions.GetVendor(userId);
+            model.VendorUserInfos = vendor.VendorUserInfos;
+            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+            return View(model);
+
+        }
+
+
+        // -------------------------------------- Followers Page --------------------------------------
+        public async Task<IActionResult> VendorFollowers()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                HttpContext.Session.Remove("UserId");
+                return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            }
+
+            List<UserModel> Followers = await _vendorDbFunctions.GetAllFollowers(userId);
+
+            VendorViewModel model = new VendorViewModel();
+
+            model.AllFollowers = Followers;
+            vendor = await _vendorDbFunctions.GetVendor(userId);
+            model.VendorUserInfos = vendor.VendorUserInfos;
+            model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+            return View(model);
+
         }
     }
 }
