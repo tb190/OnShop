@@ -37,10 +37,9 @@ namespace OnShop.Controllers
             {
                 if (await _userDbFunctions.RegisterIndividual(viewModel.User, "User"))
                 {
-                    return RedirectToAction("GuestHome", "Guest");
+                    return RedirectToAction("Login");
                 }
                 return RedirectToAction("Login");
-
 
             }
             catch (Exception ex)
@@ -58,7 +57,7 @@ namespace OnShop.Controllers
             {
                 if (await _userDbFunctions.RegisterCompany(LogoUrl, BannerUrl, viewModel.Company, viewModel.User))
                 {
-                    return RedirectToAction("GuestHome", "Guest");
+                    return RedirectToAction("Login");
                 }
                 return RedirectToAction("Login");
             }
@@ -98,7 +97,7 @@ namespace OnShop.Controllers
                     }
 
                     if (role == "Vendor") return RedirectToAction("VendorHome", "Vendor");
-                    else if (role == "Admin") return RedirectToAction("AdminHome", "Admin");
+                    else if (role == "Admin") return RedirectToAction("AdminDashBoard", "Admin");
                     return RedirectToAction("UserHome", "User");// Kullan�c� do�ruland�, ba�ar�l� bir �ekilde y�nlendirme
                 }
                 else

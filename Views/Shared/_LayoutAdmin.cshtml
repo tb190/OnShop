@@ -11,113 +11,203 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap">
 </head>
-<body style="max-height: 500px; overflow-y:hidden;">
+<body style="max-height: 500px; ">
     <div class="container-fluid">
         <div class="row flex-nowrap">
 
             <!-- Sidebar -->
-            <nav class="sidebar col-lg-2 d-none d-md-block h-100">
+            <nav id="sidebar" class="sidebar col-lg-2 d-none d-md-block h-100">
 
                 <div class="sidebar-brand" style="border-bottom: 1px solid #ffffff; padding-top: 0.1rem; display: flex; align-items: center;">
-                    <div style="margin-right: 1rem;">
-                        <img src="~/Pictures/logoW.png" style="border-radius: 50%; width: 60px; height: 50px;">
+                    <div class="brand-logo" style="margin-right: 1rem;">
+                        <img src="~/Pictures/logoW.png" style="border-radius: 50%; width: 50px; height: 40px;">
                     </div>
-                    <h1 style="font-size: 1.7rem; color: #fff; font-family: 'Montserrat', cursive; margin-left: -28px; margin-top: 10px;">
+                    <h1 class="brand-name" style="font-size: 1.4rem; color: #fff; font-family: 'Sacramento', cursive; margin-left: -30px; margin-top: 10px;">
                         <span style="font-size: 1.5rem; padding-right: 1rem;"></span>OnShop
                     </h1>
+                    <!-- Toggle Button -->
+                    <button id="toggleSidebarBtn" class=" btn-toggleSidebar">
+                        <span class="las la-arrow-left"></span>
+                    </button>
                 </div>
 
                 <div class="sidebar-main mt-2">
                     <ul class="nav flex-column">
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminHome" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminHome">
+                            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminDashBoard">
                                 <span class="las la-chalkboard"></span>
                                 <span class="nav-text">DashBoard</span>
                             </a>
                         </li>
-
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminCompanies" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminCompanies" asp-route-page="1" asp-route-statusFilter="validated" asp-route-searchString="">
                                 <span class="las la-briefcase"></span>
                                 <span class="nav-text">Companies</span>
                             </a>
                         </li>
-
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminUsers" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminUsers">
                                 <span class="las la-users"></span>
                                 <span class="nav-text">Users</span>
                             </a>
                         </li>
-
-
                         <li class="nav-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" && ViewContext.RouteData.Values["Action"].ToString() == "AdminProducts" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminProducts">
                                 <span class="las la-shopping-bag"></span>
                                 <span class="nav-text">Products</span>
                             </a>
                         </li>
-
-
                     </ul>
                 </div>
 
                 <!-- Vendor Info -->
-                <div class="sidebar-vendor-info d-flex align-items-center mt-auto ml-10">
-                    <!-- Vendor Info -->
-                    <a class="vendor-info d-flex align-items-center" style="margin-left: 10px; " asp-area="" asp-controller="Vendor" asp-action="VendorHome">
-                        <div class="vendor-details">
-                            <p class="vendor-name">John Doe</p>
-                            <p class="vendor-company">OnShop Inc.</p>
-                            <p class="vendor-position">Manager</p>
-                        </div>
-                    </a>
+                <div class="sidebar-vendor-info d-flex align-items-center mt-auto">
 
                     <!-- Logout Button -->
                     <div class="logout-button">
                         <a asp-area="" asp-controller="Login" asp-action="LogOut" class="btn">
-                            <span class="las la-sign-out-alt" style=" margin-left:60px; color:#fff; fill:none; font-size:1.5rem;"></span>
+                            <span class="las la-sign-out-alt" style="color:#fff; fill:none; font-size:1.5rem;"></span>
+                        </a>
+                    </div>
+
+                    <div class="vendor-info">
+                        <a asp-area="" asp-controller="Vendor" asp-action="VendorHome">
+                            <div class="vendor-details" style=" margin-left: 20px;">
+                                <p class="vendor-name">Tanay Bensu Yurttürk</p>
+                                <p class="vendor-company">OnShop Inc.</p>
+                                <p class="vendor-position">Manager</p>
+                            </div>
                         </a>
                     </div>
                 </div>
 
-
             </nav>
 
             <!-- Main content -->
-            <main role="main" class="col-lg-10" style="margin-left:30px; margin-top:10px">
+            <main role="main" id="mainContent" class="col-lg-10" style="margin-left:30px; margin-top:10px;">
                 @RenderBody()
             </main>
 
         </div>
     </div>
 
-
-
-
-
-
     <style>
         .sidebar {
             max-width: 200px;
-            /*background: linear-gradient(to right, #610c27, #72383d);
-            background-color: #29353c;
-            background-color: #99201c;
-            background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);*/
             background-image: linear-gradient(to right bottom, #132745, #16496a, #196e8c, #2b95a9, #4ebdc0);
             padding-top: 20px;
+            position: relative;
+            transition: all 0.3s ease;
         }
+
+        .sidebar-closed {
+            max-width: 80px;
+            min-width: 80px;
+        }
+
+        #mainContent {
+            transition: margin-left 0.3s ease;
+            margin-left: 200px;
+        }
+
+        .content-expanded {
+            margin-left: 60px;
+        }
+
+        /* Toggle Button Styles */
+        .btn-toggleSidebar {
+            margin-left: 20px;
+            background: #16496a;
+            border: none;
+            color: #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+   
+
+        /* For collapsed sidebar state */
+        .sidebar-closed .brand-logo {
+            display: none;
+        }
+
+        .sidebar-closed .brand-name {
+            display: none;
+        }
+
+        .sidebar-closed .btn-toggleSidebar .las {
+            font-size: 1rem;
+        }
+
+        .sidebar-closed .vendor-details {
+            display: none;
+        }
+
+
+        .sidebar-closed .btn-toggleSidebar {
+            margin-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .nav-link .nav-text {
+            display: inline;
+            margin-left: 10px;
+        }
+
+        .sidebar-closed .nav-text {
+            display: none;
+        }
+
+
+        .nav-link span:first-child {
+            display: inline-block;
+            width: 25px; /* İkonlar için yeterli genişlik */
+            text-align: center; /* İkonları ortalamak için */
+        }
+
+        .sidebar-closed .nav-link span:first-child {
+            display: block;
+            text-align: center;
+        }
+
+        .sidebar-closed .nav-link {
+            justify-content: center;
+        }
+
+
+        /* Sidebar kapalı durumdayken vendor-info ve logout butonları */
+        .sidebar-closed .sidebar-vendor-info {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sidebar-closed .logout-button {
+            display: block;
+            margin-top: 5px;
+        }
+
+
+        .sidebar-closed .vendor-info .vendor-name, 
+        .sidebar-closed .vendor-info .vendor-company, 
+        .sidebar-closed .vendor-info .vendor-position {
+            display: none;
+        }
+
 
         .sidebar-main {
             padding-top: 1rem;
-            margin-right: -12px;
             overflow-y: auto;
             height: calc(92vh - 90px);
+            margin-right:-12px;
         }
 
-        @@media (max-height: 992px) {
+        @@media (max-height: 800px) {
             .sidebar-main {
-                height: calc(92vh - 90px);
+                height: calc(85vh - 72px);
             }
         }
 
@@ -132,27 +222,27 @@
             padding-left: 1.4rem;
         }
 
-            .nav-link span:first-child {
-                font-size: 1rem;
-                padding-right: 1rem;
-            }
+        .nav-link span:first-child {
+            font-size: 1rem;
+            padding-right: 1rem;
+        }
 
-            .nav-link .nav-text {
-                font-family: 'Montserrat';
-            }
+        .nav-link .nav-text {
+            font-family: 'Montserrat';
+        }
 
         .nav-item.active {
             background: #ffffff;
             border-radius: 30px 0px 0px 30px;
         }
 
-            .nav-item.active .nav-text {
-                color: #000;
-            }
+        .nav-item.active .nav-text {
+            color: #000;
+        }
 
-            .nav-item.active .las {
-                color: #000;
-            }
+        .nav-item.active .las {
+            color: #000;
+        }
 
         .nav-link:hover {
             color: #cdbcab;
@@ -165,16 +255,15 @@
             font-size: 0.7rem;
             border-top: 1px solid #ffffff;
             padding-bottom: 20px;
+            margin-left: 10px;
         }
 
-        .vendor-info {
+        .vendor-info a {
             display: flex;
             align-items: center;
             color: #fff;
             text-decoration: none;
         }
-
-
 
         .vendor-details {
             display: flex;
@@ -216,10 +305,37 @@
             border-radius: 3px;
         }
 
-            .sidebar-main::-webkit-scrollbar-thumb:hover {
-                background: #555;
-            }
+        .sidebar-main::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+
+
+
+        
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var sidebar = document.getElementById('sidebar');
+            var mainContent = document.getElementById('mainContent');
+            var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+            var toggleIcon = toggleSidebarBtn.querySelector('span');
+
+            toggleSidebarBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('sidebar-closed');
+                mainContent.classList.toggle('content-expanded');
+
+                if (sidebar.classList.contains('sidebar-closed')) {
+                    toggleIcon.classList.remove('la-arrow-left');
+                    toggleIcon.classList.add('la-arrow-right');
+                } else {
+                    toggleIcon.classList.remove('la-arrow-right');
+                    toggleIcon.classList.add('la-arrow-left');
+                }
+            });
+        });
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

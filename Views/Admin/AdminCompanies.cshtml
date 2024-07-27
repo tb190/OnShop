@@ -32,7 +32,7 @@
                 <!--asp-area="" asp-controller="Admin" asp-action="AdminValidateVendor" -->
                 <button class="btn btn-outline-secondary ml-auto btn-sm position-relative" data-toggle="modal" data-target="#validationModal" role="button" style="width: 40px;">
                     <i class="las la-envelope"></i>
-                    <span class="badge badge-danger badge-pill position-absolute" style="top: -10px; right: -10px;">@ViewBag.UnvalidatedCount</span>
+                    <span class="badge badge-danger badge-pill position-absolute" style="top: -10px; right: -10px;">@Model[0].UnvalidatedCount</span>
                 </button>
 
 
@@ -362,7 +362,13 @@
         </script>
 
     <style>
-
+        .badge {
+            font-size: 12px;
+            padding: 0.5em 0.75em;
+            border-radius: 50%;
+            color: #fff;
+            background-color: #dc3545; /* Red color */
+        }
         body {
             background-color: #fefefe;
             font-family: 'Montserrat', sans-serif;

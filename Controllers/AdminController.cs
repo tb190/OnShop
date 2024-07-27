@@ -40,8 +40,10 @@ namespace OnShop.Controllers
 
                 
                 var unvalidatedCount = companiesWithUsers.Count(c => !c.Company.isValidatedbyAdmin);
-                ViewBag.UnvalidatedCount = unvalidatedCount;
+                companiesWithUsers[0].UnvalidatedCount = unvalidatedCount;
 
+
+               
 
                 var companiesWithUsersQuery = companiesWithUsers.AsQueryable();
 
@@ -153,7 +155,31 @@ namespace OnShop.Controllers
             }
         }
 
+        // -----------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> DeleteProduct(int productId)
+        {
+            var result = await _adminDbFunctions.DeleteProduct(productId);
 
+            return RedirectToAction("AdminProducts");
+
+        }
+
+
+        // -----------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> AdminDashBoard()
+        {
+            try
+            {
+                AdminViewModel AdminViewModel = await _adminDbFunctions.GetAdminDashBoard();
+
+                return View(AdminViewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to retrieve companies: " + ex.Message;
+                return View(new AdminViewModel()); // Hata durumunda boþ bir liste gönder
+            }
+        }
 
 
     }
