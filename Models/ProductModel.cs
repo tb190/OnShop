@@ -3,8 +3,8 @@ namespace OnShop.Models
     public class ProductModel
     {
         public int ProductId { get; set; }
-        public int Rating { get; set; } // kullanýcýlarýn ürüne verdiði puan
-        public int Favorites { get; set; } // kaç kiþi bu urunu favoriledi
+        public int Rating { get; set; } 
+        public int Favorites { get; set; } 
         public int CompanyID { get; set; }
         public int Stock { get; set; }
         public int Clicked { get; set; }
@@ -28,3 +28,4 @@ namespace OnShop.Models
         public ICollection<string> Photos { get; set; }
     }
 }
+

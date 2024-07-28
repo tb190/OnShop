@@ -53,7 +53,7 @@
                                 </div>
 
  <!-- Container for Credit Cards -->
-                                <form asp-area="" asp-controller="User" asp-action="BuyProducts" method="post" class="credit-card-selection-form">
+                                <form asp-area="" asp-controller="User" asp-action="BuyProducts" method="post" class="credit-card-selection-form" onsubmit="return validateCardSelection();">
                                     <div class="credit-cards-container">
                                         @foreach (var card in Model.userModel.CreditCards)
 {
@@ -82,7 +82,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="radio" name="CardId" value="@card.CreditCardId" class="card-radio" />
+                                                <input type="radio" name="CardId" value="@card.CreditCardId" class="card-radio" required />
                                             </div>
                                         </label>
 }
@@ -366,7 +366,16 @@
 
          // Check the radio button
          label.querySelector('.card-radio').checked = true;
-     }
+        }
+
+        function validateCardSelection() {
+            var selectedCard = document.querySelector('input[name="CardId"]:checked');
+            if (!selectedCard) {
+                alert('Please select a credit card before confirming your purchase.');
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
      // --------------------------------- Change Quantity ---------------------------------
      function changeQuantity(amount, event, quantityInputId, hiddenQuantityId, formId) {
          event.stopPropagation(); // Propagasyonu durdurur
@@ -697,10 +706,10 @@
         .credit-card-label {
             cursor: pointer;
         }
-
+        /*
         .card-radio {
             display: none;
-        }
+        }*/
 
 
 

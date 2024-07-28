@@ -135,9 +135,9 @@ namespace OnShop.Controllers
                     else
                     {
                         var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Role, "User")
-                    };
+                        {
+                            new Claim(ClaimTypes.Role, "User")
+                        };
 
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
