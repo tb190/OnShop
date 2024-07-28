@@ -24,7 +24,7 @@
         <div class="" style="max-height:600px; overflow-y:auto; margin-top:20px;">
             <table class="table table-bordered">
                 <thead class="thead-dark">
-                    <tr>
+                    <tr class="user-row">
                         <th scope="col">UserId</th>
                         <th scope="col">UserName</th>
                         <th scope="col">UserSurName</th>
@@ -113,12 +113,6 @@
 
 
     <style>
-        body {
-            background-color: #fefefe;
-            font-family: 'Montserrat', sans-serif;
-            font-family: "Arapey", serif;
-        }
-
         tr:nth-of-type(odd) {
             background-color: rgba(0,0,0,.05);
         }
@@ -126,6 +120,16 @@
         tr:hover {
             background-color: rgba(0,0,0,.075);
         }
+
+        .user-row {
+            font-size: 12px;
+            padding: 2px 4px;
+        }
+
+            .user-row td {
+                padding: 4px 8px;
+                vertical-align: middle;
+            }
 
         .table th, .table td {
             vertical-align: middle;

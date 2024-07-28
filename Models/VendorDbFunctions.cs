@@ -57,7 +57,7 @@ namespace OnShop
 
                 var queryProducts = @"
                     SELECT * FROM Products
-                    WHERE status = 'Online' and CompanyId = @CompanyId";
+                    WHERE CompanyId = @CompanyId";
 
                 using (SqlCommand cmd = new SqlCommand(queryProducts, connection))
                 {
@@ -76,6 +76,7 @@ namespace OnShop
                             product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
                             product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
                             product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                            product_.Type = detailsReader.GetString(detailsReader.GetOrdinal("Type"));
                             product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
                             product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
                             product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
@@ -328,6 +329,7 @@ namespace OnShop
                                 product_.ProductName = detailsReader.GetString(detailsReader.GetOrdinal("ProductName"));
                                 product_.Description = detailsReader.GetString(detailsReader.GetOrdinal("Description"));
                                 product_.Category = detailsReader.GetString(detailsReader.GetOrdinal("Category"));
+                                product_.Type = detailsReader.GetString(detailsReader.GetOrdinal("Type"));
                                 product_.Status = detailsReader.GetString(detailsReader.GetOrdinal("Status"));
                                 product_.CreatedAt = detailsReader.GetDateTime(detailsReader.GetOrdinal("CreatedAt"));
                                 product_.Clicked = detailsReader.GetInt32(detailsReader.GetOrdinal("Clicked"));
@@ -1038,7 +1040,130 @@ namespace OnShop
             }
         }
 
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<bool> VendorUpdateProduct(int? userId, ProductModel product, List<IFormFile> Photos, int productId)
+        {
+            bool isUpdated = false;
 
+            try
+            {
+                connection.Open();
+
+                // Retrieve the existing product details
+                string query = "SELECT * FROM Products WHERE ProductId = @ProductId";
+                ProductModel existingProduct = null;
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ProductId", productId);
+
+                    using (var PRReader = await command.ExecuteReaderAsync())
+                    {
+                        if (await PRReader.ReadAsync())
+                        {
+                            existingProduct = new ProductModel
+                            {
+                                ProductId = PRReader.GetInt32(PRReader.GetOrdinal("ProductId")),
+                                Rating = PRReader.GetInt32(PRReader.GetOrdinal("Rating")),
+                                Favorites = PRReader.GetInt32(PRReader.GetOrdinal("Favorites")),
+                                CompanyID = PRReader.GetInt32(PRReader.GetOrdinal("CompanyID")),
+                                Stock = PRReader.GetInt32(PRReader.GetOrdinal("Stock")),
+                                Price = PRReader.GetDecimal(PRReader.GetOrdinal("Price")),
+                                ProductName = PRReader.GetString(PRReader.GetOrdinal("ProductName")),
+                                Description = PRReader.GetString(PRReader.GetOrdinal("Description")),
+                                Category = PRReader.GetString(PRReader.GetOrdinal("Category")),
+                                Status = PRReader.GetString(PRReader.GetOrdinal("Status")),
+                                CreatedAt = PRReader.GetDateTime(PRReader.GetOrdinal("CreatedAt")),
+                                Clicked = PRReader.GetInt32(PRReader.GetOrdinal("Clicked")),
+                                Sold = PRReader.GetInt32(PRReader.GetOrdinal("Sold"))
+                            };
+                        }
+                    }
+                }
+
+                if (existingProduct == null)
+                {
+                    connection.Close();
+                    throw new Exception("Product not found");
+                }
+
+                // Güncelleme iþlemi
+                string updateSql = @"UPDATE Products
+                             SET Stock = @Stock,
+                                 Price = @Price,
+                                 ProductName = @ProductName,
+                                 Description = @Description,
+                                 Category = @Category,
+                                 Status = @Status,
+                                 CreatedAt = @CreatedAt
+                             WHERE ProductId = @ProductId";
+
+                using (var cmd = new SqlCommand(updateSql, connection))
+                {
+                    cmd.Parameters.AddWithValue("@ProductId", productId);
+                    cmd.Parameters.AddWithValue("@Stock", product.Stock != 0 ? product.Stock : existingProduct.Stock);
+                    cmd.Parameters.AddWithValue("@Price", product.Price != 0 ? product.Price : existingProduct.Price);
+
+                    cmd.Parameters.AddWithValue("@ProductName", product.ProductName ?? existingProduct.ProductName);
+                    cmd.Parameters.AddWithValue("@Description", product.Description ?? existingProduct.Description);
+                    cmd.Parameters.AddWithValue("@Category", product.Category ?? existingProduct.Category);
+                    cmd.Parameters.AddWithValue("@Status", product.Status ?? existingProduct.Status);
+                    cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                    isUpdated = rowsAffected > 0;
+                }
+                
+                // Fotoðraflarý güncelleme iþlemi
+                if (isUpdated && Photos != null && Photos.Count > 0)
+                {
+                    // Eski fotoðraflarý silin
+                    string deletePhotosSql = @"DELETE FROM Photos WHERE ProductId = @ProductId";
+                    using (var deleteCmd = new SqlCommand(deletePhotosSql, connection))
+                    {
+                        deleteCmd.Parameters.AddWithValue("@ProductId", productId);
+                        await deleteCmd.ExecuteNonQueryAsync();
+                    }
+
+                    foreach (var photoName in Photos)
+                    {
+                        string categoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", product.Category ?? existingProduct.Category);
+                        if (!Directory.Exists(categoryPath)) Directory.CreateDirectory(categoryPath);
+
+                        string uniqueFileName = $"{Guid.NewGuid().ToString()}.jpg";
+                        string filePath = Path.Combine(categoryPath, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await photoName.CopyToAsync(fileStream);
+                        }
+
+                        string filePathtoDB = Path.Combine("/Pictures", product.Category ?? existingProduct.Category, uniqueFileName);
+
+                        string insertPhotoSql = @"INSERT INTO Photos (ProductId, PhotoURL)
+                                          VALUES (@ProductId, @PhotoURL)";
+                        using (var insertCmd = new SqlCommand(insertPhotoSql, connection))
+                        {
+                            insertCmd.Parameters.AddWithValue("@ProductId", productId);
+                            insertCmd.Parameters.AddWithValue("@PhotoURL", filePathtoDB);
+
+                            await insertCmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating product: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return isUpdated;
+        }
 
 
 

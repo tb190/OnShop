@@ -78,14 +78,15 @@ namespace OnShop.Controllers
                     p.Category.Contains(searchString, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (!string.IsNullOrEmpty(statusFilter) && statusFilter.Equals("Online", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(statusFilter) && statusFilter.Equals("online", StringComparison.OrdinalIgnoreCase))
             {
                 productsQuery = productsQuery.Where(p => p.Status.Equals("Online", StringComparison.OrdinalIgnoreCase));
             }
-            else if(!string.IsNullOrEmpty(statusFilter) && statusFilter.Equals("Offline", StringComparison.OrdinalIgnoreCase))
+            else if(!string.IsNullOrEmpty(statusFilter) && statusFilter.Equals("offline", StringComparison.OrdinalIgnoreCase))
             {
                 productsQuery = productsQuery.Where(p => p.Status.Equals("Offline", StringComparison.OrdinalIgnoreCase));
             }
+
 
 
             const int pageSize = 5;
@@ -104,6 +105,10 @@ namespace OnShop.Controllers
             vendor = await _vendorDbFunctions.GetVendor(userId);
             model.VendorUserInfos = vendor.VendorUserInfos;
             model.VendorCompanyInfos = vendor.VendorCompanyInfos;
+
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+            model.AllCategoriesWithTypes = categories;
+
 
             return View(model);
         }
@@ -250,5 +255,36 @@ namespace OnShop.Controllers
             return View(model);
 
         }
+
+        // -------------------------------------- Update Product --------------------------------------
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(List<IFormFile> Photos, ProductModel model, int ProductId)
+        {
+            try
+            {
+
+                int? userId = HttpContext.Session.GetInt32("UserId");
+
+                if (userId == null)
+                {
+                    HttpContext.Session.Remove("UserId");
+                    return RedirectToAction("Login", "Login"); // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+                }
+
+
+                bool result = await _vendorDbFunctions.VendorUpdateProduct(userId, model, Photos, ProductId);
+
+                        
+                return RedirectToAction("VendorProducts");
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to update product: " + ex.Message;
+                return View("VendorProducts");
+            }
+        }
+
     }
 }

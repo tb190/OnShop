@@ -43,7 +43,7 @@
                     {
                         foreach (var user in Model.AllUsers)
                         {
-                    <tr>
+                    <tr class="user-row">
                         <td>@user.UserId</td>
                         <td>@user.Name</td>
                         <td>@user.SurName</td>
@@ -114,11 +114,6 @@
 
 
     <style>
-        body {
-            background-color: #fefefe;
-            font-family: 'Montserrat', sans-serif;
-            font-family: "Arapey", serif;
-        }
 
         tr:nth-of-type(odd) {
             background-color: rgba(0,0,0,.05);
@@ -126,6 +121,16 @@
 
         tr:hover {
             background-color: rgba(0,0,0,.075);
+        }
+
+        .user-row {
+            font-size: 12px;
+            padding: 2px 4px;
+        }
+
+        .user-row td {
+            padding: 4px 8px;
+            vertical-align: middle;
         }
 
         .table th, .table td {
