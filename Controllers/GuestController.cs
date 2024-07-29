@@ -10,9 +10,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnShop.Controllers
 {
+    
     public class GuestController : Controller
     {
 
@@ -25,9 +31,11 @@ namespace OnShop.Controllers
             _userDbFunctions = userDbFunctions;
         }
 
-
+   
         public async Task<IActionResult> GuestHome()
         {
+           
+
             // Veritaban�ndan kategorileri �ek
             var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
 
@@ -66,7 +74,112 @@ namespace OnShop.Controllers
 
             return View("GuestHome", productviewModel);
         }
+
+
+
+
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> ProductDetails(int ProductId)
+        {
+            try
+            {
+
+                var productViewModel = await _userDbFunctions.UserGetProductDetails(ProductId);
+                var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+                var otherproducts = await _guestDbFunctions.GuestGetProducts();
+
+
+
+                productViewModel.OtherProducts = otherproducts;
+                productViewModel.Categories = categories;
+
+                productViewModel.userId = 0;
+
+                return View(productViewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.Message);
+
+            }
+
+            return RedirectToAction("GuestHome");
+        }
+
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        [HttpGet]
+        public async Task<IActionResult> GetProductsByCategoryAndType(string category, string type)
+        {
+            try
+            {
+
+                var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+                var CategoryName = categories.FirstOrDefault(c => c.CategoryId.ToString() == category)?.CategoryName ?? "All";
+                var Allproducts = await _userDbFunctions.GetProductsByCategoryAndType(CategoryName, type);
+
+                
+                var productviewModel = new ProductViewModel
+                {
+                    Categories = categories,
+                    AllProducts = Allproducts,
+                };
+
+                ViewBag.Category = CategoryName;
+                ViewBag.Type = type;
+                productviewModel.userId = 0;
+
+                return View(productviewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> AllProducts()
+        {
+
+            var AllProducts = await _userDbFunctions.GetAllProducts();
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+
+
+            var productviewModel = new ProductViewModel
+            {
+                Categories = categories,
+                AllProducts = AllProducts,
+            };
+            productviewModel.userId = 0;
+            return View(productviewModel);
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------------------------
+        public async Task<IActionResult> CompanyDetails(int companyId)
+        {
+
+            // CompanyDetails metodunu çağır ve dönen ProductViewModel'i al
+            var companyInfos = await _userDbFunctions.CompanyDetails(companyId);
+            // Kategorileri al
+            var categories = await _guestDbFunctions.GuestGetCategoriesWithTypes();
+
+
+            companyInfos.Categories = categories;
+
+            companyInfos.userId = 0;
+
+            // Görüntüleme için view'e gönder
+            return View(companyInfos);
+        }
+
+
     }
 
-  
+
 }

@@ -43,10 +43,10 @@
                             <option value="">Select Category</option>
                             @foreach (var category in Model.AllCategoriesWithTypes)
                             {
-                            <option value="@category.CategoryId">@category.CategoryName</option>
+                            <option value="@category.CategoryName">@category.CategoryName</option>
                             }
                         </select>
-                        <span asp-validation-for="productModel.Category" class="text-danger"></span>
+                        <span asp-validation-for="@Model.productModel.Category" class="text-danger"></span>
                     </div>
 
 
@@ -56,7 +56,7 @@
                             <option value="">Select Type</option>
                             <!-- Types will be populated based on selected category -->
                         </select>
-                        <span asp-validation-for="productModel.Type" class="text-danger"></span>
+                        <span asp-validation-for="@Model.productModel.Type" class="text-danger"></span>
                     </div>
 
 
@@ -221,7 +221,7 @@
 
             categorySelect.addEventListener('change', function () {
                 console.log("Category changed to:", categorySelect.value);
-                selectedCategoryId = categorySelect.value;
+                selectedCategoryName = categorySelect.value;
 
 
                 var allCategoriesWithTypes = @Html.Raw(JsonSerializer.Serialize(Model.AllCategoriesWithTypes));
@@ -230,9 +230,9 @@
 
                 typeSelect.innerHTML = '<option value="">Select Type</option>'; // Reset types
 
-                if (selectedCategoryId) {
+                if (selectedCategoryName) {
                     var selectedCategory = allCategoriesWithTypes.find(function (category) {
-                        return category.CategoryId == selectedCategoryId;
+                        return category.CategoryName == selectedCategoryName;
                     });
 
                     if (selectedCategory) {

@@ -36,7 +36,7 @@
 
 
                             <div class="widget-header-navigation">
-                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                <a asp-area="" asp-controller="Guest" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                                     {
                                         var product = Model.GuestHomeView.RecentProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                <a asp-area="" asp-controller="Guest" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
@@ -60,8 +60,8 @@
                                         <a id="like-button"
                                            class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
                                            asp-area=""
-                                           asp-controller="User"
-                                           asp-action="ToggleFavoriteProduct"
+                               asp-controller="Login"
+                               asp-action="Login"
                                            asp-route-productId="@product.ProductId"
                                            asp-route-returnUrl="@Context.Request.Path"
                                            style="font-size:16px;">
@@ -147,7 +147,7 @@
 
 
                             <div class="widget-header-navigation">
-                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                <a asp-area="" asp-controller="Guest" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                                     {
                                         var product = Model.GuestHomeView.MostClickedProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                <a asp-area="" asp-controller="Guest" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
@@ -171,8 +171,8 @@
                                         <a id="like-button"
                                            class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
                                            asp-area=""
-                                           asp-controller="User"
-                                           asp-action="ToggleFavoriteProduct"
+                               asp-controller="Login"
+                               asp-action="Login"
                                            asp-route-productId="@product.ProductId"
                                            asp-route-returnUrl="@Context.Request.Path"
                                            style="font-size:16px;">
@@ -256,7 +256,7 @@
 
 
                             <div class="widget-header-navigation">
-                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                <a asp-area="" asp-controller="Guest" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
                                     {
                                         var product = Model.GuestHomeView.MostFavoritedProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                <a asp-area="" asp-controller="Guest" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
@@ -280,8 +280,8 @@
                                         <a id="like-button"
                                            class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
                                            asp-area=""
-                                           asp-controller="User"
-                                           asp-action="ToggleFavoriteProduct"
+                               asp-controller="Login"
+                               asp-action="Login"
                                            asp-route-productId="@product.ProductId"
                                            asp-route-returnUrl="@Context.Request.Path"
                                            style="font-size:16px;">
@@ -370,7 +370,7 @@
 
 
                             <div class="widget-header-navigation">
-                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                <a asp-area="" asp-controller="Guest" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -386,7 +386,7 @@
                                     {
                                         var product = Model.GuestHomeView.HighStarProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                <a asp-area="" asp-controller="Guest" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
@@ -394,8 +394,8 @@
                                         <a id="like-button"
                                            class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
                                            asp-area=""
-                                           asp-controller="User"
-                                           asp-action="ToggleFavoriteProduct"
+                               asp-controller="Login"
+                               asp-action="Login"
                                            asp-route-productId="@product.ProductId"
                                            asp-route-returnUrl="@Context.Request.Path"
                                            style="font-size:16px;">
@@ -481,7 +481,7 @@
 
 
                             <div class="widget-header-navigation">
-                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                <a asp-area="" asp-controller="Guest" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -497,7 +497,7 @@
                                     {
                                         var product = Model.GuestHomeView.LessStockProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                <a asp-area="" asp-controller="Guest" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
@@ -505,8 +505,8 @@
                                         <a id="like-button"
                                            class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
                                            asp-area=""
-                                           asp-controller="User"
-                                           asp-action="ToggleFavoriteProduct"
+                               asp-controller="Login"
+                               asp-action="Login"
                                            asp-route-productId="@product.ProductId"
                                            asp-route-returnUrl="@Context.Request.Path"
                                            style="font-size:16px;">
@@ -594,7 +594,7 @@
 
 
                             <div class="widget-header-navigation">
-                                <a asp-area="" asp-controller="User" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
+                                <a asp-area="" asp-controller="Guest" asp-action="AllProducts">All Products<i class="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -610,7 +610,7 @@
                                     {
                                         var product = Model.GuestHomeView.BestsellerProducts[index];
                             <div class="widget-product" title="@product.ProductName">
-                                <a asp-area="" asp-controller="User" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
+                                <a asp-area="" asp-controller="Guest" asp-action="ProductDetails" asp-route-ProductId="@product.ProductId">
                                     <div class="image-container">
                                         <img class="slider-img p-card-img" src="@product.Photos.FirstOrDefault()">
 
@@ -618,8 +618,8 @@
                                         <a id="like-button"
                                            class="btn btn-like @(product.IsFavorited ? "favorited" : "not-favorited")"
                                            asp-area=""
-                                           asp-controller="User"
-                                           asp-action="ToggleFavoriteProduct"
+                               asp-controller="Login"
+                               asp-action="Login"
                                            asp-route-productId="@product.ProductId"
                                            asp-route-returnUrl="@Context.Request.Path"
                                            style="font-size:16px;">
@@ -708,7 +708,7 @@
                                 string lastPart = System.IO.Path.GetFileName(company.BannerUrl);
 
 
-                                <a class="company-card" style="background-image: url('@Url.Content("~/Pictures/CompanyBanners/" + lastPart)'); " asp-area="" asp-controller="User" asp-action="CompanyDetails" asp-route-companyId="@company.CompanyId">
+                                <a class="company-card" style="background-image: url('@Url.Content("~/Pictures/CompanyBanners/" + lastPart)'); " asp-area="" asp-controller="Guest" asp-action="CompanyDetails" asp-route-companyId="@company.CompanyId">
                                     <div class="company-overlay">
                                         <div class="company-info">
                                             <h5>@company.CompanyName <i class="fas fa-star"></i> @company.Score</h5>
@@ -882,7 +882,7 @@
             .component-list.component-small-list .component-item {
                 width: 100%;
                 box-sizing: border-box;
-                height: 440px;
+                height: 480px;
                 border-radius: 8px; /* Modern köşeler */
                 background-image: linear-gradient(to right bottom, #dadada, #e1e1e1, #e8e8e8, #efefef, #f6f6f6, #f6f6f6, #f6f6f6, #f6f6f6, #efefef, #e8e8e8, #e1e1e1, #dadada);
                 /* background: url('path/to/texture.png'), linear-gradient(135deg, #ffffff, #f0f0f0); Light texture with gradient */
@@ -902,7 +902,7 @@
         }
 
         .widget-gw-widget {
-            height: 440px;
+            height: 480px;
         }
 
             /* Widget Header */
@@ -953,7 +953,7 @@
             .widget-gw-widget .product-slider {
                 position: relative;
                 min-height: 100px;
-                max-height: 440px;
+                max-height: 480px;
                 margin-bottom: 20px;
                 overflow: hidden;
             }
@@ -1031,7 +1031,7 @@
 
         .styles-module_slider__o0fqa {
             min-height: 340px;
-            height: 340px;
+            height: 380px;
             display: flex;
             overflow-x: auto;
             overflow-y: hidden;
@@ -1056,7 +1056,7 @@
             border-radius: 8px;
             overflow: hidden;
             transition: box-shadow 0.3s;
-            height: 340px;
+            height: 380px;
             width: 200px !important;
             background-color: #fff;
         }

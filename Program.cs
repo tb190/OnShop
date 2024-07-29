@@ -43,6 +43,8 @@ builder.Services.AddAuthorization(options =>
 
 
 
+
+
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddScoped<GuestDbFunctions>(provider =>

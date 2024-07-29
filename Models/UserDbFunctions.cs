@@ -11,15 +11,19 @@ using System.IO;
 using System.Web;
 using System.Security.Cryptography;
 using System.Text;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace OnShop
 {
     public class UserDbFunctions
     {
         private SqlConnection connection;
+        private string _connectionString;
 
         public UserDbFunctions(string connectionString)
         {
+            _connectionString = connectionString;
             connection = new SqlConnection(connectionString);
         }
         public void Dispose()
@@ -31,32 +35,35 @@ namespace OnShop
         {
             try
             {
+                Console.WriteLine("burda5");
+                await connection.OpenAsync();
 
+                    string hashedPassword = HashPassword(user.PasswordHash);
 
-                string hashedPassword = HashPassword(user.PasswordHash);
+                    string query = "INSERT INTO Users (UserName, UserSurName, Email, PasswordHash, Address, Age, PhoneNumber, Role, BirthDate) VALUES (@Name, @SurName, @Email, @PasswordHash, @Address, @Age, @PhoneNumber, @Role, @Birthdate)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Name", user.Name);
+                        command.Parameters.AddWithValue("@SurName", user.SurName);
+                        command.Parameters.AddWithValue("@Email", user.Email);
+                        command.Parameters.AddWithValue("@PasswordHash", hashedPassword);
+                        command.Parameters.AddWithValue("@Role", role);
+                        command.Parameters.AddWithValue("@Address", user.Address);
+                        command.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
+                        command.Parameters.AddWithValue("@BirthDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@Age", 0);
+                    Console.WriteLine("burda6");
 
-                string query = "INSERT INTO Users (UserName, UserSurName, Email, PasswordHash, Address, Age, PhoneNumber, Role, BirthDate) VALUES (@Name, @SurName, @Email, @PasswordHash, @Address, @Age, @PhoneNumber, @Role, @Birthdate)";
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Name", user.Name);
-                    command.Parameters.AddWithValue("@SurName", user.SurName);
-                    command.Parameters.AddWithValue("@Email", user.Email);
-                    command.Parameters.AddWithValue("@PasswordHash", hashedPassword);
-                    command.Parameters.AddWithValue("@Role", role);
-                    command.Parameters.AddWithValue("@Address", user.Address);
-                    command.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-                    command.Parameters.AddWithValue("@BirthDate", DateTime.Now);
-                    command.Parameters.AddWithValue("@Age", 0);
-
-                    await connection.OpenAsync();
-                    await command.ExecuteNonQueryAsync();
-                    connection.Close();
-                    return true;
-                }
+                        await command.ExecuteNonQueryAsync();
+                        await connection.CloseAsync();
+                        return true;
+                    }
+               
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to register user: {ex.Message}");
+                await connection.CloseAsync();
                 return false;
             }
         }
@@ -67,80 +74,86 @@ namespace OnShop
         {
             try
             {
+                Console.WriteLine("burda7");
+
+                    
                 if (await RegisterIndividual(user, "Vendor"))
                 {
+                    
+                    Console.WriteLine("burda8");
                     int userId = await GetUserIdByEmail(user.Email);
 
-
-
+                    Console.WriteLine("burda9");
                     string query = "INSERT INTO Companies (Score, UserId, CompanyName, ContactName, Description, Address, PhoneNumber, CreatedAt, BirthDate, Email, LogoUrl, BannerUrl, TaxIDNumber, IBAN, IsValidatedByAdmin) " +
-                                             "VALUES (@Score, @UserId, @CompanyName, @ContactName, @Description, @Address, @PhoneNumber, @CreatedAt, @BirthDate, @Email, @LogoUrl, @BannerUrl, @TaxIDNumber, @IBAN, @IsValidatedByAdmin)";
+                                                 "VALUES (@Score, @UserId, @CompanyName, @ContactName, @Description, @Address, @PhoneNumber, @CreatedAt, @BirthDate, @Email, @LogoUrl, @BannerUrl, @TaxIDNumber, @IBAN, @IsValidatedByAdmin)";
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@Score", 0);
-                        command.Parameters.AddWithValue("@UserId", userId);
-                        command.Parameters.AddWithValue("@CompanyName", company.CompanyName);
-                        command.Parameters.AddWithValue("@ContactName", user.Name);
-                        command.Parameters.AddWithValue("@Description", company.CompanyDescription);
-                        command.Parameters.AddWithValue("@Address", user.Address);
-                        command.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber);
-                        command.Parameters.AddWithValue("CreatedAt", DateTime.Now);
-                        command.Parameters.AddWithValue("BirthDate", DateTime.Now);
-                        command.Parameters.AddWithValue("Email", user.Email);
-                        command.Parameters.AddWithValue("TaxIDNumber", company.taxIDNumber);
-                        command.Parameters.AddWithValue("IBAN", company.IBAN);
-                        command.Parameters.AddWithValue("IsValidatedByAdmin", 0);
-
-
-                        // Logo kaydetme
-                        if (LogoUrl != null && LogoUrl.Length > 0)
+                        using (SqlCommand command = new SqlCommand(query, connection))
                         {
-                            string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyLogos");
-                            if (!Directory.Exists(logoPath)) Directory.CreateDirectory(logoPath);
-
-                            string uniqueFileNameLogo = $"{Guid.NewGuid().ToString()}.jpg";
-                            string filePathLogo = Path.Combine(logoPath, uniqueFileNameLogo);
-                            using (var fileStream = new FileStream(filePathLogo, FileMode.Create))
-                            {
-                                await LogoUrl.CopyToAsync(fileStream);
-                            }
-
-                            string filePathtoDBLogo = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameLogo);
-                            command.Parameters.AddWithValue("@LogoUrl", filePathtoDBLogo);
-                        }
-                        // Banner kaydetme
-                        if (BannerUrl != null && BannerUrl.Length > 0)
-                        {
-                            string bannerPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyBanners");
-                            if (!Directory.Exists(bannerPath)) Directory.CreateDirectory(bannerPath);
-
-                            string uniqueFileNameBanner = $"{Guid.NewGuid().ToString()}.jpg";
-                            string filePathBanner = Path.Combine(bannerPath, uniqueFileNameBanner);
-                            using (var fileStream = new FileStream(filePathBanner, FileMode.Create))
-                            {
-                                await BannerUrl.CopyToAsync(fileStream);
-                            }
-
-                            string filePathtoDBBanner = Path.Combine("/Pictures", "CompanyBanners", uniqueFileNameBanner);
-                            command.Parameters.AddWithValue("@BannerUrl", filePathtoDBBanner);
-                        }
-
                         await connection.OpenAsync();
-                        await command.ExecuteNonQueryAsync();
-                        connection.Close();
-                        return true;
-                    }
+                        command.Parameters.AddWithValue("@Score", 0);
+                            command.Parameters.AddWithValue("@UserId", userId);
+                            command.Parameters.AddWithValue("@CompanyName", company.CompanyName);
+                            command.Parameters.AddWithValue("@ContactName", user.Name);
+                            command.Parameters.AddWithValue("@Description", company.CompanyDescription);
+                            command.Parameters.AddWithValue("@Address", user.Address);
+                            command.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber);
+                            command.Parameters.AddWithValue("CreatedAt", DateTime.Now);
+                            command.Parameters.AddWithValue("BirthDate", DateTime.Now);
+                            command.Parameters.AddWithValue("Email", user.Email);
+                            command.Parameters.AddWithValue("TaxIDNumber", company.taxIDNumber);
+                            command.Parameters.AddWithValue("IBAN", company.IBAN);
+                            command.Parameters.AddWithValue("IsValidatedByAdmin", 0);
 
+
+                            // Logo kaydetme
+                            if (LogoUrl != null && LogoUrl.Length > 0)
+                            {
+                                string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyLogos");
+                                if (!Directory.Exists(logoPath)) Directory.CreateDirectory(logoPath);
+
+                                string uniqueFileNameLogo = $"{Guid.NewGuid().ToString()}.jpg";
+                                string filePathLogo = Path.Combine(logoPath, uniqueFileNameLogo);
+                                using (var fileStream = new FileStream(filePathLogo, FileMode.Create))
+                                {
+                                    await LogoUrl.CopyToAsync(fileStream);
+                                }
+
+                                string filePathtoDBLogo = Path.Combine("/Pictures", "CompanyLogos", uniqueFileNameLogo);
+                                command.Parameters.AddWithValue("@LogoUrl", filePathtoDBLogo);
+                            }
+                            // Banner kaydetme
+                            if (BannerUrl != null && BannerUrl.Length > 0)
+                            {
+                                string bannerPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Pictures", "CompanyBanners");
+                                if (!Directory.Exists(bannerPath)) Directory.CreateDirectory(bannerPath);
+
+                                string uniqueFileNameBanner = $"{Guid.NewGuid().ToString()}.jpg";
+                                string filePathBanner = Path.Combine(bannerPath, uniqueFileNameBanner);
+                                using (var fileStream = new FileStream(filePathBanner, FileMode.Create))
+                                {
+                                    await BannerUrl.CopyToAsync(fileStream);
+                                }
+
+                                string filePathtoDBBanner = Path.Combine("/Pictures", "CompanyBanners", uniqueFileNameBanner);
+                                command.Parameters.AddWithValue("@BannerUrl", filePathtoDBBanner);
+                            }
+
+                        Console.WriteLine("burda10");
+                        await command.ExecuteNonQueryAsync();
+                            connection.Close();
+                            return true;
+                        }
+
+                    }
+                    await connection.CloseAsync();
+                    return false;
                 }
-                await connection.CloseAsync();
-                return false;
-            }
+            
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to register company: {ex.Message}");
-                return false;
                 await connection.CloseAsync();
+                return false;
                 throw;
             }
 
@@ -194,6 +207,7 @@ namespace OnShop
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to validate user credentials: {ex.Message}");
+                await connection.CloseAsync();
                 throw;
             }
         }
@@ -203,29 +217,37 @@ namespace OnShop
         {
             try
             {
+                Console.WriteLine("burda11");
+                await connection.OpenAsync();
                 string query = "SELECT UserId FROM Users WHERE Email = @Email";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Email", email);
 
-                    await connection.OpenAsync();
-                    var result = await command.ExecuteScalarAsync();
-                    connection.Close();
 
+                    var result = await command.ExecuteScalarAsync();
+
+                    Console.WriteLine("result: "+result);
                     if (result != null && int.TryParse(result.ToString(), out int userId))
                     {
+                        Console.WriteLine("burda13");
+                        await connection.CloseAsync();
                         return userId;
                     }
                     else
                     {
+                        Console.WriteLine("burda12");
+                        await connection.CloseAsync();
                         return -1;
                     }
                 }
             }
+            
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to get user ID: {ex.Message}");
+                await connection.CloseAsync();
                 throw;
             }
         }

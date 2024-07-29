@@ -50,7 +50,7 @@
         <div class="container">
             <div class="category-bar">
                 <ul class="nav justify-content-center">
-                    <a class="nav-link category-navlink" asp-area="" asp-controller="User" asp-action="AllProducts" id="category-All" data-categoryid="">
+                    <a class="nav-link category-navlink" asp-area="" asp-controller="Guest" asp-action="AllProducts" id="category-All" data-categoryid="">
                         All
                     </a>
                     @if (Model.Categories != null && Model.Categories.Count > 0)
@@ -58,7 +58,7 @@
                     @foreach (var category in Model.Categories)
                         {
                     <li class="nav-item" id="category-@category.CategoryId" data-categoryid="@category.CategoryId">
-                        <a class="nav-link category-navlink" id="category-@category.CategoryId" data-categoryid="@category.CategoryId" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="">
+                        <a class="nav-link category-navlink" id="category-@category.CategoryId" data-categoryid="@category.CategoryId" asp-area="" asp-controller="Guest" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="">
                             @category.CategoryName
                         </a>
                         <div class="types-list" id="types-list-@category.CategoryId">
@@ -71,7 +71,7 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                             {
                                         <li>
-                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j]" asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
+                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j]" asp-area="" asp-controller="Guest" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
                                                 @category.Types[j]
                                             </a>
                                         </li>
@@ -87,7 +87,7 @@
                                         @for (int j = 0; j < Math.Min(category.Types.Count, 5); j++)
                                                     {
                                         <li>
-                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j] " asp-area="" asp-controller="User" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
+                                            <a class="nav-link" id="category-@category.Types[j]" data-categoryid="@category.Types[j] " asp-area="" asp-controller="Guest" asp-action="GetProductsByCategoryAndType" asp-route-category="@category.CategoryId" asp-route-type="@category.Types[j]">
                                                 @category.Types[j]
 
                                             </a>

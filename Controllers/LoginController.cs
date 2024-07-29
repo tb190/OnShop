@@ -63,15 +63,18 @@ namespace OnShop.Controllers
         {
             try
             {
+                Console.WriteLine("burda1");
                 int id = await _userDbFunctions.GetUserIdByEmail(viewModel.User.Email);
+                Console.WriteLine("burda2");
                 if (id != -1) // bu email alınmış
                 {
                     TempData["ErrorMessage"] = "This email has already been registered!";
                     return RedirectToAction("Login");
                 }
-
+                Console.WriteLine("burda3");
                 if (await _userDbFunctions.RegisterCompany(LogoUrl, BannerUrl, viewModel.Company, viewModel.User))
                 {
+                    Console.WriteLine("burda4");
                     return RedirectToAction("Login");
                 }
                 return RedirectToAction("Login");
@@ -162,9 +165,7 @@ namespace OnShop.Controllers
         {
             try
             {
-                // Kullan�c� oturumunu sonland�r
                 HttpContext.Session.Remove("UserId");
-                // Kullan�c�y� giri� sayfas�na y�nlendir
                 return RedirectToAction("GuestHome", "Guest");
             }
             catch (Exception ex)

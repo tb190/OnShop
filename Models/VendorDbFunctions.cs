@@ -183,9 +183,9 @@ namespace OnShop
 
 
 
-                string sql = @"INSERT INTO Products (Rating, Favorites, CompanyID, Stock, Price, ProductName, Description, Category, Status, CreatedAt)
+                string sql = @"INSERT INTO Products (Rating, Favorites, CompanyID, Stock, Price, ProductName, Description, Category, Type, Status, CreatedAt)
                        OUTPUT INSERTED.ProductId
-                       VALUES (@Rating, @Favorites, @CompanyID, @Stock, @Price, @ProductName, @Description, @Category, @Status, @CreatedAt)";
+                       VALUES (@Rating, @Favorites, @CompanyID, @Stock, @Price, @ProductName, @Description, @Category, @Type, @Status, @CreatedAt)";
 
                  using (SqlCommand cmd = new SqlCommand(sql, connection))
                  {
@@ -197,6 +197,7 @@ namespace OnShop
                      cmd.Parameters.AddWithValue("@ProductName", product.ProductName);
                      cmd.Parameters.AddWithValue("@Description", product.Description);
                      cmd.Parameters.AddWithValue("@Category", product.Category);
+                     cmd.Parameters.AddWithValue("@Type", product.Type);
                      cmd.Parameters.AddWithValue("@Status", product.Status);
                      cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 

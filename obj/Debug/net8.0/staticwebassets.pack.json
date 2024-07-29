@@ -1,60 +1,320 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\1be99c6c-0641-4472-b567-9a41af07078a.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\1be99c6c-0641-4472-b567-9a41af07078a.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\1fcb40e3-c75d-47b6-966c-3f25e96d62b2.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\1fcb40e3-c75d-47b6-966c-3f25e96d62b2.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\1fdd7a88-4ad3-4dd4-84e1-a24e797e3272.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\1fdd7a88-4ad3-4dd4-84e1-a24e797e3272.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\56988c37-32a7-4813-a691-9f1c6b0a1252.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\56988c37-32a7-4813-a691-9f1c6b0a1252.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\5ae85ce1-4707-4ac3-8df0-ae08120ab4c2.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\5ae85ce1-4707-4ac3-8df0-ae08120ab4c2.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\6af76dd0-a3a7-4f1b-b2bf-6562bcb8c6a0.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\6af76dd0-a3a7-4f1b-b2bf-6562bcb8c6a0.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\b42767f3-f72e-48f3-a5ac-654da817c76b.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\b42767f3-f72e-48f3-a5ac-654da817c76b.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category1\\f72db353-0257-4378-a437-06d017a4e6a1.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category1\\f72db353-0257-4378-a437-06d017a4e6a1.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category2\\43d50626-ebca-4e86-a754-b2a0a1bfb9f4.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category2\\43d50626-ebca-4e86-a754-b2a0a1bfb9f4.jpg"
-    },
-    {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Category2\\9c66cbf0-98af-4c31-acea-972eafa69d97.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\Category2\\9c66cbf0-98af-4c31-acea-972eafa69d97.jpg"
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\031a0dfc-c823-4d3e-9335-4deb15ec7d79.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\031a0dfc-c823-4d3e-9335-4deb15ec7d79.jpg"
     },
     {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\682685d5-504f-4d86-909c-b124120270b5.jpg",
       "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\682685d5-504f-4d86-909c-b124120270b5.jpg"
     },
     {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\1e369d67-d45f-4df3-94a7-c32d08a007b8.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\1e369d67-d45f-4df3-94a7-c32d08a007b8.jpg"
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\FashionFusion.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\FashionFusion.png"
     },
     {
-      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\3f3c184f-eb63-41c2-b47e-09124467ea7e.jpg",
-      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\3f3c184f-eb63-41c2-b47e-09124467ea7e.jpg"
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\beaty.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\beaty.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\ecomarket.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\ecomarket.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\gourmetgoods.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\gourmetgoods.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\homeessentials.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\homeessentials.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\kidscorner.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\kidscorner.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\pet.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\pet.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\sport.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\sport.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\techmart.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\techmart.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyBanners\\urbanbazar.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyBanners\\urbanbazar.png"
     },
     {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\42afe602-e735-499c-a3fb-45d49958d58d.jpg",
       "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\42afe602-e735-499c-a3fb-45d49958d58d.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\beaty.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\beaty.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\ddeba44b-485d-4f2c-9f48-9a6fef56566a.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\ddeba44b-485d-4f2c-9f48-9a6fef56566a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\ecomarket.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\ecomarket.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\fasionfusion.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\fasionfusion.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\gourmetgoogs.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\gourmetgoogs.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\homeessentials.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\homeessentials.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\kidscorners.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\kidscorners.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\pet.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\pet.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\sports.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\sports.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\techmart.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\techmart.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\CompanyLogos\\urbanpazar.png",
+      "PackagePath": "staticwebassets\\Pictures\\CompanyLogos\\urbanpazar.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\16aa344e-05c9-4a46-98e0-670498881424.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\16aa344e-05c9-4a46-98e0-670498881424.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\18d3d5d4-00fc-4d74-9ffc-c60e4afc72a6.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\18d3d5d4-00fc-4d74-9ffc-c60e4afc72a6.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\1a059731-a68c-4f49-b553-ba0a3546a465.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\1a059731-a68c-4f49-b553-ba0a3546a465.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\1cfb5d77-be4f-4f65-a45a-7bec8765d40c.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\1cfb5d77-be4f-4f65-a45a-7bec8765d40c.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\2202e518-499b-43a7-83cd-6a4f492bf1fc.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\2202e518-499b-43a7-83cd-6a4f492bf1fc.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\2402521e-fcae-45d5-aa5d-5732ff735827.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\2402521e-fcae-45d5-aa5d-5732ff735827.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\35d05b7f-1350-4f25-8673-9423cd76894c.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\35d05b7f-1350-4f25-8673-9423cd76894c.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\36dee997-6ca9-480e-86ca-7dfecc00beff.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\36dee997-6ca9-480e-86ca-7dfecc00beff.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\3f9abb3e-6336-4005-b4b2-01b755163e90.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\3f9abb3e-6336-4005-b4b2-01b755163e90.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\450b1f68-be45-4777-994f-531d92bbed7a.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\450b1f68-be45-4777-994f-531d92bbed7a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\5a533d42-c5f3-4159-9448-c126abd2d6d5.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\5a533d42-c5f3-4159-9448-c126abd2d6d5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\5dec0208-c8aa-4a52-a923-a8dd29fe7406.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\5dec0208-c8aa-4a52-a923-a8dd29fe7406.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\72f6689e-949e-44a6-8244-e1d160a8b9da.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\72f6689e-949e-44a6-8244-e1d160a8b9da.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\747dc753-b790-4bc7-bf6f-9a360c777041.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\747dc753-b790-4bc7-bf6f-9a360c777041.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\758304e9-0e3b-43d3-a403-07eaae2f1b20.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\758304e9-0e3b-43d3-a403-07eaae2f1b20.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\77172519-7c1d-4ec4-9e0b-ae205e6022dd.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\77172519-7c1d-4ec4-9e0b-ae205e6022dd.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\81783f88-98f9-40f3-a30b-73a05553791c.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\81783f88-98f9-40f3-a30b-73a05553791c.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\a1d808c5-1787-47a6-a2f6-52c904f09d70.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\a1d808c5-1787-47a6-a2f6-52c904f09d70.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\c0bb5332-df59-4246-a4d2-7a67c5d9cc13.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\c0bb5332-df59-4246-a4d2-7a67c5d9cc13.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\c37fcc84-0c27-4e5c-b7d2-0d45f6fb63ed.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\c37fcc84-0c27-4e5c-b7d2-0d45f6fb63ed.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\c5fa1b91-f8e8-4b30-8082-9384efde8c05.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\c5fa1b91-f8e8-4b30-8082-9384efde8c05.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\db4a8f43-1563-44ea-b8f8-785437c4a908.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\db4a8f43-1563-44ea-b8f8-785437c4a908.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\e07c0f4f-3b65-4325-a10e-db34f9608d74.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\e07c0f4f-3b65-4325-a10e-db34f9608d74.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\e07d312d-12f1-44ad-9885-a9d575ed8fe2.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\e07d312d-12f1-44ad-9885-a9d575ed8fe2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\e08f21f1-b919-42a9-9527-1c5ac44fa4d2.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\e08f21f1-b919-42a9-9527-1c5ac44fa4d2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\e47bc23d-5d5c-4ead-af07-8f4279d0f8ba.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\e47bc23d-5d5c-4ead-af07-8f4279d0f8ba.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\eace5697-6b5b-4e46-addc-58f7011b1382.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\eace5697-6b5b-4e46-addc-58f7011b1382.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\edabfa1e-55fd-4c25-aaac-3975968b2822.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\edabfa1e-55fd-4c25-aaac-3975968b2822.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\f865f07f-73b2-446c-a7e0-442ed9767979.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\f865f07f-73b2-446c-a7e0-442ed9767979.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Electronics\\f9f76ce3-b396-4430-ad7b-7a9c3b7797b1.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Electronics\\f9f76ce3-b396-4430-ad7b-7a9c3b7797b1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\08b563f2-0c86-4719-90c1-3c526591a2ce.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\08b563f2-0c86-4719-90c1-3c526591a2ce.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\0a821935-6fca-4460-8e16-5c39c034cdcb.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\0a821935-6fca-4460-8e16-5c39c034cdcb.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\10e1b41a-9657-4e1d-9fa3-70631aff8491.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\10e1b41a-9657-4e1d-9fa3-70631aff8491.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\10f3a8c0-95b7-4b00-b90d-8a2b310e38ab.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\10f3a8c0-95b7-4b00-b90d-8a2b310e38ab.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\25475b86-aa4b-4cd4-abe6-1665f83b26c5.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\25475b86-aa4b-4cd4-abe6-1665f83b26c5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\284987f6-85bb-4da1-b5e1-6e22dec2c97f.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\284987f6-85bb-4da1-b5e1-6e22dec2c97f.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\3221e74d-77b8-4197-8dbb-6ccdab90b8d7.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\3221e74d-77b8-4197-8dbb-6ccdab90b8d7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\5f329561-ddbe-4ace-8e14-87cf8806c97d.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\5f329561-ddbe-4ace-8e14-87cf8806c97d.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\636e6be6-1466-42c8-a56d-706180231aed.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\636e6be6-1466-42c8-a56d-706180231aed.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\648491e6-69ba-4e7f-9a6e-9c78c0e9125a.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\648491e6-69ba-4e7f-9a6e-9c78c0e9125a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\76a16299-9ba8-43cb-9fdb-5d0b77116cb8.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\76a16299-9ba8-43cb-9fdb-5d0b77116cb8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\7bbc7999-5864-4559-ac04-d6ca05a46d1d.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\7bbc7999-5864-4559-ac04-d6ca05a46d1d.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\8df83b4e-45c6-4d5a-a2b5-375acee2f8f5.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\8df83b4e-45c6-4d5a-a2b5-375acee2f8f5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\a31fb939-657f-4a2f-a9dc-125bc8de9de4.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\a31fb939-657f-4a2f-a9dc-125bc8de9de4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\aaced61c-070d-473b-babb-db64fbb21895.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\aaced61c-070d-473b-babb-db64fbb21895.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\b6dd13e8-cf7b-4f1b-91e1-43109d151470.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\b6dd13e8-cf7b-4f1b-91e1-43109d151470.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\bbfb4a38-4297-4e7f-a99f-60d63d2d3fa1.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\bbfb4a38-4297-4e7f-a99f-60d63d2d3fa1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\bda124ab-aef5-4efe-b0a1-a4559095c75f.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\bda124ab-aef5-4efe-b0a1-a4559095c75f.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\d1247249-8a4d-413d-9192-e1163200d1e4.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\d1247249-8a4d-413d-9192-e1163200d1e4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\d4b1093d-037d-4ef7-83fb-b0c0c8242d83.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\d4b1093d-037d-4ef7-83fb-b0c0c8242d83.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\f842528f-93a2-47e6-8940-f9d986ec71a8.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\f842528f-93a2-47e6-8940-f9d986ec71a8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\f893cca5-9946-4aec-89d9-bbb95bfa93be.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\f893cca5-9946-4aec-89d9-bbb95bfa93be.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\fe1adcf6-8165-43ed-971e-d5ef8cc30f4d.jpg",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\fe1adcf6-8165-43ed-971e-d5ef8cc30f4d.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\kadınelbise1.png",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\kadınelbise1.png"
+    },
+    {
+      "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\Fashion\\kadınelbise2.png",
+      "PackagePath": "staticwebassets\\Pictures\\Fashion\\kadınelbise2.png"
     },
     {
       "Id": "C:\\Users\\Casper\\Desktop\\OnShop\\wwwroot\\Pictures\\bestseller.png",
