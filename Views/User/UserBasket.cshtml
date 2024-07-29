@@ -53,7 +53,7 @@
                                 </div>
 
  <!-- Container for Credit Cards -->
-                                <form asp-area="" asp-controller="User" asp-action="BuyProducts" method="post" class="credit-card-selection-form" onsubmit="return validateCardSelection();">
+                                <form asp-area="" asp-controller="User" asp-action="BuyProducts" method="post" class="credit-card-selection-form"  id="creditCardForm">
                                     <div class="credit-cards-container">
                                         @foreach (var card in Model.userModel.CreditCards)
 {
@@ -103,12 +103,7 @@
                 </div>
             </div>
 
-
-
-
-
         </div>
-    </div>
 
     @foreach (var product in Model.BasketProducts)
         {
@@ -334,25 +329,6 @@
     </div>
     <script>
 
-
-        // --------------------------------- submitForm ---------------------------------
-    function submitForm() {
-        const basketProducts = @Html.Raw(Json.Serialize(Model.BasketProducts)); // Model'den basketProducts al
-        const totalPrice = @Model.TotalPrice;
-        const cardId = $("input[name='CardId']:checked").val(); // Seçili kart ID'sini al
-
-        // AJAX isteği yap
-        $.ajax({
-            url: '@Url.Action("BuyProducts", "User")',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                basketProducts: basketProducts,
-                totalPrice: totalPrice,
-                cardId: cardId
-            }),
-        });
-    }
 
      // --------------------------------- selectCard ---------------------------------
      function selectCard(label) {

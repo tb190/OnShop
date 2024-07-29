@@ -1377,119 +1377,133 @@ namespace OnShop
                 return false;
             }
 
-            connection.Open();
-
-            // Begin transaction
-            using (SqlTransaction transaction = connection.BeginTransaction())
+            try
             {
-                try
+                Console.WriteLine("burda1");
+                connection.Open();
+                
+
+                // Get all products in the basket for the user
+                string queryProductsInBasket = @"
+                    SELECT ProductId, CompanyId, Count
+                    FROM BasketProducts
+                    WHERE UserId = @UserId";
+
+                var productsInBasket = new List<(int ProductId, int CompanyId, int Count)>();
+
+                using (SqlCommand cmd = new SqlCommand(queryProductsInBasket, connection))
                 {
-                    // Get all products in the basket for the user
-                    string queryProductsInBasket = @"
-                SELECT ProductId, CompanyId, Count
-                FROM BasketProducts
-                WHERE UserId = @UserId";
+                    cmd.Parameters.AddWithValue("@UserId", userId);
 
-                    var productsInBasket = new List<(int ProductId, int CompanyId, int Count)>();
-
-                    using (SqlCommand cmd = new SqlCommand(queryProductsInBasket, connection, transaction))
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@UserId", userId);
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                productsInBasket.Add((reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
-                            }
+                            productsInBasket.Add((reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
                         }
                     }
+                }
 
-                    // Insert products into PurchasedProducts if they do not already exist
-                    string checkQuery = @"
-                SELECT COUNT(*)
-                FROM PurchasedProducts
-                WHERE UserId = @UserId AND ProductId = @ProductId";
 
-                    string insertQuery = @"
-                INSERT INTO PurchasedProducts (UserId, CompanyId, ProductId)
-                VALUES (@UserId, @CompanyId, @ProductId)";
+                Console.WriteLine("burda2");
+                // Insert products into PurchasedProducts if they do not already exist
+                string checkQuery = @"
+        SELECT COUNT(*)
+        FROM PurchasedProducts
+        WHERE UserId = @UserId AND ProductId = @ProductId";
 
-                    // Stock update query
-                    string updateStockQuery = @"
-                UPDATE Products
-                SET Stock = Stock - @Quantity
-                WHERE ProductId = @ProductId";
+                string insertQuery = @"
+        INSERT INTO PurchasedProducts (UserId, CompanyId, ProductId)
+        VALUES (@UserId, @CompanyId, @ProductId)";
 
-                    // Sold update query
-                    string updateSoldQuery = @"
-                UPDATE Products
-                SET Sold = Sold + @Quantity
-                WHERE ProductId = @ProductId";
+                // Stock update query
+                string updateStockQuery = @"
+        UPDATE Products
+        SET Stock = Stock - @Quantity
+        WHERE ProductId = @ProductId";
 
-                    foreach (var product in productsInBasket)
+                // Sold update query
+                string updateSoldQuery = @"
+        UPDATE Products
+        SET Sold = Sold + @Quantity
+        WHERE ProductId = @ProductId";
+                int count;
+                foreach (var product in productsInBasket)
+                {
+                    try
                     {
+                        Console.WriteLine("burda3");
                         // Check if the product is already purchased
-                        using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection, transaction))
+                        using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                         {
+                            Console.WriteLine("burda4");
                             checkCommand.Parameters.AddWithValue("@UserId", userId);
                             checkCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
 
-                            int count = (int)checkCommand.ExecuteScalar();
+                            count = (int)checkCommand.ExecuteScalar();
+                        }
 
-                            if (count == 0)
-                            {
-                                // Insert into PurchasedProducts if not exists
-                                using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection, transaction))
-                                {
-                                    insertCommand.Parameters.AddWithValue("@UserId", userId);
-                                    insertCommand.Parameters.AddWithValue("@CompanyId", product.CompanyId);
-                                    insertCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
-                                    insertCommand.ExecuteNonQuery();
-                                }
-                            }
+                        Console.WriteLine("burda4_1");
 
-                            // Update stock for the product
-                            using (SqlCommand updateStockCommand = new SqlCommand(updateStockQuery, connection, transaction))
+                        if (count == 0)
+                        {
+                            // Insert into PurchasedProducts if not exists
+                            using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
                             {
-                                updateStockCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
-                                updateStockCommand.Parameters.AddWithValue("@Quantity", product.Count);
-                                updateStockCommand.ExecuteNonQuery();
-                            }
-
-                            // Update sold for the product
-                            using (SqlCommand updateSoldCommand = new SqlCommand(updateSoldQuery, connection, transaction))
-                            {
-                                updateSoldCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
-                                updateSoldCommand.Parameters.AddWithValue("@Quantity", product.Count);
-                                updateSoldCommand.ExecuteNonQuery();
+                                Console.WriteLine("burda4_2");
+                                insertCommand.Parameters.AddWithValue("@UserId", userId);
+                                insertCommand.Parameters.AddWithValue("@CompanyId", product.CompanyId);
+                                insertCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
+                                insertCommand.ExecuteNonQuery();
                             }
                         }
+                        Console.WriteLine("burda5");
+                        // Update stock for the product
+                        using (SqlCommand updateStockCommand = new SqlCommand(updateStockQuery, connection))
+                        {
+                            updateStockCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
+                            updateStockCommand.Parameters.AddWithValue("@Quantity", product.Count);
+                            updateStockCommand.ExecuteNonQuery();
+                        }
+                        Console.WriteLine("burda6");
+                        // Update sold for the product
+                        using (SqlCommand updateSoldCommand = new SqlCommand(updateSoldQuery, connection))
+                        {
+                            updateSoldCommand.Parameters.AddWithValue("@ProductId", product.ProductId);
+                            updateSoldCommand.Parameters.AddWithValue("@Quantity", product.Count);
+                            updateSoldCommand.ExecuteNonQuery();
+                        }
+                        
                     }
-
-                    // Delete all products from BasketProducts for the user
-                    string deleteQuery = "DELETE FROM BasketProducts WHERE UserId = @UserId";
-
-                    using (SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection, transaction))
+                    catch (Exception ex)
                     {
-                        deleteCommand.Parameters.AddWithValue("@UserId", userId);
-                        deleteCommand.ExecuteNonQuery();
+                        // Handle errors during product processing
+                        Console.WriteLine($"Error processing product {product.ProductId}: {ex.Message}");
+                        connection.Close();
+                        return false;
                     }
+                }
+                Console.WriteLine("burda7");
+                // Delete all products from BasketProducts for the user
+                string deleteQuery = "DELETE FROM BasketProducts WHERE UserId = @UserId";
 
-                    // Commit transaction
-                    transaction.Commit();
-                    connection.Close();
-                    return true;
-                }
-                catch (Exception ex)
+                using (SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection))
                 {
-                    // Rollback transaction on error
-                    transaction.Rollback();
-                    Console.WriteLine($"Error: {ex.Message}");
-                    connection.Close();
-                    return false;
+                    Console.WriteLine("burda8");
+                    deleteCommand.Parameters.AddWithValue("@UserId", userId);
+                    deleteCommand.ExecuteNonQuery();
                 }
+                Console.WriteLine("burda9");
+                connection.Close();
+                return true;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                connection.Close();
+                return false;
+            }
+            return true;
         }
 
         // --------------------------------------------------------------------------------------------------------------------------

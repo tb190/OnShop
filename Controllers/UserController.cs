@@ -338,7 +338,7 @@ namespace OnShop.Controllers
             }
 
             //List<BasketProductModel> BasketProducts = await _userDbFunctions.GetUserBasketProducts(userId);
-
+            Console.WriteLine("cs tarafııı");
             var result = await _userDbFunctions.BuyProducts(userId, TotalPrice, CardId);
 
 

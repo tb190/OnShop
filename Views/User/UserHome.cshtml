@@ -751,32 +751,36 @@
             }
             // --------------------------------- Slider ---------------------------------
             document.addEventListener('DOMContentLoaded', () => {
-                const slider = document.querySelector('.styles-module_slider__o0fqa'); // Slider'ı seçin
-                const prevBtn = document.getElementById('prevBtn');
-                const nextBtn = document.getElementById('nextBtn');
+                const sliders = document.querySelectorAll('.styles-module_slider__o0fqa'); // Tüm slider'ları seçin
 
-                const updateButtons = () => {
-                    const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
-                    const scrollLeft = slider.scrollLeft;
+                sliders.forEach(slider => {
+                    const prevBtn = slider.closest('.widget-container').querySelector('#prevBtn');
+                    const nextBtn = slider.closest('.widget-container').querySelector('#nextBtn');
 
-                    prevBtn.style.display = scrollLeft > 0 ? 'block' : 'none';
-                    nextBtn.style.display = scrollLeft < maxScrollLeft ? 'block' : 'none';
-                };
+                    const updateButtons = () => {
+                        const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+                        const scrollLeft = slider.scrollLeft;
 
-                prevBtn.addEventListener('click', () => {
-                    slider.scrollBy({ left: -200, behavior: 'smooth' });
-                    setTimeout(updateButtons, 300);
+                        prevBtn.style.display = scrollLeft > 0 ? 'block' : 'none';
+                        nextBtn.style.display = scrollLeft < maxScrollLeft ? 'block' : 'none';
+                    };
+
+                    prevBtn.addEventListener('click', () => {
+                        slider.scrollBy({ left: -200, behavior: 'smooth' });
+                        setTimeout(updateButtons, 300);
+                    });
+
+                    nextBtn.addEventListener('click', () => {
+                        slider.scrollBy({ left: 200, behavior: 'smooth' });
+                        setTimeout(updateButtons, 300);
+                    });
+
+                    // İlk yükleme ve scroll sırasında butonları güncelleyin
+                    updateButtons();
+                    slider.addEventListener('scroll', updateButtons);
                 });
-
-                nextBtn.addEventListener('click', () => {
-                    slider.scrollBy({ left: 200, behavior: 'smooth' });
-                    setTimeout(updateButtons, 300);
-                });
-
-                // İlk yükleme ve scroll sırasında butonları güncelleyin
-                updateButtons();
-                slider.addEventListener('scroll', updateButtons);
             });
+
 
         
 
