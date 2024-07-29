@@ -1424,7 +1424,7 @@ namespace OnShop
                     // Sold update query
                     string updateSoldQuery = @"
                 UPDATE Products
-                SET Sold = Sold - @Quantity
+                SET Sold = Sold + @Quantity
                 WHERE ProductId = @ProductId";
 
                     foreach (var product in productsInBasket)
